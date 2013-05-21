@@ -455,7 +455,7 @@ public class CadastreEJB extends AbstractEJB implements CadastreEJBLocal {
         params = new HashMap<String, Serializable>();
         params.put("last_part", lastPart);
         params.put("cadastre_object_type", cadastreObjectType);
-        String firstPart = systemEJB.checkRuleGetResultSingle(brToGetFirstPart, null).getValue().toString();
+        String firstPart = systemEJB.checkRuleGetResultSingle(brToGetFirstPart, params).getValue().toString();
         NewCadastreObjectIdentifier identifier = new NewCadastreObjectIdentifier();
         identifier.setFirstPart(firstPart);
         identifier.setLastPart(lastPart);
