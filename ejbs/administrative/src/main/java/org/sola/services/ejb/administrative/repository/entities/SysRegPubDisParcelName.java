@@ -23,7 +23,8 @@ public class SysRegPubDisParcelName extends AbstractReadOnlyEntity {
     public static final String QUERY_PARAMETER_ID = "id";
     // Where clause
     public static final String QUERY_WHERE_BYID = "id = #{" + QUERY_PARAMETER_ID + "}";
-    public static final String QUERY_WHERE_SEARCHBYPARTS = "name_lastpart = #{search_string}";
+//    public static final String QUERY_WHERE_SEARCHBYPARTS = "name_lastpart = #{search_string}";
+    public static final String QUERY_WHERE_SEARCHBYPARTS = "name = #{search_string}";
     
     @Id
     @Column(name = "id")

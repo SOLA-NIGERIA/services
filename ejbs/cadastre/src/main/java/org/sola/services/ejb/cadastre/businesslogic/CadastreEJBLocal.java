@@ -175,4 +175,18 @@ public interface CadastreEJBLocal extends AbstractEJBLocal {
      * CadastreEJB.getNewCadastreObjectIdentifier}
      */
    NewCadastreObjectIdentifier getNewCadastreObjectIdentifier(byte[] geom, String cadastreObjectType);
+   
+     /**
+     * See {@linkplain CadastreEJB#getCadastreObjectByParts(java.lang.String)
+     * CadastreEJB.getCadastreObjectByParts}.
+     */
+    List<SpatialUnitGroup> getSpatialUnitGroupByParts(String searchString);
+
+    /**
+     * See {@linkplain CadastreEJB#getCadastreObjectByAllParts(java.lang.String)
+     * CadastreEJB.getCadastreObjectByAllParts}.
+     */
+    List<SpatialUnitGroup> getSpatialUnitGroupByAllParts(String searchString);
+
+   
 }

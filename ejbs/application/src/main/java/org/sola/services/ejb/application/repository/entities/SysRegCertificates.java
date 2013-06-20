@@ -25,13 +25,13 @@ public class SysRegCertificates extends AbstractReadOnlyEntity {
     public static final String QUERY_PARAMETER_NR = "nr";
     // Where clause
     public static final String QUERY_WHERE_BYNR = "nr = #{" + QUERY_PARAMETER_NR  + "} "
-            + "AND compare_strings(#{search_string}, name_lastpart)";
+            + "AND compare_strings(#{search_string}, name)";
 
     /**
      * WHERE clause to return current CO's based on search string compared to
      * last part
      */
-    public static final String QUERY_WHERE_SEARCHBYPARTS = "compare_strings(#{search_string}, name_lastpart)";
+    public static final String QUERY_WHERE_SEARCHBYPARTS = "compare_strings(#{search_string}, name)";
     
     @Column(name = "nr")
     private String nr;
@@ -41,7 +41,9 @@ public class SysRegCertificates extends AbstractReadOnlyEntity {
     private String nameLastpart;
     @Column(name = "ba_unit_id")
     private String baUnitId;
-
+    @Column(name = "name")
+    private String name;
+    
     
     
     public String getBaUnitId() {
@@ -76,4 +78,12 @@ public class SysRegCertificates extends AbstractReadOnlyEntity {
         this.nr = nr;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    
 }
