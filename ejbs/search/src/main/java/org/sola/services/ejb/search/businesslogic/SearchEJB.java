@@ -793,9 +793,16 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
      */
     @Override
     public byte[] getExtentOfPublicDisplayMap(String nameLastPart) {
-        String sqlToGetExtent = "select st_asewkb(st_extent(co.geom_polygon)) as extent "
-                + " from cadastre.cadastre_object co where type_code= 'parcel' "
-                + " and status_code= 'current' and name_lastpart =#{name_lastpart}";
+//        String sqlToGetExtent = "select st_asewkb(st_extent(co.geom_polygon)) as extent "
+//                + " from cadastre.cadastre_object co where type_code= 'parcel' "
+//                + " and status_code= 'current' and name_lastpart =#{name_lastpart}";
+        String sqlToGetExtent = "select st_asewkb(st_extent(s.geom)) as extent "
+                + " from  cadastre.spatial_unit s, "
+                + " cadastre.spatial_unit_group sg  "
+                + " where compare_strings(#{name_lastpart}, sg.name) "
+                + " and s.label= sg.name and sg.hierarchy_level=4 "
+                + " and ST_Intersects(ST_PointOnSurface(s.geom), sg.geom)";
+       
         String paramLastPart = "name_lastpart";
         Map params = new HashMap();
         params.put(CommonSqlProvider.PARAM_QUERY, sqlToGetExtent);
