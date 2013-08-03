@@ -35,7 +35,9 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import org.sola.services.common.br.ValidationResult;
 import org.sola.services.common.ejbs.AbstractEJB;
+import org.sola.services.common.faults.SOLAValidationException;
 import org.sola.services.common.repository.CommonSqlProvider;
 import org.sola.services.ejb.cadastre.repository.entities.*;
 import org.sola.services.ejb.system.businesslogic.SystemEJBLocal;
@@ -110,7 +112,7 @@ public class CadastreEJB extends AbstractEJB implements CadastreEJBLocal {
         searchString = searchString.replaceAll("\\\\|\\/", " ");
         params.put("search_string", searchString);
         params.put(CommonSqlProvider.PARAM_LIMIT_PART, numberOfMaxRecordsReturned);
-        params.put(CommonSqlProvider.PARAM_ORDER_BY_PART, CadastreObject.QUERY_ORDER_BY_SEARCHBYPARTS); 
+        params.put(CommonSqlProvider.PARAM_ORDER_BY_PART, CadastreObject.QUERY_ORDER_BY_SEARCHBYPARTS);
         return getRepository().getEntityList(CadastreObject.class,
                 CadastreObject.QUERY_WHERE_SEARCHBYPARTS, params);
     }
@@ -130,7 +132,7 @@ public class CadastreEJB extends AbstractEJB implements CadastreEJBLocal {
         HashMap params = new HashMap();
         params.put("search_string", searchString);
         params.put(CommonSqlProvider.PARAM_LIMIT_PART, numberOfMaxRecordsReturned);
-        params.put(CommonSqlProvider.PARAM_ORDER_BY_PART, CadastreObject.QUERY_ORDER_BY_SEARCHBYPARTS); 
+        params.put(CommonSqlProvider.PARAM_ORDER_BY_PART, CadastreObject.QUERY_ORDER_BY_SEARCHBYPARTS);
         return getRepository().getEntityList(CadastreObject.class,
                 CadastreObject.QUERY_WHERE_SEARCHBYALLPARTS, params);
     }
@@ -311,6 +313,7 @@ public class CadastreEJB extends AbstractEJB implements CadastreEJBLocal {
             params.clear();
             params.put("geom", cadastreObjectNode.getGeom());
             params.put("type_code", cadastreObjectType);
+            params.put("srid", srid);
             cadastreObjectNode.setCadastreObjectList(getRepository().getEntityList(
                     CadastreObject.class, CadastreObject.QUERY_WHERE_SEARCHBYGEOM, params));
         }
@@ -348,6 +351,7 @@ public class CadastreEJB extends AbstractEJB implements CadastreEJBLocal {
             params.clear();
             params.put("geom", cadastreObjectNode.getGeom());
             params.put("type_code", cadastreObjectType);
+            params.put("srid", srid);
             cadastreObjectNode.setCadastreObjectList(getRepository().getEntityList(
                     CadastreObject.class, CadastreObject.QUERY_WHERE_SEARCHBYGEOM, params));
         }
@@ -426,13 +430,13 @@ public class CadastreEJB extends AbstractEJB implements CadastreEJBLocal {
         params.put("transaction_id", transactionId);
         return getRepository().getEntityList(SpatialUnitTemporary.class, params);
     }
-    
-     /**
+
+    /**
      * Locates cadastre object's area size
      *
      *
-     * 
-     * @param colist the list of cadastre object 
+     *
+     * @param colist the list of cadastre object
      * @return The total area size
      */
     @Override
