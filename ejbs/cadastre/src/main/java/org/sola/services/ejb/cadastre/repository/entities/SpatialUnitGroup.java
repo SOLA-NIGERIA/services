@@ -42,6 +42,11 @@ import org.sola.services.common.repository.ExternalEJB;
 import org.sola.services.common.repository.entities.AbstractVersionedEntity;
 import org.sola.services.ejb.address.businesslogic.AddressEJBLocal;
 import org.sola.services.ejb.address.repository.entities.Address;
+import java.io.Serializable;
+import java.util.HashMap;
+import org.sola.services.common.repository.RepositoryUtility;
+import org.sola.services.ejb.system.br.Result;
+import org.sola.services.ejb.system.businesslogic.SystemEJBLocal;
 
 /**
  * Entity representing the cadastre.spatial_unit_group table.
@@ -67,43 +72,13 @@ public class SpatialUnitGroup extends AbstractVersionedEntity {
     public static final String QUERY_WHERE_SEARCHBYPARTS = 
             " compare_strings(#{search_string}, name)"
                   + " and hierarchy_level = 4 ";
-//    /**
-//     * WHERE clause to return current CO's intersecting the specified point
-//     */
-//    public static final String QUERY_WHERE_SEARCHBYPOINT = "type_code= #{type_code} "
-//            + "and status_code= 'current' and "
-//            + "ST_Intersects(geom_polygon, ST_SetSRID(ST_Point(#{x}, #{y}), #{srid}))";
-//    /**
-//     * WHERE clause to return CO's linked to the specified ba_unit.id
-//     */
-//    public static final String QUERY_WHERE_SEARCHBYBAUNIT = "id in "
-//            + " (select spatial_unit_id from administrative.ba_unit_contains_spatial_unit "
-//            + "where ba_unit_id = #{ba_unit_id})";
-//    /**
-//     * WHERE clause to return current CO's linked to the specified service.id
-//     */
-//    public static final String QUERY_WHERE_SEARCHBYSERVICE = "status_code= 'current' "
-//            + "and transaction_id in "
-//            + " (select id from transaction.transaction where from_service_id = #{service_id}) ";
-//    /**
-//     * WHERE clause to return CO's linked to the specified transaction.id
-//     */
-//    public static final String QUERY_WHERE_SEARCHBYTRANSACTION =
-//            "transaction_id = #{transaction_id} and status_code = 'pending'";
-//    /**
-//     * WHERE clause to return current CO's matching type type_code and within
-//     * distance of the specified geometry
-//     */
-//    public static final String QUERY_WHERE_SEARCHBYGEOM = "type_code=#{type_code} "
-//            + "and status_code= 'current' and "
-//            + "ST_DWithin(geom_polygon, get_geometry_with_srid(#{geom}), "
-//            + "system.get_setting('map-tolerance')::double precision)";
-//    /**
-//     * ORDER BY clause used to order search results for the Search by parts queries. 
-//     * Uses regex to order cadastre objects by lot number. 
-//     */
+
     public static final String QUERY_ORDER_BY_SEARCHBYPARTS =
             "name";
+    
+     public static String WHERE_CONDITION = "hierarchy_level = #{hierarchy_level} "
+            + " and ST_Intersects(st_transform(geom, #{srid}), ST_SetSRID(ST_GeomFromWKB(#{filtering_geometry}), #{srid}))";
+    
     @Id
     @Column(name = "id")
     private String id;
@@ -114,8 +89,11 @@ public class SpatialUnitGroup extends AbstractVersionedEntity {
     @Column(name = "found_in_spatial_unit_group_id")
     private String foundInSpatialId;
     @Column(name = "geom")
-    @AccessFunctions(onSelect = "st_asewkb(geom)")
+    @AccessFunctions(onSelect = "st_asewkb(geom)",
+    onChange = "get_geometry_with_srid(#{geom})")
     private byte[] geom;
+
+    
     @Column(name = "reference_point")
     @AccessFunctions(onSelect = "st_asewkb(geom)")
     private byte[] referencePoint;
@@ -145,7 +123,7 @@ public class SpatialUnitGroup extends AbstractVersionedEntity {
     }
 
     public void setGeom(byte[] geom) { //NOSONAR
-        this.geom = geom; //NOSONAR
+       this.geom = geom.clone();
     }
     
     public String getFoundInSpatialId() {
@@ -196,4 +174,27 @@ public class SpatialUnitGroup extends AbstractVersionedEntity {
         this.seqNr = seqNr;
     }
    
+ @Override
+    public void preSave() {
+        setName(generateName());
+        super.preSave();
+    }
+
+    private String generateName() {
+        String result = "";
+        SystemEJBLocal systemEJB = RepositoryUtility.tryGetEJB(SystemEJBLocal.class);
+        if (systemEJB != null) {
+            HashMap<String, Serializable> parameters = new HashMap<String, Serializable>();
+            parameters.put("geom_v", getGeom());
+            parameters.put("hierarchy_level_v", getHierarchyLevel());
+            parameters.put("label_v", getLabel());
+            Result newNumberResult = systemEJB.checkRuleGetResultSingle(
+                    "generate-spatial-unit-group-name", parameters);
+            if (newNumberResult != null && newNumberResult.getValue() != null) {
+                result = newNumberResult.getValue().toString();
+            }
+        }
+        return result;
+    }
 }
+

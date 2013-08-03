@@ -41,6 +41,7 @@ import org.sola.services.common.faults.SOLAValidationException;
 import org.sola.services.common.repository.CommonSqlProvider;
 import org.sola.services.ejb.cadastre.repository.entities.*;
 import org.sola.services.ejb.system.businesslogic.SystemEJBLocal;
+import org.sola.services.ejb.system.repository.entities.BrValidation;
 
 /**
  * EJB to manage data in the cadastre schema. Supports retrieving and saving of
@@ -508,4 +509,73 @@ public class CadastreEJB extends AbstractEJB implements CadastreEJBLocal {
                 SpatialUnitGroup.QUERY_WHERE_SEARCHBYALLPARTS, params);
     }
 
+ /**
+     * Saves the changes in the spatial unit group.
+     * 
+     * @param items
+     * @param languageCode 
+     */
+    @Override
+    public void saveSpatialUnitGroups(List<SpatialUnitGroup> items, String languageCode) {
+        if (items.isEmpty()){
+            return;
+        }
+        for (SpatialUnitGroup item : items) {
+            getRepository().saveEntity(item);
+        }
+        //Check afterwards if any condition is brokken by using the BR mechanism
+        //Retrieve BRs that has to be checked
+        List<BrValidation> brList = systemEJB.getBrForSpatialUnitGroupTransaction();
+        List<ValidationResult> validationResults =
+                systemEJB.checkRulesGetValidation(brList, languageCode, null);
+
+        if (!systemEJB.validationSucceeded(validationResults)) {
+            throw new SOLAValidationException(validationResults);
+        }
+
+    }
+
+    /**
+     * Gets the list of spatial unit groups that intersect with the filteringGeometry.
+     * 
+     * @param filteringGeometry The filtering geometry
+     * @param hierarchyLevel The hierarchy level of the data
+     * @param srid The srid
+     * @return 
+     */
+    @Override
+    public List<SpatialUnitGroup> getSpatialUnitGroups(
+            byte[] filteringGeometry, Integer hierarchyLevel, Integer srid) {
+        HashMap<String, Serializable> params = new HashMap<String, Serializable>();
+        params.put("filtering_geometry", filteringGeometry);
+        params.put("srid", srid);
+        params.put("hierarchy_level", hierarchyLevel);
+
+        return getRepository().getEntityList(
+                SpatialUnitGroup.class, SpatialUnitGroup.WHERE_CONDITION, params);
+    }
+
+    /**
+     * Retrieves a list of spatial unit groups matching the list of ids
+     * provided.
+     *
+     * @param ids A list of spatial unit group ids to use for retrieval.
+     */
+    @Override
+    public List<SpatialUnitGroup> getSpatialUnitGroupsByIds(List<String> ids) {
+        return getRepository().getEntityListByIds(SpatialUnitGroup.class, ids);
+    }
+    
+    /**
+     * Retrieves all cadastre.cadastre_object_type code values.
+     *
+     * @param languageCode The language code to use for localization of display
+     * values.
+     */
+    @Override
+    public List<HierarchyLevel> getHierarchyLevels(String languageCode) {
+        return getRepository().getCodeList(HierarchyLevel.class, languageCode);
+    }
+
 }
+

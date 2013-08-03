@@ -189,6 +189,12 @@ public interface CadastreEJBLocal extends AbstractEJBLocal {
     List<SpatialUnitGroup> getSpatialUnitGroupByAllParts(String searchString);
 
    
+     /**
+     * see {@linkplain CadastreEJB#saveSpatialUnitGroups(List<SpatialUnitGroup>, String)
+     * CadastreEJB.saveSpatialUnitGroups}
+     */
+   void saveSpatialUnitGroups(List<SpatialUnitGroup> items, String languageCode);
+   
     /**
      * see {@linkplain CadastreEJB#getSpatialUnitGroups(byte[], Integer, Integer)
      * CadastreEJB.getSpatialUnitGroups}
@@ -209,3 +215,4 @@ public interface CadastreEJBLocal extends AbstractEJBLocal {
     List<HierarchyLevel> getHierarchyLevels(String languageCode);
 
 }
+
