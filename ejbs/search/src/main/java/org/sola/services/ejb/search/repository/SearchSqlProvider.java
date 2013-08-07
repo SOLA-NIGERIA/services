@@ -31,6 +31,7 @@ package org.sola.services.ejb.search.repository;
 
 import static org.apache.ibatis.jdbc.SqlBuilder.*;
 import org.sola.services.ejb.search.repository.entities.BaUnitSearchResult;
+import org.sola.services.ejb.search.repository.entities.DisputeSearchResult;
 
 /**
  *

@@ -814,4 +814,89 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
         }
         return value;
     }    
+    
+     /*
+     * DISPUTE
+     *
+     */
+    /**
+     * Executes a search on all Disputes. Uses dispute number, lease number
+     * (rrr_id), plot number (cadaster_id), and dates between lodgement date and
+     * completion .
+     *
+     * <p>Requires the {@linkplain RolesConstants#ADMINISTRATIVE_BA_UNIT_SEARCH}
+     * role.</p>
+     *
+     * @param searchParams The search criteria to use.
+     * @return A maximum of 100 BA Units matching the search criteria.
+     */
+    @Override
+    @RolesAllowed(RolesConstants.ADMINISTRATIVE_DISPUTE_SEARCH)
+    public List<DisputeSearchResult> searchDispute(DisputeSearchParams searchParams) {
+        Map params = processDisputeSearchParams(searchParams);
+        params.put(CommonSqlProvider.PARAM_QUERY, DisputeSearchResult.SEARCH_QUERY);
+        return getRepository().getEntityList(DisputeSearchResult.class, params);
+    }
+
+    private Map<String, Object> processDisputeSearchParams(DisputeSearchParams searchParams) {
+        Map params = new HashMap<String, Object>();
+
+
+        params.put(DisputeSearchResult.QUERY_PARAM_DISP_NR,
+                searchParams.getNr() == null ? "" : searchParams.getNr());
+
+        params.put(DisputeSearchResult.QUERY_PARAM_LEASE_NR,
+                searchParams.getLeaseNumber() == null ? "" : searchParams.getLeaseNumber());
+
+        params.put(DisputeSearchResult.QUERY_PARAM_PLOT_NR,
+                searchParams.getPlotNumber() == null ? "" : searchParams.getPlotNumber());
+        
+        params.put(DisputeSearchResult.QUERY_PARAM_CASE_TYPE,
+                searchParams.getCaseType() == null ? "" : searchParams.getCaseType());
+        
+        params.put(DisputeSearchResult.QUERY_PARAM_LODGEMENT_DATE_FROM,
+                searchParams.getLodgementDateFrom() == null
+                ? new GregorianCalendar(1, 1, 1).getTime()
+                : searchParams.getLodgementDateFrom());
+
+        params.put(DisputeSearchResult.QUERY_PARAM_LODGEMENT_DATE_TO,
+                searchParams.getLodgementDateTo() == null
+                ? new GregorianCalendar(2500, 1, 1).getTime()
+                : searchParams.getLodgementDateTo());
+
+        params.put(DisputeSearchResult.QUERY_PARAM_COMPLETION_DATE_FROM,
+                searchParams.getCompletionDateFrom() == null
+                ? new GregorianCalendar(1, 1, 1).getTime()
+                : searchParams.getCompletionDateTo());
+
+        params.put(DisputeSearchResult.QUERY_PARAM_COMPLETION_DATE_TO,
+                searchParams.getCompletionDateTo() == null
+                ? new GregorianCalendar(2500, 1, 1).getTime()
+                : searchParams.getLodgementDateTo());
+
+        return params;
+    }
+      
+    @Override
+    public List<CadastreObjectSearchResult> searchCadastreObjects(CadastreObjectSearchParams searchParams) {
+        if(searchParams==null)
+            return null;
+        
+        if (searchParams.getNameFirstPart() == null) {
+            searchParams.setNameFirstPart("");
+        }
+        if (searchParams.getNameLastPart() == null) {
+            searchParams.setNameLastPart("");
+        }
+        if (searchParams.getAddress() == null) {
+            searchParams.setAddress("");
+        }
+        
+        Map params = new HashMap<String, Object>();
+        params.put(CommonSqlProvider.PARAM_QUERY, CadastreObjectSearchResult.QUERY_SEARCH);
+        params.put(CadastreObjectSearchResult.PARAM_NAME_FIRST_PART, searchParams.getNameFirstPart());
+        params.put(CadastreObjectSearchResult.PARAM_NAME_LAST_PART, searchParams.getNameLastPart());
+        params.put(CadastreObjectSearchResult.PARAM_ADDRESS, searchParams.getAddress());
+        return getRepository().getEntityList(CadastreObjectSearchResult.class, params);
+    }
 }
