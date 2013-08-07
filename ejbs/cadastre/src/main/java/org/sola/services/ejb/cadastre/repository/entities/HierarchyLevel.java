@@ -25,47 +25,21 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package org.sola.services.ejb.search.repository.entities;
+package org.sola.services.ejb.cadastre.repository.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import org.sola.services.common.repository.entities.AbstractReadOnlyEntity;
+import javax.persistence.Table;
+import org.sola.services.common.repository.DefaultSorter;
+import org.sola.services.common.repository.entities.AbstractCodeEntity;
 
 /**
- *
+ * Entity representing cadastre.hierarchy_level code table.
  * @author soladev
  */
-public class Setting extends AbstractReadOnlyEntity {
+@Table(name = "hierarchy_level",  schema = "cadastre")
+@DefaultSorter(sortString="display_value")
+public class HierarchyLevel extends AbstractCodeEntity {
 
-    public static final String QUERY_SQL_FOR_MAP_SETTINGS =
-            "SELECT name as id, vl from system.setting where active and name like 'map%'";
-    @Id
-    @Column(name = "id")
-    private String id;
-    @Column(name = "vl")
-    private String vl;
-
-    public Setting() {
+    public HierarchyLevel() {
         super();
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getVl() {
-        return vl;
-    }
-
-    public void setVl(String vl) {
-        this.vl = vl;
     }
 }
