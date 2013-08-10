@@ -46,7 +46,7 @@ import org.sola.services.ejb.system.businesslogic.SystemEJBLocal;
 /**
  * This Entity represents the administrative.dispute table.
  *
- * @author thoriso
+ *
  */
 @Table(name = "dispute_party", schema = "administrative")
 @DefaultSorter(sortString = "dispute_nr")
@@ -57,16 +57,17 @@ public class DisputeParty extends AbstractVersionedEntity {
             + "#{" + QUERY_PARAMETER_BYDISPUTENR + "}";
   
    
-    @Column(name = "id")
-    private String id;
-    @Id
+   @Id
     @Column(name = "dispute_nr")
     private String disputeNr;
     @Column(name=  "party_role")
     private String partyRole;
+    @Id
     @Column(name=  "party_id")
     private String partyId;
-        public DisputeParty() {
+   
+    
+    public DisputeParty() {
         super();
     }
 
@@ -78,14 +79,14 @@ public class DisputeParty extends AbstractVersionedEntity {
         this.disputeNr = disputeNr;
     }
 
-    public String getId() {
-        id = id == null ? generateId() : id;
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
+//    public String getId() {
+//        id = id == null ? generateId() : id;
+//        return id;
+//    }
+//
+//    public void setId(String id) {
+//        this.id = id;
+//    }
 
     public String getPartyRole() {
         return partyRole;

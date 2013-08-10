@@ -665,7 +665,7 @@ public class AdministrativeEJB extends AbstractEJB
     }
 
     /**
-     * THORISO - LEGAL (DISPUTES)
+     * DISPUTE
      *
      */
 
@@ -842,6 +842,17 @@ public class AdministrativeEJB extends AbstractEJB
     @Override
     public List<DisputeType> getDisputeType(String languageCode) {
         return getRepository().getCodeList(DisputeType.class, languageCode);
+    }
+    
+     /**
+     * Retrieves all administrative.dispute_role_type code values.
+     *
+     * @param languageCode The language code to use for localization of display
+     * values.
+     */
+    @Override
+    public List<DisputeRoleType> getDisputeRoleType(String languageCode) {
+        return getRepository().getCodeList(DisputeRoleType.class, languageCode);
     }
 
     /**

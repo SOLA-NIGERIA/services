@@ -232,7 +232,14 @@ public interface AdministrativeEJBLocal extends AbstractSolaTransactionEJBLocal 
      * AdministrativeEJB.getDisputeType}
      */
     List<DisputeType> getDisputeType(String languageCode);
+    
+         /**
+     * see {@linkplain AdministrativeEJB#getDisputeRoleType(java.lang.String)
+     * AdministrativeEJB.getDisputeRoleType}
+     */
+    List<DisputeRoleType> getDisputeRoleType(String languageCode);
 
+    
     /**
      * see {@linkplain AdministrativeEJB#getDisputeStatus(java.lang.String)
      * AdministrativeEJB.getDisputeStatus}

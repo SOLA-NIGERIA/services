@@ -31,20 +31,44 @@
  */
 package org.sola.services.ejb.administrative.repository.entities;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
 import javax.persistence.Table;
-import org.sola.services.common.repository.DefaultSorter;
-import org.sola.services.common.repository.entities.AbstractCodeEntity;
+import org.sola.services.common.repository.entities.AbstractVersionedEntity;
 
 /**
- * This Entity represents the administrative.other_authorities table.
- * 
+ * Entity representing the administrative.source_describes_dispute association table (i.e many to 
+ * many table) between dispute and source. 
+ * @author soladev
  */
-@Table(name = "other_authorities", schema = "administrative")
-@DefaultSorter(sortString="display_value")
-public class OtherAuthorities extends AbstractCodeEntity {
-    public OtherAuthorities(){
+@Table(schema = "administrative", name = "source_describes_dispute")
+public class SourcesDescribesDispute extends AbstractVersionedEntity {
+
+    @Id
+    @Column(name = "dispute_id")
+    private String disputeId;
+    @Id
+    @Column(name = "source_id")
+    private String sourceId;
+
+    public SourcesDescribesDispute() {
         super();
     }
+
+    public String getDisputeId() {
+        return disputeId;
+    }
+
+    public void setDisputeId(String disputeId) {
+        this.disputeId = disputeId;
+    }
+
+    public String getSourceId() {
+        return sourceId;
+    }
+
+    public void setSourceId(String sourceId) {
+        this.sourceId = sourceId;
+    }
+    
 }
-
-

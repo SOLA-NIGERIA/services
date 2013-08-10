@@ -37,7 +37,7 @@ import org.sola.services.common.repository.entities.AbstractCodeEntity;
 
 /**
  * This Entity represents the administrative.dispute_status table.
- * @author thoriso
+ * 
  */
 @Table(name = "dispute_status", schema = "administrative")
 @DefaultSorter(sortString="display_value")

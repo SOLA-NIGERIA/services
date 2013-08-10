@@ -36,15 +36,15 @@ import org.sola.services.common.repository.DefaultSorter;
 import org.sola.services.common.repository.entities.AbstractCodeEntity;
 
 /**
- * This Entity represents the administrative.other_authorities table.
+ * This Entity represents the administrative.dispute_type table.
  * 
  */
-@Table(name = "other_authorities", schema = "administrative")
+
+@Table(name = "dispute_role_type", schema = "administrative")
 @DefaultSorter(sortString="display_value")
-public class OtherAuthorities extends AbstractCodeEntity {
-    public OtherAuthorities(){
+public class DisputeRoleType extends AbstractCodeEntity {
+    public DisputeRoleType(){
         super();
     }
 }
-
 

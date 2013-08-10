@@ -39,19 +39,20 @@ import javax.persistence.Table;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
-import org.sola.services.common.repository.ChildEntityList;
-import org.sola.services.common.repository.DefaultSorter;
-import org.sola.services.common.repository.ExternalEJB;
-import org.sola.services.common.repository.RepositoryUtility;
+import org.sola.services.common.repository.*;
 import org.sola.services.common.repository.entities.AbstractVersionedEntity;
 import org.sola.services.ejb.cadastre.businesslogic.CadastreEJBLocal;
+import org.sola.services.ejb.party.businesslogic.PartyEJBLocal;
+import org.sola.services.ejb.party.repository.entities.Party;
+import org.sola.services.ejb.source.businesslogic.SourceEJBLocal;
+import org.sola.services.ejb.source.repository.entities.Source;
 import org.sola.services.ejb.system.br.Result;
 import org.sola.services.ejb.system.businesslogic.SystemEJBLocal;
 
 /**
  * This Entity represents the administrative.dispute table.
  *
- * @author thoriso
+ *
  */
 @Table(name = "dispute", schema = "administrative")
 @DefaultSorter(sortString = "lodgement_date, nr")
@@ -72,23 +73,6 @@ public class Dispute extends AbstractVersionedEntity {
     private String applicationId;
     @Column(name = "service_id")
     private String serviceId;
-
-    public String getApplicationId() {
-        return applicationId;
-    }
-
-    public void setApplicationId(String applicationId) {
-        this.applicationId = applicationId;
-    }
-
-    public String getServiceId() {
-        return serviceId;
-    }
-
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId;
-    }
-    
     @Column(name = "nr")
     private String nr;
     @Column(name = "lodgement_date", updatable = false, insertable = false)
@@ -115,8 +99,14 @@ public class Dispute extends AbstractVersionedEntity {
     private String actionRequired;
     @ChildEntityList(parentIdField = "disputeNr")
     private List<DisputeComments> disputeCommentsList;
+    @ExternalEJB(ejbLocalClass = SourceEJBLocal.class,
+    loadMethod = "getSources", saveMethod = "saveSource")
+    @ChildEntityList(parentIdField = "disputeId", childIdField = "sourceId",
+    manyToManyClass = SourcesDescribesDispute.class)
+    private List<Source> sourceList;
     @ChildEntityList(parentIdField = "disputeNr")
     private List<DisputeParty> disputePartyList;
+    
 
     public Dispute() {
         super();
@@ -133,7 +123,21 @@ public class Dispute extends AbstractVersionedEntity {
         }
         return result;
     }
+    public String getApplicationId() {
+        return applicationId;
+    }
 
+    public void setApplicationId(String applicationId) {
+        this.applicationId = applicationId;
+    }
+
+    public String getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
+    }
     public String getCaseType() {
         return caseType;
     }
@@ -248,14 +252,24 @@ public class Dispute extends AbstractVersionedEntity {
         this.disputeCommentsList = disputeCommentsList;
     }
 
+   
     public List<DisputeParty> getDisputePartyList() {
+        disputePartyList = disputePartyList == null ? new ArrayList<DisputeParty>() : disputePartyList;
         return disputePartyList;
     }
 
     public void setDisputePartyList(List<DisputeParty> disputePartyList) {
-       this.disputePartyList = disputePartyList;
+        this.disputePartyList = disputePartyList;
+    }
+     
+   public List<Source> getSourceList() {
+        return sourceList;
     }
 
+    public void setSourceList(List<Source> sourceList) {
+        this.sourceList = sourceList;
+    }
+    
     @Override
     public void preSave() {
 

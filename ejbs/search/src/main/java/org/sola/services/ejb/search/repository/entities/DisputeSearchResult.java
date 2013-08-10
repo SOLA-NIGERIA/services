@@ -29,7 +29,7 @@
  */
 /**
  *
- * @author thoriso - LAA
+ * 
  */
 package org.sola.services.ejb.search.repository.entities;
 

@@ -44,7 +44,7 @@ import org.sola.services.ejb.system.businesslogic.SystemEJBLocal;
 
 /**
  * This Entity represents the administrative.dispute_comments table.
- * @author thoriso
+ * 
  */
 
 @Table(name = "dispute_comments", schema = "administrative")
