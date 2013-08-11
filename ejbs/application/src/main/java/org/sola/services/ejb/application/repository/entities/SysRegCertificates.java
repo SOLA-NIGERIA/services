@@ -43,7 +43,59 @@ public class SysRegCertificates extends AbstractReadOnlyEntity {
     private String baUnitId;
     @Column(name = "name")
     private String name;
+    @Column(name = "appId")
+    private String appId;
+    @Column(name = "commencingDate")
+    private Date commencingDate;
+    @Column(name = "landUse")
+    private String landUse;
+    @Column(name = "propLocation")
+    private String propLocation;
+    @Column(name = "size")
+    private BigDecimal size;
+
+    public BigDecimal getSize() {
+        return size;
+    }
+
+    public void setSize(BigDecimal size) {
+        this.size = size;
+    }
+
+    public String getPropLocation() {
+        return propLocation;
+    }
+
+    public void setPropLocation(String propLocation) {
+        this.propLocation = propLocation;
+    }
+
+    public String getLandUse() {
+        return landUse;
+    }
+
+    public void setLandUse(String landUse) {
+        this.landUse = landUse;
+    }
+       
     
+    public Date getCommencingDate() {
+        return commencingDate;
+    }
+
+    public void setCommencingDate(Date commencingDate) {
+        this.commencingDate = commencingDate;
+    }
+    
+    
+
+    public String getAppId() {
+        return appId;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
+    }
     
     
     public String getBaUnitId() {
