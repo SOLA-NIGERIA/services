@@ -99,11 +99,45 @@ public class Party extends AbstractVersionedEntity {
     private List<PartyRole> roleList;
     @Column(name = "party.is_rightholder(id) AS is_rightholder", insertable=false, updatable=false)
     private boolean rightHolder;
+    @Column(name = "dob")
+    private String dob;
+    @Column(name = "state")
+    private String state;
+    @Column(name = "nationality")
+    private String nationality;
+
+
     
     public Party() {
         super();
     }
 
+    public String getDob() {
+        return dob;
+    }
+
+    public void setDob(String dob) {
+        this.dob = dob;
+    }
+
+    public String getNationality() {
+        return nationality;
+    }
+
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+    
+    
+    
     public String getId() {
         id = id == null ? generateId() : id;
         return id;
