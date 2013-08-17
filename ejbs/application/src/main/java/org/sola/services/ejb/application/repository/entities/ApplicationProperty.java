@@ -66,6 +66,8 @@ public class ApplicationProperty extends AbstractVersionedEntity {
     private boolean verifiedLocation;
     @Column(name = "ba_unit_id")
     private String baUnitId;
+    @Column(name = "land_use_code")
+    private String landUseCode;
 
     public ApplicationProperty() {
         super();
@@ -142,5 +144,13 @@ public class ApplicationProperty extends AbstractVersionedEntity {
 
     public void setVerifiedLocation(boolean verifiedLocation) {
         this.verifiedLocation = verifiedLocation;
+    }
+
+    public String getLandUseCode() {
+        return landUseCode;
+    }
+
+    public void setLandUseCode(String landUseCode) {
+        this.landUseCode = landUseCode;
     }
 }

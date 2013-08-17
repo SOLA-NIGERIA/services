@@ -117,6 +117,67 @@ public class BaUnit extends AbstractVersionedEntity {
     @Column(insertable=false, updatable=false, name = "calculated_area_size")
     @AccessFunctions(onSelect = "administrative.get_calculated_area_size_action(#{" + QUERY_PARAMETER_COLIST + "})")
     private BigDecimal calculatedAreaSize;
+    @Column(name = "is_not_developed")
+    private boolean isDeveloped;
+    @Column(name = "years_for_dev")
+    private Integer yearsForDev;
+    @Column(name = "value_to_imp")
+    private BigDecimal valueToImp;
+    @Column(name = "term")
+    private Integer term;
+    @Column(name = "land_use_code")
+    private String landUse;
+    @Column(name = "location")
+    private String location;
+
+    public boolean isIsDeveloped() {
+        return isDeveloped;
+    }
+
+    public void setIsDeveloped(boolean isDeveloped) {
+        this.isDeveloped = isDeveloped;
+    }
+
+    public String getLandUse() {
+        return landUse;
+    }
+
+    public void setLandUse(String landUse) {
+        this.landUse = landUse;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public Integer getTerm() {
+        return term;
+    }
+
+    public void setTerm(Integer term) {
+        this.term = term;
+    }
+
+    public BigDecimal getValueToImp() {
+        return valueToImp;
+    }
+
+    public void setValueToImp(BigDecimal valueToImp) {
+        this.valueToImp = valueToImp;
+    }
+
+    public Integer getYearsForDev() {
+        return yearsForDev;
+    }
+
+    public void setYearsForDev(Integer yearsForDev) {
+        this.yearsForDev = yearsForDev;
+    }
+
     
     public BigDecimal getCalculatedAreaSize() {
         return calculatedAreaSize;
