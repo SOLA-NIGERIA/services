@@ -53,7 +53,18 @@ public class SysRegCertificates extends AbstractReadOnlyEntity {
     private String propLocation;
     @Column(name = "size")
     private BigDecimal size;
+    @Column(insertable=false, updatable=false, name = "ground_rent")
+    @AccessFunctions(onSelect = "application.ground_rent(ba_unit_id)")
+    private BigDecimal groundRent;
 
+    public BigDecimal getGroundRent() {
+        return groundRent;
+    }
+
+    public void setGroundRent(BigDecimal groundRent) {
+        this.groundRent = groundRent;
+    }
+    
     public BigDecimal getSize() {
         return size;
     }
