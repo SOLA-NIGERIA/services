@@ -102,7 +102,9 @@ public class Application extends AbstractVersionedEntity {
     loadMethod = "getParty", saveMethod = "saveParty")
     @ChildEntity(childIdField = "contactPersonId")
     private Party contactPerson;
-    @ExternalEJB(ejbLocalClass = PartyEJBLocal.class, loadMethod = "getParty")
+    @ExternalEJB(ejbLocalClass = PartyEJBLocal.class,
+    loadMethod = "getParty")
+//    loadMethod = "getParty", saveMethod = "saveParty")        
     @ChildEntity(childIdField = "agentId")
     private Party agent;
     @ChildEntityList(parentIdField = "applicationId")

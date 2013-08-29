@@ -113,7 +113,9 @@ public class GenericTranslatorTest {
                 }
             }
             assertEquals(appTO.getAgent().getId(), outApp.getAgentId());
-            assertPartySummary(app == null ? null : app.getAgent(), appTO.getAgent(),
+//            assertPartySummary(app == null ? null : app.getAgent(), appTO.getAgent(),
+            assertParty(app == null ? null : app.getAgent(), appTO.getAgent(),
+            
                     outApp.getAgent());
         }
 
@@ -326,7 +328,8 @@ public class GenericTranslatorTest {
         if (hasAgent) {
             assertNotNull(appTO.getAgent());
             assertEquals(app.getAgentId(), appTO.getAgent().getId());
-            assertPartySummaryTO(app.getAgent(), appTO.getAgent());
+//            assertPartySummaryTO(app.getAgent(), appTO.getAgent());
+            assertPartyTO(app.getAgent(), appTO.getAgent());
         }
 
         if (hasContactPerson) {
