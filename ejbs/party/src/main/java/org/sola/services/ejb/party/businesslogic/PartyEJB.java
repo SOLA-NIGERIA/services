@@ -161,7 +161,25 @@ public class PartyEJB extends AbstractEJB implements PartyEJBLocal {
 
         return agents;
     }
+    
+    /**
+     * Returns all parties that have the recOfficer party role. Note that the address and party
+     * role details for each agent are not loaded. <p>No role is required to execute this
+     * method.</p>
+     */
+    @Override
+    public List<Party> getRecOfficers() {
+        Map params = new HashMap<String, Object>();
+        params.put(CommonSqlProvider.PARAM_WHERE_PART, Party.QUERY_WHERE_LODGING_RECOFFICERS);
 
+        // Don't load Address or PartyRole as these are not required for the agents list. 
+        getRepository().setLoadInhibitors(new Class<?>[]{PartyRole.class, Address.class});
+        List<Party> recOfficer = getRepository().getEntityList(Party.class, params);
+        getRepository().clearLoadInhibitors();
+
+        return recOfficer;
+    }
+    
     /**
      * Retrieves all party.party_role_type code values.
      *

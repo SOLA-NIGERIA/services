@@ -89,4 +89,9 @@ public interface PartyEJBLocal extends AbstractEJBLocal {
      * PartyEJB.getAgents}.
      */
     List<Party> getAgents();
+/**
+     * See {@linkplain PartyEJB#getRecOfficers()
+     * PartyEJB.getRecOfficers}.
+     */
+    List<Party> getRecOfficers();
 }
