@@ -73,7 +73,24 @@ public class PartyEJB extends AbstractEJB implements PartyEJBLocal {
     public Party getParty(String id) {
         return getRepository().getEntity(Party.class, id);
     }
-
+    
+     /**
+     * Returns the details for the specified party.
+     *
+     * <p>No role is required to execute this method.</p>
+     *
+     * @param id The identifier of the party to retrieve.
+     */
+    @Override
+    public Party getPartyByFullName(String fullName) {
+     Map<String, Object> params = new HashMap<String, Object>();
+        params.put(CommonSqlProvider.PARAM_WHERE_PART, Party.QUERY_WHERE_BYFULLNAME);
+        params.put(Party.QUERY_PARAMETER_FULLNAME, fullName);
+        return getRepository().getEntity(Party.class, params);      
+    }
+    
+  
+    
     /**
      * Returns a list of parties matching the supplied ids. <p>No role is required to execute this
      * method.</p>

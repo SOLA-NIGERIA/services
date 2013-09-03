@@ -41,7 +41,14 @@ public interface PartyEJBLocal extends AbstractEJBLocal {
      * PartyEJB.getParty}.
      */
     Party getParty(String id);
+    
+    /**
+     * See {@linkplain PartyEJB#getParty(java.lang.String)
+     * PartyEJB.getPartyByFullName}.
+     */
+    Party getPartyByFullName(String fullName);
 
+    
     /**
      * See {@linkplain PartyEJB#getParties(java.util.List)
      * PartyEJB.getParties}.

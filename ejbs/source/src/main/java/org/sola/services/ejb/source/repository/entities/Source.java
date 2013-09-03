@@ -64,7 +64,7 @@ public class Source extends AbstractVersionedEntity {
     @Column(name = "id")
     private String id;
     @ExternalEJB(ejbLocalClass = PartyEJBLocal.class,
-    loadMethod = "getParty")
+    loadMethod = "getPartyByFullName")
     @ChildEntity(childIdField = "ownerName")
     private Party recOfficer;
 
