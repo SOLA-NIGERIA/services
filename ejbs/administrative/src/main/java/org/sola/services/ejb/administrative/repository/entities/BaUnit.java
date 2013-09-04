@@ -129,7 +129,17 @@ public class BaUnit extends AbstractVersionedEntity {
     private String landUse;
     @Column(name = "location")
     private String location;
+    @Column(name = "floors_number")
+    private Integer floorsNumber;
 
+    public Integer getFloorsNumber() {
+        return floorsNumber;
+    }
+
+    public void setFloorsNumber(Integer floorsNumber) {
+        this.floorsNumber = floorsNumber;
+    }
+    
     public boolean isIsDeveloped() {
         return isDeveloped;
     }
