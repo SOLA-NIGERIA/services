@@ -44,6 +44,8 @@ import org.sola.services.common.repository.ExternalEJB;
 import org.sola.services.common.repository.entities.AbstractVersionedEntity;
 import org.sola.services.ejb.address.businesslogic.AddressEJBLocal;
 import org.sola.services.ejb.address.repository.entities.Address;
+import org.sola.services.ejb.source.businesslogic.SourceEJBLocal;
+import org.sola.services.ejb.source.repository.entities.Source;
 
 /**
  * Entity representing the party.party table. 
@@ -110,6 +112,12 @@ public class Party extends AbstractVersionedEntity {
     private String state;
     @Column(name = "nationality")
     private String nationality;
+    @ExternalEJB(ejbLocalClass = SourceEJBLocal.class,
+    loadMethod = "getSources", saveMethod = "saveSource")
+    @ChildEntityList(parentIdField = "partyId", childIdField = "sourceId",
+    manyToManyClass = SourceDescribesParty.class)
+    private List<Source> sourceList;
+    
 
 
     
@@ -117,6 +125,17 @@ public class Party extends AbstractVersionedEntity {
         super();
     }
 
+    public List<Source> getSourceList() {
+        return sourceList;
+    }
+
+    public void setSourceList(List<Source> sourceList) {
+        this.sourceList = sourceList;
+    }
+    
+    
+    
+    
     public Date getDob() {
         return dob;
     }

@@ -41,8 +41,8 @@ import org.sola.services.common.repository.RepositoryUtility;
 import org.sola.services.common.repository.entities.AbstractVersionedEntity;
 import org.sola.services.digitalarchive.businesslogic.DigitalArchiveEJBLocal;
 import org.sola.services.digitalarchive.repository.entities.Document;
-import org.sola.services.ejb.party.businesslogic.PartyEJBLocal;
-import org.sola.services.ejb.party.repository.entities.Party;
+//import org.sola.services.ejb.party.businesslogic.PartyEJBLocal;
+//import org.sola.services.ejb.party.repository.entities.Party;
 import org.sola.services.ejb.system.br.Result;
 import org.sola.services.ejb.system.businesslogic.SystemEJBLocal;
 import org.sola.services.ejb.transaction.businesslogic.TransactionEJBLocal;
@@ -63,10 +63,10 @@ public class Source extends AbstractVersionedEntity {
     @Id
     @Column(name = "id")
     private String id;
-    @ExternalEJB(ejbLocalClass = PartyEJBLocal.class,
-    loadMethod = "getPartyByFullName")
-    @ChildEntity(childIdField = "ownerName")
-    private Party recOfficer;
+//    @ExternalEJB(ejbLocalClass = PartyEJBLocal.class,
+//    loadMethod = "getPartyByFullName")
+//    @ChildEntity(childIdField = "ownerName")
+//    private Party recOfficer;
 
     @Column(name = "maintype")
     private String mainType;
@@ -297,16 +297,16 @@ public class Source extends AbstractVersionedEntity {
         this.ownerName = ownerName;
     }
 
-    public Party getRecOfficer() {
-        return recOfficer;
-    }
-
-    public void setRecOfficer(Party recOfficer) {
-       this.recOfficer = recOfficer;
-        if (recOfficer != null) {
-            this.setOwnerName(recOfficer.getName()+" "+recOfficer.getLastName());
-        }
-    }
+//    public Party getRecOfficer() {
+//        return recOfficer;
+//    }
+//
+//    public void setRecOfficer(Party recOfficer) {
+//       this.recOfficer = recOfficer;
+//        if (recOfficer != null) {
+//            this.setOwnerName(recOfficer.getName()+" "+recOfficer.getLastName());
+//        }
+//    }
     
     public String getVersion() {
         return version;

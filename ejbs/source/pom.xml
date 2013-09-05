@@ -27,11 +27,11 @@
             <artifactId>sola-transaction</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>org.sola.services.ejbs</groupId>
             <artifactId>sola-party</artifactId>
             <version>1.2-SNAPSHOT</version>
             <type>jar</type>
-        </dependency>
+        </dependency>-->
     </dependencies>
 </project>
