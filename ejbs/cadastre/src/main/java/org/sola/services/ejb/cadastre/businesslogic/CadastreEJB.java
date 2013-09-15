@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import org.sola.common.SOLAException;
+import org.sola.common.messaging.ServiceMessage;
 import org.sola.services.common.br.ValidationResult;
 import org.sola.services.common.ejbs.AbstractEJB;
 import org.sola.services.common.faults.SOLAValidationException;
@@ -456,6 +458,7 @@ public class CadastreEJB extends AbstractEJB implements CadastreEJBLocal {
         HashMap<String, Serializable> params = new HashMap<String, Serializable>();
         params.put("geom", geom);
         params.put("cadastre_object_type", cadastreObjectType);
+        try {
         String lastPart = systemEJB.checkRuleGetResultSingle(brToGetLastPart, params).getValue().toString();
         params = new HashMap<String, Serializable>();
         params.put("last_part", lastPart);
@@ -465,6 +468,9 @@ public class CadastreEJB extends AbstractEJB implements CadastreEJBLocal {
         identifier.setFirstPart(firstPart);
         identifier.setLastPart(lastPart);
         return identifier;
+        } catch (Exception ex) {
+            throw new SOLAException(ServiceMessage.RULE_NOT_FOUND_LGAWARD, new Object[]{" "});
+        }
     }
     
     
