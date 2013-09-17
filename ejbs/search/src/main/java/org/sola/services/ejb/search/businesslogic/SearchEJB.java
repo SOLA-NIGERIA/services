@@ -402,8 +402,8 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
      * sorted by lodgement date DESC.
      */
     @Override
-    @RolesAllowed(RolesConstants.APPLICATION_VIEW_APPS)
-    public List<ApplicationSearchResult> getUnassignedApplications(String locale) {
+    @RolesAllowed(RolesConstants.DASHBOARD_VIEW_UNASSIGNED_APPS)
+     public List<ApplicationSearchResult> getUnassignedApplications(String locale) {
 
         Map params = new HashMap<String, Object>();
         params.put(CommonSqlProvider.PARAM_FROM_PART, ApplicationSearchResult.QUERY_FROM);
@@ -432,8 +432,8 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
      * sorted by lodgement date DESC.
      */
     @Override
-    @RolesAllowed(RolesConstants.APPLICATION_VIEW_APPS)
-    public List<ApplicationSearchResult> getAssignedApplications(String locale) {
+    @RolesAllowed(RolesConstants.DASHBOARD_VIEW_ASSIGNED_APPS)
+     public List<ApplicationSearchResult> getAssignedApplications(String locale) {
         Map params = new HashMap<String, Object>();
         params.put(CommonSqlProvider.PARAM_FROM_PART, ApplicationSearchResult.QUERY_FROM);
         params.put(CommonSqlProvider.PARAM_LANGUAGE_CODE, locale);
@@ -704,8 +704,9 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
      * @return A maximum of 100 BA Units matching the search criteria.
      */
     @Override
-    @RolesAllowed(RolesConstants.ADMINISTRATIVE_BA_UNIT_SEARCH)
-    public List<BaUnitSearchResult> searchBaUnits(BaUnitSearchParams searchParams) {
+    @RolesAllowed({RolesConstants.ADMINISTRATIVE_BA_UNIT_SEARCH, RolesConstants.APPLICATION_EDIT_APPS,
+    RolesConstants.APPLICATION_CREATE_APPS})
+     public List<BaUnitSearchResult> searchBaUnits(BaUnitSearchParams searchParams) {
         Map params = new HashMap<String, Object>();
 
         if (searchParams.getNameFirstPart() != null

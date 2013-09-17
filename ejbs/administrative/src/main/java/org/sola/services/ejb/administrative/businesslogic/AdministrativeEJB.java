@@ -267,11 +267,15 @@ public class AdministrativeEJB extends AbstractEJB
      * @return A list of validation results.
      */
     @Override
+    @RolesAllowed({RolesConstants.APPLICATION_APPROVE, RolesConstants.APPLICATION_SERVICE_COMPLETE,
+    RolesConstants.APPLICATION_VALIDATE})
     public List<ValidationResult> approveTransaction(
             String transactionId, String approvedStatus,
             boolean validateOnly, String languageCode) {
         List<ValidationResult> validationResult = new ArrayList<ValidationResult>();
-
+        if (!this.isInRole(RolesConstants.APPLICATION_APPROVE)) {
+            validateOnly = true;
+        }
         //Change the status of BA Units that are involved in a transaction directly
         Map<String, Object> params = new HashMap<String, Object>();
         params.put(CommonSqlProvider.PARAM_WHERE_PART, BaUnit.QUERY_WHERE_BYTRANSACTIONID);

@@ -120,7 +120,8 @@ public class SourceEJB extends AbstractEJB implements SourceEJBLocal {
      * @return The source after the save is completed.
      */
     @Override
-    @RolesAllowed(RolesConstants.SOURCE_SAVE)
+    @RolesAllowed({RolesConstants.SOURCE_SAVE, RolesConstants.APPLICATION_CREATE_APPS,
+    RolesConstants.APPLICATION_EDIT_APPS})
     public Source saveSource(Source source) {
         return getRepository().saveEntity(source);
     }
@@ -212,10 +213,16 @@ public class SourceEJB extends AbstractEJB implements SourceEJBLocal {
      * always empty.
      */
     @Override
-    @RolesAllowed(RolesConstants.APPLICATION_APPROVE)
+    @RolesAllowed({RolesConstants.APPLICATION_APPROVE, RolesConstants.APPLICATION_SERVICE_COMPLETE,
+    RolesConstants.APPLICATION_VALIDATE}) 
     public List<ValidationResult> approveTransaction(
             String transactionId, String approvedStatus,
             boolean validateOnly, String languageCode) {
+        
+         if(!this.isInRole(RolesConstants.APPLICATION_APPROVE)) {
+            // Only allow validation if the user dos not have the Approve role. 
+            validateOnly = true; 
+        }
         List<ValidationResult> validationResultList = new ArrayList<ValidationResult>();
         if (!validateOnly) {
             Map<String, Object> params = new HashMap<String, Object>();

@@ -33,8 +33,10 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import org.sola.common.RolesConstants;
 import org.sola.common.SOLAException;
 import org.sola.common.messaging.ServiceMessage;
 import org.sola.services.common.br.ValidationResult;
@@ -215,8 +217,14 @@ public class CadastreEJB extends AbstractEJB implements CadastreEJBLocal {
      * objects.
      */
     @Override
+    @RolesAllowed({RolesConstants.APPLICATION_APPROVE, RolesConstants.APPLICATION_SERVICE_COMPLETE})
     public void ChangeStatusOfCadastreObjects(
             String transactionId, String filter, String statusCode) {
+        if (!this.isInRole(RolesConstants.CADASTRE_PARCEL_SAVE)) {
+            // Along with one of the above 2 roles, the user must also have the Save Parcel role 
+            // to run this method. 
+            throw new SOLAException(ServiceMessage.EXCEPTION_INSUFFICIENT_RIGHTS);
+        }
         HashMap params = new HashMap();
         params.put("transaction_id", transactionId);
         List<CadastreObjectStatusChanger> involvedCoList =
@@ -404,9 +412,16 @@ public class CadastreEJB extends AbstractEJB implements CadastreEJBLocal {
      * @param transactionId The identifier of the transaction
      */
     @Override
-    public void approveCadastreRedefinition(String transactionId) {
+    @RolesAllowed({RolesConstants.APPLICATION_APPROVE, RolesConstants.APPLICATION_SERVICE_COMPLETE})
+     public void approveCadastreRedefinition(String transactionId) {
         List<CadastreObjectTargetRedefinition> targetObjectList =
                 this.getCadastreObjectRedefinitionTargetsByTransaction(transactionId);
+        
+         if (!this.isInRole(RolesConstants.CADASTRE_PARCEL_SAVE)) {
+            // Along with one of the above 2 roles, the user must also have the Save Parcel role 
+            // to run this method. 
+            throw new SOLAException(ServiceMessage.EXCEPTION_INSUFFICIENT_RIGHTS);
+        }
         for (CadastreObjectTargetRedefinition targetObject : targetObjectList) {
             CadastreObjectStatusChanger cadastreObject =
                     this.getRepository().getEntity(CadastreObjectStatusChanger.class,
