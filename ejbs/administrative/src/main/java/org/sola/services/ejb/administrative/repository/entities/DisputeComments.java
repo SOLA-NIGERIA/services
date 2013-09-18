@@ -61,10 +61,8 @@ public class DisputeComments extends AbstractVersionedEntity {
     private String id;
     @Column(name = "dispute_nr")
     private String disputeNr;
-    @Column(name = "update_date", updatable = false, insertable = false)
+    @Column(name = "update_date")
     private Date updateDate;
-    @Column(name = "dispute_action_code")
-    private String disputeActionCode;
     @Column(name = "comments")
     private String comments;
     @Column(name = "updated_by")
@@ -88,13 +86,6 @@ public class DisputeComments extends AbstractVersionedEntity {
         this.disputeNr = disputeNr;
     }
 
-    public String getDisputeActionCode() {
-        return disputeActionCode;
-    }
-
-    public void setDisputeActionCode(String disputeActionCode) {
-        this.disputeActionCode = disputeActionCode;
-    }
 
     public String getId() {
         id = id == null ? generateId() : id;

@@ -215,12 +215,7 @@ public interface AdministrativeEJBLocal extends AbstractSolaTransactionEJBLocal 
      */
      Dispute getDisputeByService(String serviceId);
    
-    /**
-     * see {@linkplain AdministrativeEJB#getDisputeAction(java.lang.String)
-     * AdministrativeEJB.getDisputeAction}
-     */
-    List<DisputeAction> getDisputeAction(String languageCode);
-
+  
     /**
      * see {@linkplain AdministrativeEJB#getDisputeCategory(java.lang.String)
      * AdministrativeEJB.getDisputeCategory}

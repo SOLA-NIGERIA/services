@@ -859,16 +859,7 @@ public class AdministrativeEJB extends AbstractEJB
         return getRepository().getCodeList(DisputeRoleType.class, languageCode);
     }
 
-    /**
-     * Retrieves all administrative.dispute_action code values.
-     *
-     * @param languageCode The language code to use for localization of display
-     * values.
-     */
-    @Override
-    public List<DisputeAction> getDisputeAction(String languageCode) {
-        return getRepository().getCodeList(DisputeAction.class, languageCode);
-    }
+   
 
     /**
      * Retrieves all administrative.dispute_category code values.
