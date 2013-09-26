@@ -101,4 +101,10 @@ public interface PartyEJBLocal extends AbstractEJBLocal {
      * PartyEJB.getRecOfficers}.
      */
     List<Party> getRecOfficers();
+    
+    /**
+     * See {@linkplain PartyEJB#getDemOfficers()
+     * PartyEJB.getRecOfficers}.
+     */
+    List<Party> getDemOfficers();
 }

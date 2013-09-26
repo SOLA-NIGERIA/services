@@ -62,6 +62,8 @@ public class Party extends AbstractVersionedEntity {
 //            + "name||' '||last_name=  = #{" + QUERY_PARAMETER_FULLNAME + "}";
     public static final String QUERY_WHERE_LODGING_AGENTS = "party.id in (select party_id from party.party_role where party.party_role.type_code = 'lodgingAgent')";
     public static final String QUERY_WHERE_LODGING_RECOFFICERS = "party.id in (select party_id from party.party_role where party.party_role.type_code = 'recOfficer')";
+    public static final String QUERY_WHERE_LODGING_DEMOFFICERS = "party.id in (select party_id from party.party_role where party.party_role.type_code = 'demOfficer')";
+
 //    
     @Id
     @Column(name = "id")
