@@ -1302,4 +1302,20 @@ public class ApplicationEJB extends AbstractEJB implements ApplicationEJBLocal {
 //    }
 //    
     
+     @Override
+    @RolesAllowed(RolesConstants.ADMINISTRATIVE_SYSTEMATIC_REGISTRATION)
+    public List<SysRegProduction> getSysRegProduction(LodgementViewParams params, String languageCode) {
+        List<SysRegProduction> result;
+        Map queryParams = new HashMap<String, Object>();
+        queryParams.put(CommonSqlProvider.PARAM_QUERY, SysRegProduction.QUERY_GETQUERY);
+
+        queryParams.put(SysRegProduction.PARAMETER_FROM,
+                params.getFromDate() == null ? new GregorianCalendar(1, 1, 1).getTime() : params.getFromDate());
+        queryParams.put(SysRegProduction.PARAMETER_TO,
+                params.getToDate() == null ? new GregorianCalendar(2500, 1, 1).getTime() : params.getToDate());
+        result = getRepository().executeFunction(queryParams, SysRegProduction.class);
+        return result;
+    }
+
+
 }
