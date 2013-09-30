@@ -56,7 +56,18 @@ public class SysRegCertificates extends AbstractReadOnlyEntity {
     @Column(insertable=false, updatable=false, name = "ground_rent")
     @AccessFunctions(onSelect = "application.ground_rent(ba_unit_id)")
     private BigDecimal groundRent;
+    @Column(name = "owners")
+    private String owners;
 
+    public String getOwners() {
+        return owners;
+    }
+
+    public void setOwners(String owners) {
+        this.owners = owners;
+    }
+    
+    
     public BigDecimal getGroundRent() {
         return groundRent;
     }
