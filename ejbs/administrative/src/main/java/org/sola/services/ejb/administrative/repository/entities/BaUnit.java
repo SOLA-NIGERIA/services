@@ -29,6 +29,7 @@ package org.sola.services.ejb.administrative.repository.entities;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -56,6 +57,7 @@ public class BaUnit extends AbstractVersionedEntity {
     public static final String QUERY_PARAMETER_TRANSACTIONID = "transactionId";
     public static final String QUERY_PARAMETER_FIRSTPART = "firstPart";
     public static final String QUERY_PARAMETER_LASTPART = "lastPart";
+    public static final String QUERY_PARAMETER_STRING = "searchString";
     public static final String QUERY_PARAMETER_ID = "id";
     public static final String QUERY_PARAMETER_COLIST = "colist";
     public static final String QUERY_WHERE_BYTRANSACTIONID = "transaction_id = "
@@ -75,7 +77,10 @@ public class BaUnit extends AbstractVersionedEntity {
             + "name_lastpart = #{" + QUERY_PARAMETER_LASTPART + "}";
     public static final String QUERY_WHERE_BYBAUNITID =
             "id = #{" + QUERY_PARAMETER_ID + "}";
-            
+    public static final String QUERY_WHERE_BYPROPERTYSTRING =
+            " compare_strings (#{" + QUERY_PARAMETER_STRING + "}, name_firstpart )OR "
+            + " compare_strings (#{" + QUERY_PARAMETER_STRING + "}, name_lastpart)";
+         
     
     @Id
     @Column(name = "id")
@@ -131,7 +136,29 @@ public class BaUnit extends AbstractVersionedEntity {
     private String location;
     @Column(name = "floors_number")
     private Integer floorsNumber;
+    @Column(name = "expiration_date")
+    private Date expirationDate;
+    @Column(name = "creation_date")
+    private Date creationDate;
 
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public Date getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+    
+    
+    
     public Integer getFloorsNumber() {
         return floorsNumber;
     }

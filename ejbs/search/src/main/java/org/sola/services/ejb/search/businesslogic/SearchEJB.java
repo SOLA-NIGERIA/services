@@ -720,13 +720,17 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
         if (searchParams.getOwnerName() != null && searchParams.getOwnerName().trim().isEmpty()) {
             searchParams.setOwnerName(null);
         }
+        if (searchParams.getName() != null && searchParams.getName().trim().isEmpty()) {
+            searchParams.setName(null);
+        }
 
         params.put(CommonSqlProvider.PARAM_QUERY,
                 SearchSqlProvider.buildSearchBaUnitSql(searchParams.getNameFirstPart(),
-                searchParams.getNameLastPart(), searchParams.getOwnerName()));
+                searchParams.getNameLastPart(), searchParams.getOwnerName(), searchParams.getName()));
         params.put(BaUnitSearchResult.QUERY_PARAM_OWNER_NAME, searchParams.getOwnerName());
         params.put(BaUnitSearchResult.QUERY_PARAM_NAME_FIRSTPART, searchParams.getNameFirstPart());
         params.put(BaUnitSearchResult.QUERY_PARAM_NAME_LASTPART, searchParams.getNameLastPart());
+        params.put(BaUnitSearchResult.QUERY_PARAM_NAME, searchParams.getName());
         return getRepository().getEntityList(BaUnitSearchResult.class, params);
     }
 

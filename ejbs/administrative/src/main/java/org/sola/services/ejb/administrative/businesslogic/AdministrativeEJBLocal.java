@@ -95,7 +95,15 @@ public interface AdministrativeEJBLocal extends AbstractSolaTransactionEJBLocal 
      * AdministrativeEJB.getBaUnitByCode}
      */
     BaUnit getBaUnitByCode(String nameFirstpart, String nameLastpart);
+    
+    
+    /**
+     * See {@linkplain AdministrativeEJB#getBaUnitsByString(java.lang.String, java.lang.String)
+     * AdministrativeEJB.getBaUnitByCode}
+     */
+    List<BaUnit> getBaUnitsByString(String searchString);
 
+    
     /**
      * see {@linkplain AdministrativeEJB#createBaUnit(java.lang.String,
      * org.sola.services.ejb.administrative.repository.entities.BaUnit)

@@ -34,6 +34,7 @@ public class BaUnitSearchResult extends AbstractReadOnlyEntity {
     public static final String QUERY_PARAM_NAME_FIRSTPART = "nameFirstPart";
     public static final String QUERY_PARAM_NAME_LASTPART = "nameLastPart";
     public static final String QUERY_PARAM_OWNER_NAME = "ownerName";
+    public static final String QUERY_PARAM_NAME = "name";
     public static final String QUERY_ORDER_BY = "prop.name_firstpart, prop.name_lastpart";
 
     @Id

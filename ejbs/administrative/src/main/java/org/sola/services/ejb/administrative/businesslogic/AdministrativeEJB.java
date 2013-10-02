@@ -179,6 +179,22 @@ public class AdministrativeEJB extends AbstractEJB
         params.put(BaUnit.QUERY_PARAMETER_LASTPART, nameLastpart);
         return getRepository().getEntity(BaUnit.class, params);
     }
+    
+      /**
+     * Locates a BA Unit using by matching the first part and last part of the
+     * BA Unit name. First part and last part must be an exact match.
+     *
+     * @param nameFirstpart The first part of the BA Unit name
+     * @param nameLastpart The last part of the BA Unit name
+     * @return The BA Unit matching the name
+     */
+    @Override
+    public List <BaUnit> getBaUnitsByString(String searchString) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put(CommonSqlProvider.PARAM_WHERE_PART, BaUnit.QUERY_WHERE_BYPROPERTYSTRING);
+        params.put(BaUnit.QUERY_PARAMETER_STRING, searchString);
+         return getRepository().getEntityList(BaUnit.class, params);
+    }
 
     /**
      * Creates a new BA Unit with a default status of pending and a default type

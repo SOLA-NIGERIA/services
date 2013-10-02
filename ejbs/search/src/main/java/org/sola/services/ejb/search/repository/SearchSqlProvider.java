@@ -405,7 +405,7 @@ public class SearchSqlProvider {
      * @return SQL String
      */
     public static String buildSearchBaUnitSql(String nameFirstPart,
-            String nameLastPart, String owernName) {
+            String nameLastPart, String owernName, String name) {
         String sql;
         BEGIN();
         SELECT("DISTINCT prop.id");
@@ -433,11 +433,16 @@ public class SearchSqlProvider {
         }
         if (nameFirstPart != null) {
             WHERE("compare_strings(#{" + BaUnitSearchResult.QUERY_PARAM_NAME_FIRSTPART
-                    + "}, COALESCE(prop.name_firstpart, ''))");
+                    + "}, COALESCE(prop.name_firstpart, '') || ' ' || COALESCE(prop.name_lastpart, ''))");
         }
         if (nameLastPart != null) {
             WHERE("compare_strings(#{" + BaUnitSearchResult.QUERY_PARAM_NAME_LASTPART
-                    + "}, COALESCE(prop.name_lastpart, ''))");
+                    + "}, COALESCE(prop.name_firstpart, '') || ' ' || COALESCE(prop.name_lastpart, ''))");
+        }
+        
+        if (name != null) {
+            WHERE("compare_strings(#{" + BaUnitSearchResult.QUERY_PARAM_NAME
+                    + "}, COALESCE(prop.name, ''))");
         }
         ORDER_BY(BaUnitSearchResult.QUERY_ORDER_BY + " LIMIT 100");
         sql = SQL();
