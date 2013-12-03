@@ -51,7 +51,19 @@ public class SysRegPubDisParcelName extends AbstractReadOnlyEntity {
     @Column(insertable = false, updatable = false, name = "objections")
     @AccessFunctions(onSelect = "administrative.get_objections(name_lastpart)")
     private String objections;
+    
+    @Column(name = "property_location")
+    private String propertyLocation;
 
+    public String getPropertyLocation() {
+        return propertyLocation;
+    }
+
+    public void setPropertyLocation(String propertyLocation) {
+        this.propertyLocation = propertyLocation;
+    }
+    
+    
     public String getPublicNotificationDuration() {
         return publicNotificationDuration;
     }
