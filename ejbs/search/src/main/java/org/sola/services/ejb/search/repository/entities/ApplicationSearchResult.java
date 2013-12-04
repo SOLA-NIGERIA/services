@@ -119,6 +119,13 @@ public class ApplicationSearchResult extends AbstractReadOnlyEntity {
     + "  WHERE aps.application_id = a.id ORDER BY aps.service_order) tmp) ")
     @Column(name = "service_list")
     private String serviceList;
+    @AccessFunctions(onSelect = "(SELECT string_agg(tmp.display_value, ',') FROM "
+    + "  (SELECT (get_translation(display_value, #{" + CommonSqlProvider.PARAM_LANGUAGE_CODE + "})||' - '||aps.status_code) as display_value  "
+    + "  FROM application.service aps INNER JOIN application.request_type rt ON aps.request_type_code = rt.code  "
+    + "  WHERE aps.application_id = a.id ORDER BY aps.service_order) tmp)  ")
+    @Column(name = "service_status_list")
+    private String serviceStatusList;
+    
     @Column(name = "fee_paid")
     private Boolean feePaid;
     @Column(name = "rowversion")
@@ -270,4 +277,14 @@ public class ApplicationSearchResult extends AbstractReadOnlyEntity {
     public void setRowVersion(int rowVersion) {
         this.rowVersion = rowVersion;
     }
+
+    public String getServiceStatusList() {
+        return serviceStatusList;
+    }
+
+    public void setServiceStatusList(String serviceStatusList) {
+        this.serviceStatusList = serviceStatusList;
+    }
+    
+    
 }
