@@ -37,6 +37,7 @@ import javax.persistence.Table;
 import org.sola.services.common.LocalInfo;
 import org.sola.services.common.repository.AccessFunctions;
 import org.sola.services.common.repository.ChildEntityList;
+import org.sola.services.common.repository.DefaultSorter;
 import org.sola.services.common.repository.ExternalEJB;
 import org.sola.services.common.repository.entities.AbstractVersionedEntity;
 import org.sola.services.ejb.address.businesslogic.AddressEJBLocal;
@@ -46,6 +47,7 @@ import org.sola.services.ejb.address.repository.entities.Address;
  * Entity representing the cadastre.cadastre_object table.
  */
 @Table(name = "cadastre_object", schema = "cadastre")
+@DefaultSorter(sortString="name_lastpart,name_firstpart")
 public class CadastreObject extends AbstractVersionedEntity {
 
     /**
