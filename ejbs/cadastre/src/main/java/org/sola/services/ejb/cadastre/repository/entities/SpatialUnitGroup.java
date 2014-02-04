@@ -70,7 +70,7 @@ public class SpatialUnitGroup extends AbstractVersionedEntity {
      * first part and last part
      */
     public static final String QUERY_WHERE_SEARCHBYPARTS = 
-            " compare_strings(#{search_string}, name)"
+            " compare_strings(#{search_string}, label)"
                   + " and hierarchy_level = 4 ";
 
     public static final String QUERY_ORDER_BY_SEARCHBYPARTS =
