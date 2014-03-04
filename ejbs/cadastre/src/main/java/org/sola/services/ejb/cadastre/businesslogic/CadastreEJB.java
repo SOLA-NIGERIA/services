@@ -37,6 +37,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import org.sola.common.RolesConstants;
+import org.sola.common.SOLAAccessException;
 import org.sola.common.SOLAException;
 import org.sola.common.messaging.ServiceMessage;
 import org.sola.services.common.br.ValidationResult;
@@ -597,6 +598,70 @@ public class CadastreEJB extends AbstractEJB implements CadastreEJBLocal {
     public List<HierarchyLevel> getHierarchyLevels(String languageCode) {
         return getRepository().getCodeList(HierarchyLevel.class, languageCode);
     }
+    
+    
+    /**
+     * Returns a maximum of 30 SysRegWorkUnit
+     * that have a name  that matches the
+     * specified search string. This method supports partial matches and is case
+     * insensitive.
+     *
+     * @param searchString The search string to use
+     * @return The list of cadastre objects matching the search string
+     */
+    @Override
+    public SysRegWorkUnit getSysRegWorkUnitByAllParts(String searchString) {
+       Map<String, Object> params = new HashMap<String, Object>();
+       params.put("search_string", searchString);
+       params.put(CommonSqlProvider.PARAM_WHERE_PART, SysRegWorkUnit.QUERY_WHERE_SEARCHBYALLPARTS);
+       params.put(CommonSqlProvider.PARAM_ORDER_BY_PART, SysRegWorkUnit.QUERY_ORDER_BY_SEARCHBYPARTS); 
+        return getRepository().getEntity(SysRegWorkUnit.class, params);
+    }
 
+ /**
+     * Saves the changes in the SysRegWorkUnit.
+     * 
+     * @param items
+     * @param languageCode 
+     */
+    @Override
+    @RolesAllowed(RolesConstants.ADMINISTRATIVE_SYSTEMATIC_REGISTRATION)
+    public SysRegWorkUnit saveSysRegWorkUnit(SysRegWorkUnit items, String languageCode) {
+        if (items.equals(null)){
+            return null;
+        }
+        
+        if (items.isNew()) {
+            throw new SOLAAccessException();
+        }
+       
+//        //Check afterwards if any condition is brokken by using the BR mechanism
+//        //Retrieve BRs that has to be checked
+//        List<BrValidation> brList = systemEJB.getBrForSysRegWorkUnitTransaction();
+//        List<ValidationResult> validationResults =
+//                systemEJB.checkRulesGetValidation(brList, languageCode, null);
+//
+//        if (!systemEJB.validationSucceeded(validationResults)) {
+//            throw new SOLAValidationException(validationResults);
+//        }
+        items = getRepository().saveEntity(items);
+
+        return items;
+    }
+
+     /**
+     * Retrieves a list of spatial unit groups matching the list of ids
+     * provided.
+     *
+     * @param ids A list of spatial unit group ids to use for retrieval.
+     */
+    @Override
+    public SysRegWorkUnit getSysRegWorkUnitByIds(String id) {
+       SysRegWorkUnit result = null;
+        if (id != null) {
+            result = getRepository().getEntity(SysRegWorkUnit.class, id);
+        }
+        return result;
+    }
 }
 

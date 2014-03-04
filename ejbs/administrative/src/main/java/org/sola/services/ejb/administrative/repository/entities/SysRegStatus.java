@@ -20,154 +20,167 @@ public class SysRegStatus extends AbstractReadOnlyEntity {
     public static final String QUERY_PARAMETER_LASTPART = "nameLastpart";
     public static final String QUERY_GETQUERY = "select * from administrative.getsysregstatus(#{"
             + PARAMETER_FROM + "}, #{" + PARAMETER_TO + "}, #{" + QUERY_PARAMETER_LASTPART + "}) "
-            + " as SysRegStatusReport(block varchar,"
-            + "	TotApp  		decimal,"
-            + " appLodgedSP  		decimal,"
-            + "	SPnoApp  		decimal,"
-            + "	appPendObj  		decimal,"
-            + "	appIncDoc  		decimal,"
-            + "	appPDisp  		decimal,"
-            + "	appCompPDispNoCert  	decimal,"
-            + "	appCertificate  	decimal,"
-            + "	appPrLand  		decimal,"
-            + "	appPubLand  		decimal,"
-            + "	TotSurvPar  		decimal,"
-            + " appLodgedNoSP  	        decimal )";
-            
+            + " as SysRegStatusReport("
+            + " srwu                    varchar,"
+            + "	estimatedparcel  	decimal,"
+            + " recordedparcel  	decimal,"
+            + "	recordedclaims  	decimal,"
+            + "	scanneddemarcation  	decimal,"
+            + "	scannedclaims  		decimal,"
+            + "	digitizedparcels  	decimal,"
+            + "	claimsentered     	decimal,"
+            + "	parcelsreadyPD  	decimal,"
+            + "	parcelsPD  		decimal,"
+            + "	parcelscompletedPD  	decimal,"
+            + "	unsolveddisputes  	decimal,"
+            + " generatedcertificates	decimal,"
+            + " distributedcertificates decimal )";
+       
+		
     
      
-    @Column(name = "block")
-    private String block;
-    @Column(name = "TotApp")
-    private BigDecimal TotApp;
-    @Column(name = "appLodgedSP")
-    private BigDecimal appLodgedSP;
-    @Column(name = "SPnoApp")
-    private BigDecimal SPnoApp;
-    @Column(name = "appPendObj")
-    private BigDecimal appPendObj;
-    @Column(name = "appIncDoc")
-    private BigDecimal appIncDoc;
-    @Column(name = "appPDisp")
-    private BigDecimal appPDisp;
-    @Column(name = "appCompPDispNoCert")
-    private BigDecimal appCompPDispNoCert;
-    @Column(name = "appCertificate")
-    private BigDecimal appCertificate;
-    @Column(name = "appPrLand")
-    private BigDecimal appPrLand;
-    @Column(name = "appPubLand")
-    private BigDecimal appPubLand;
-    @Column(name = "TotSurvPar")
-    private BigDecimal TotSurvPar;
-    @Column(name = "appLodgedNoSP")
-    private BigDecimal appLodgedNoSP;
+    @Column(name = "srwu")
+    private String srwu;
+    @Column(name = "estimatedparcel")
+    private BigDecimal estimatedparcel;
+    @Column(name = "recordedparcel")
+    private BigDecimal recordedparcel;
+    @Column(name = "recordedclaims")
+    private BigDecimal recordedclaims;
+    @Column(name = "scanneddemarcation")
+    private BigDecimal scanneddemarcation;
+    @Column(name = "scannedclaims")
+    private BigDecimal scannedclaims;
+    @Column(name = "digitizedparcels")
+    private BigDecimal digitizedparcels;
+    @Column(name = "claimsentered")
+    private BigDecimal claimsentered;
+    @Column(name = "parcelsreadyPD")
+    private BigDecimal parcelsreadyPD;
+    @Column(name = "parcelsPD")
+    private BigDecimal parcelsPD;
+    @Column(name = "parcelscompletedPD")
+    private BigDecimal 	parcelscompletedPD;
+    @Column(name = "unsolveddisputes")
+    private BigDecimal unsolveddisputes;
+    @Column(name = "generatedcertificates")
+    private BigDecimal generatedcertificates;
+    @Column(name = "distributedcertificates")
+    private BigDecimal distributedcertificates;
     
     public SysRegStatus() {
         super();
     }
 
-    public BigDecimal getSPnoApp() {
-        return SPnoApp;
+    public BigDecimal getClaimsentered() {
+        return claimsentered;
     }
 
-    public void setSPnoApp(BigDecimal SPnoApp) {
-        this.SPnoApp = SPnoApp;
+    public void setClaimsentered(BigDecimal claimsentered) {
+        this.claimsentered = claimsentered;
     }
 
-    public BigDecimal getTotApp() {
-        return TotApp;
+    public BigDecimal getDigitizedparcels() {
+        return digitizedparcels;
     }
 
-    public void setTotApp(BigDecimal TotApp) {
-        this.TotApp = TotApp;
+    public void setDigitizedparcels(BigDecimal digitizedparcels) {
+        this.digitizedparcels = digitizedparcels;
     }
 
-    public BigDecimal getTotSurvPar() {
-        return TotSurvPar;
+    public BigDecimal getDistributedcertificates() {
+        return distributedcertificates;
     }
 
-    public void setTotSurvPar(BigDecimal TotSurvPar) {
-        this.TotSurvPar = TotSurvPar;
+    public void setDistributedcertificates(BigDecimal distributedcertificates) {
+        this.distributedcertificates = distributedcertificates;
     }
 
-    public BigDecimal getAppCertificate() {
-        return appCertificate;
+    public BigDecimal getEstimatedparcel() {
+        return estimatedparcel;
     }
 
-    public void setAppCertificate(BigDecimal appCertificate) {
-        this.appCertificate = appCertificate;
+    public void setEstimatedparcel(BigDecimal estimatedparcel) {
+        this.estimatedparcel = estimatedparcel;
     }
 
-    public BigDecimal getAppCompPDispNoCert() {
-        return appCompPDispNoCert;
+    public BigDecimal getGeneratedcertificates() {
+        return generatedcertificates;
     }
 
-    public void setAppCompPDispNoCert(BigDecimal appCompPDispNoCert) {
-        this.appCompPDispNoCert = appCompPDispNoCert;
+    public void setGeneratedcertificates(BigDecimal generatedcertificates) {
+        this.generatedcertificates = generatedcertificates;
     }
 
-    public BigDecimal getAppIncDoc() {
-        return appIncDoc;
+    public BigDecimal getParcelsPD() {
+        return parcelsPD;
     }
 
-    public void setAppIncDoc(BigDecimal appIncDoc) {
-        this.appIncDoc = appIncDoc;
+    public void setParcelsPD(BigDecimal parcelsPD) {
+        this.parcelsPD = parcelsPD;
     }
 
-    public BigDecimal getAppLodgedNoSP() {
-        return appLodgedNoSP;
+    public BigDecimal getParcelscompletedPD() {
+        return parcelscompletedPD;
     }
 
-    public void setAppLodgedNoSP(BigDecimal appLodgedNoSP) {
-        this.appLodgedNoSP = appLodgedNoSP;
+    public void setParcelscompletedPD(BigDecimal parcelscompletedPD) {
+        this.parcelscompletedPD = parcelscompletedPD;
     }
 
-    public BigDecimal getAppLodgedSP() {
-        return appLodgedSP;
+    public BigDecimal getParcelsreadyPD() {
+        return parcelsreadyPD;
     }
 
-    public void setAppLodgedSP(BigDecimal appLodgedSP) {
-        this.appLodgedSP = appLodgedSP;
+    public void setParcelsreadyPD(BigDecimal parcelsreadyPD) {
+        this.parcelsreadyPD = parcelsreadyPD;
     }
 
-    public BigDecimal getAppPDisp() {
-        return appPDisp;
+    public BigDecimal getRecordedclaims() {
+        return recordedclaims;
     }
 
-    public void setAppPDisp(BigDecimal appPDisp) {
-        this.appPDisp = appPDisp;
+    public void setRecordedclaims(BigDecimal recordedclaims) {
+        this.recordedclaims = recordedclaims;
     }
 
-    public BigDecimal getAppPendObj() {
-        return appPendObj;
+    public BigDecimal getRecordedparcel() {
+        return recordedparcel;
     }
 
-    public void setAppPendObj(BigDecimal appPendObj) {
-        this.appPendObj = appPendObj;
+    public void setRecordedparcel(BigDecimal recordedparcel) {
+        this.recordedparcel = recordedparcel;
     }
 
-    public BigDecimal getAppPrLand() {
-        return appPrLand;
+    public BigDecimal getScannedclaims() {
+        return scannedclaims;
     }
 
-    public void setAppPrLand(BigDecimal appPrLand) {
-        this.appPrLand = appPrLand;
+    public void setScannedclaims(BigDecimal scannedclaims) {
+        this.scannedclaims = scannedclaims;
     }
 
-    public BigDecimal getAppPubLand() {
-        return appPubLand;
+    public BigDecimal getScanneddemarcation() {
+        return scanneddemarcation;
     }
 
-    public void setAppPubLand(BigDecimal appPubLand) {
-        this.appPubLand = appPubLand;
+    public void setScanneddemarcation(BigDecimal scanneddemarcation) {
+        this.scanneddemarcation = scanneddemarcation;
     }
 
-    public String getBlock() {
-        return block;
+    public String getSrwu() {
+        return srwu;
     }
 
-    public void setBlock(String block) {
-        this.block = block;
+    public void setSrwu(String srwu) {
+        this.srwu = srwu;
+    }
+
+    public BigDecimal getUnsolveddisputes() {
+        return unsolveddisputes;
+    }
+
+    public void setUnsolveddisputes(BigDecimal unsolveddisputes) {
+        this.unsolveddisputes = unsolveddisputes;
     }
 }

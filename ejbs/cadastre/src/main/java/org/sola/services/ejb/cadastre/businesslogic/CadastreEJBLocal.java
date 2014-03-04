@@ -213,6 +213,27 @@ public interface CadastreEJBLocal extends AbstractEJBLocal {
      * CadastreEJB.getHierarchyLevels}.
      */
     List<HierarchyLevel> getHierarchyLevels(String languageCode);
+    
+    
+     /**
+     * See {@linkplain CadastreEJB#getSysRegWorkUnitByAllParts(java.lang.String)
+     * CadastreEJB.getSysRegWorkUnitByAllParts}.
+     */
+    SysRegWorkUnit getSysRegWorkUnitByAllParts(String searchString);
+
+     /**
+     * See {@linkplain CadastreEJB#getSysRegWorkUnitByIds(java.util.List)
+     * CadastreEJB.getSysRegWorkUnitByIds}.
+     */
+    SysRegWorkUnit getSysRegWorkUnitByIds(String id);
+    
+     /**
+     * see {@linkplain CadastreEJB#saveSSysRegWorkUnit(List<SysRegWorkUnit, String)
+     * CadastreEJB.saveSysRegWorkUnit}
+     */
+    SysRegWorkUnit saveSysRegWorkUnit(SysRegWorkUnit items, String languageCode);
+   
+   
 
 }
 
