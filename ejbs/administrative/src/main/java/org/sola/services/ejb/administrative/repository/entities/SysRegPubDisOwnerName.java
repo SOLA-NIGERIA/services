@@ -40,21 +40,35 @@ public class SysRegPubDisOwnerName extends AbstractReadOnlyEntity {
     private String landUsecode;
     @Column(name = "ba_unit_id")
     private String baUnitId;
-    @Column(name = "residential")
-    private BigDecimal residential;
-    @Column(name = "commercial")
-    private BigDecimal commercial;
-    @Column(name = "agricultural")
-    private BigDecimal agricultural;
-    @Column(name = "industrial")
-    private BigDecimal industrial;
     @Column(insertable = false, updatable = false, name = "public_notification_duration")
     @AccessFunctions(onSelect = "system.get_setting('public-notification-duration')")
     private String publicNotificationDuration;
     @Column(insertable = false, updatable = false, name = "objections")
     @AccessFunctions(onSelect = "administrative.get_objections(name_lastpart)")
     private String objections;
+    @Column(name = "location")
+    private String location;
+    @Column(name = "rrr")
+    
+    
+    private String rrr;
 
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getRrr() {
+        return rrr;
+    }
+
+    public void setRrr(String rrr) {
+        this.rrr = rrr;
+    }
+   
     public String getPublicNotificationDuration() {
         return publicNotificationDuration;
     }
@@ -73,38 +87,6 @@ public class SysRegPubDisOwnerName extends AbstractReadOnlyEntity {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public BigDecimal getAgricultural() {
-        return agricultural;
-    }
-
-    public void setAgricultural(BigDecimal agricultural) {
-        this.agricultural = agricultural;
-    }
-
-    public BigDecimal getCommercial() {
-        return commercial;
-    }
-
-    public void setCommercial(BigDecimal commercial) {
-        this.commercial = commercial;
-    }
-
-    public BigDecimal getIndustrial() {
-        return industrial;
-    }
-
-    public void setIndustrial(BigDecimal industrial) {
-        this.industrial = industrial;
-    }
-
-    public BigDecimal getResidential() {
-        return residential;
-    }
-
-    public void setResidential(BigDecimal residential) {
-        this.residential = residential;
     }
 
     public String getValue() {

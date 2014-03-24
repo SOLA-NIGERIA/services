@@ -51,18 +51,17 @@ public class SysRegPubDisParcelName extends AbstractReadOnlyEntity {
     @Column(insertable = false, updatable = false, name = "objections")
     @AccessFunctions(onSelect = "administrative.get_objections(name_lastpart)")
     private String objections;
-    
-    @Column(name = "property_location")
-    private String propertyLocation;
+    @Column(insertable = false, updatable = false, name = "concatenated_rrr")
+    @AccessFunctions(onSelect = "administrative.get_parcel_rrr(ba_unit_id)")
+    private String concatenatedRrr;
 
-    public String getPropertyLocation() {
-        return propertyLocation;
+    public String getConcatenatedRrr() {
+        return concatenatedRrr;
     }
 
-    public void setPropertyLocation(String propertyLocation) {
-        this.propertyLocation = propertyLocation;
+    public void setConcatenatedRrr(String concatenatedRrr) {
+        this.concatenatedRrr = concatenatedRrr;
     }
-    
     
     public String getPublicNotificationDuration() {
         return publicNotificationDuration;
