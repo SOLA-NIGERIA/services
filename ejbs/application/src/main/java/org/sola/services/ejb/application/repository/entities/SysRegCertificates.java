@@ -33,6 +33,8 @@ public class SysRegCertificates extends AbstractReadOnlyEntity {
      */
     public static final String QUERY_WHERE_SEARCHBYPARTS = "#{search_string}= name";
     
+    @Column(name = "id")
+    private String id;
     @Column(name = "nr")
     private String nr;
     @Column(name = "name_firstpart")
@@ -60,7 +62,39 @@ public class SysRegCertificates extends AbstractReadOnlyEntity {
     private String owners;
     @Column(name = "title")
     private String title;
+    @Column(name = "state")
+    private String state;
+    @Column(name = "ward")
+    private String ward;
+    @Column(name = "imageryDate")
+    private String imageryDate;
 
+    public String getImageryDate() {
+        return imageryDate;
+    }
+
+    public void setImageryDate(String imageryDate) {
+        this.imageryDate = imageryDate;
+    }
+    
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getWard() {
+        return ward;
+    }
+
+    public void setWard(String ward) {
+        this.ward = ward;
+    }
+    
+    
+    
     public String getTitle() {
         return title;
     }
@@ -169,5 +203,13 @@ public class SysRegCertificates extends AbstractReadOnlyEntity {
     public void setName(String name) {
         this.name = name;
     }
-    
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+     
 }
