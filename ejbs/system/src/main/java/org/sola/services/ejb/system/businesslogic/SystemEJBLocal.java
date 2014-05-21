@@ -148,4 +148,17 @@ public interface SystemEJBLocal extends AbstractEJBLocal {
      * SystemEJB.getBrForSpatialUnitGroupTransaction
      */
     List<BrValidation> getBrForSpatialUnitGroupTransaction();
+    
+     /**
+     * See {@linkplain SystemEJB#getBrForConsolidation()
+     * SystemEJB.getBrForConsolidation
+     */
+    List<BrValidation> getBrForConsolidation();
+    
+     /**
+     * See {@linkplain SystemEJB#getBrForSysRegWorkUnitTransaction()
+     * SystemEJB.getBrForSpatialUnitGroupTransaction
+     */
+    List<BrValidation> getBrForSysRegWorkUnitTransaction();
+ 
 }

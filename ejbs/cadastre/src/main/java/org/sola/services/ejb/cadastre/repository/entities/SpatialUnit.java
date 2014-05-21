@@ -1,6 +1,6 @@
 /**
  * ******************************************************************************************
- * Copyright (C) 2012 - Food and Agriculture Organization of the United Nations (FAO).
+ * Copyright (C) 2014 - Food and Agriculture Organization of the United Nations (FAO).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -25,62 +25,60 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package org.sola.services.ejb.search.repository.entities;
+package org.sola.services.ejb.cadastre.repository.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
-import org.sola.services.common.repository.entities.AbstractReadOnlyEntity;
+import javax.persistence.Table;
+import org.sola.services.common.repository.AccessFunctions;
+import org.sola.services.common.repository.entities.AbstractVersionedEntity;
 
 /**
- *
- * @author soladev
+ * Entity representing the cadastre.spatial_unit table.
  */
-public class SpatialResult extends AbstractReadOnlyEntity {
-    
-     public final static String PARAM_CADASTRE_OBJECT_ID = "cadastre_object_id";
-    public final static String QUERY_GET_PLAN_CADASTRE_OBJECTS = 
-       "select adject.id, adject.name_firstpart as label, st_asewkb(adject.geom_polygon) as the_geom, "
-            + "cast(adject.id = #{" + PARAM_CADASTRE_OBJECT_ID + "} as varchar) as filter_category\n" +
-       "from cadastre.cadastre_object main, cadastre.cadastre_object adject\n" +
-       "where main.id= #{" + PARAM_CADASTRE_OBJECT_ID + "} and st_dwithin(main.geom_polygon, adject.geom_polygon, 0.1)"
-       + " and st_area(main.geom_polygon) < st_area(main.geom_polygon)*5";
- 
-    
-    
+@Table(name = "spatial_unit", schema = "cadastre")
+public class SpatialUnit extends AbstractVersionedEntity {
+
+    public static String WHERE_CONDITION = "level_id = #{level_id} "
+            + " and ST_Intersects(st_transform(geom, #{srid}), ST_SetSRID(ST_GeomFromWKB(#{filtering_geometry}), #{srid}))";
+
     @Id
     @Column(name = "id")
-    private String id; 
+    private String id;
+    @Column(name = "level_id")
+    private String levelId;
     @Column(name = "label")
     private String label;
-    @Column(name = "the_geom")
-    private byte[] theGeom;
-    @Column (name = "filter_category")
-    private String filterCategory;
+
+    @Column(name = "geom")
+    @AccessFunctions(onSelect = "st_asewkb(geom)",
+    onChange = "get_geometry_with_srid(#{geom})")
+    private byte[] geom;
     
-    public SpatialResult() {
+    /**
+     * No-arg constructor
+     */
+    public SpatialUnit() {
         super();
     }
 
-    public String getFilterCategory() {
-        return filterCategory;
-    }
-
-    public void setFilterCategory(String filterCategory) {
-        this.filterCategory = filterCategory;
-    }
-
     public String getId() {
+        id = id == null ? generateId() : id;
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
     }
-    
+
+    public String getLevelId() {
+        return levelId;
+    }
+
+    public void setLevelId(String levelId) {
+        this.levelId = levelId;
+    }
+
     public String getLabel() {
         return label;
     }
@@ -89,12 +87,12 @@ public class SpatialResult extends AbstractReadOnlyEntity {
         this.label = label;
     }
 
-    public byte[] getTheGeom() {
-        return theGeom;
+    public byte[] getGeom() {
+        return geom;
     }
 
-    public void setTheGeom(byte[] theGeom) { //NOSONAR
-        this.theGeom = theGeom; //NOSONAR
+    public void setGeom(byte[] geom) {
+        this.geom = geom;
     }
-       
+
 }

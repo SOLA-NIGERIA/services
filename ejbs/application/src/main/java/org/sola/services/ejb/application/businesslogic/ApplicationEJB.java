@@ -70,6 +70,7 @@ public class ApplicationEJB extends AbstractEJB implements ApplicationEJBLocal {
     private TransactionEJBLocal transactionEJB;
     @EJB
     private AdministrativeEJBLocal administrativeEJB;
+    private String languageCode = "en";
 
     /**
      * Sets the entity package for the EJB to
@@ -153,7 +154,8 @@ public class ApplicationEJB extends AbstractEJB implements ApplicationEJBLocal {
         treatApplicationSources(application);
         application.getContactPerson().setTypeCode(Party.TYPE_CODE_NATURAL_PERSON);
         application = getRepository().saveEntity(application);
-
+        checkSpatialUnitsStatus(application, languageCode);
+ 
         return application;
     }
 
@@ -334,6 +336,7 @@ public class ApplicationEJB extends AbstractEJB implements ApplicationEJBLocal {
 
         treatApplicationSources(application);
         application = getRepository().saveEntity(application);
+        checkSpatialUnitsStatus(application, languageCode);
 
         return application;
     }
@@ -1315,6 +1318,25 @@ public class ApplicationEJB extends AbstractEJB implements ApplicationEJBLocal {
                 params.getToDate() == null ? new GregorianCalendar(2500, 1, 1).getTime() : params.getToDate());
         result = getRepository().executeFunction(queryParams, SysRegProduction.class);
         return result;
+    }
+	
+	private void checkSpatialUnitsStatus(Application application, String languageCode) {
+        if (application.getCadastreObjectList()!= null && application.getCadastreObjectList().isEmpty()) {
+            return;
+        }
+        List<BrValidation> brValidationList =
+                this.systemEJB.getBrForValidatingApplication(ApplicationActionType.ADD_SPATIAL_UNIT);
+
+        HashMap<String, Serializable> params = new HashMap<String, Serializable>();
+        params.put("id", application.getId());
+        //Run the validation
+        List<ValidationResult> resultList = this.systemEJB.checkRulesGetValidation(
+                brValidationList, languageCode, params);
+
+        if (!systemEJB.validationSucceeded(resultList)) {
+            throw new SOLAValidationException(resultList);
+        }
+
     }
 
 
