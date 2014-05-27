@@ -53,7 +53,7 @@ public class ApplicationSearchResult extends AbstractReadOnlyEntity {
     public static final String QUERY_PARAM_DOCUMENT_NUMBER = "documentNumber";
     public static final String QUERY_PARAM_DOCUMENT_REFERENCE = "documentRef";
     public static final String QUERY_PARAM_PARCEL = "parcel";
-    
+    public static final String QUERY_PARAM_SECTION = "section";
     public static final String QUERY_FROM =
             "(application.application a LEFT JOIN application.application_status_type ast on a.status_code = ast.code) "
             + "LEFT JOIN application.application_property app ON app.application_id = a.id " 
@@ -73,7 +73,16 @@ public class ApplicationSearchResult extends AbstractReadOnlyEntity {
             "a.lodging_datetime BETWEEN #{" + QUERY_PARAM_FROM_LODGE_DATE + "} AND #{" + QUERY_PARAM_TO_LODGE_DATE + "} "
             + "AND (CASE WHEN #{" + QUERY_PARAM_PARCEL + "} = '' THEN true ELSE  "
             + "(compare_strings(#{" + QUERY_PARAM_PARCEL + "}, COALESCE(app.name_lastpart||'/'||app.name_firstpart, ''))) END) "
-	    + "AND (CASE WHEN #{" + QUERY_PARAM_APP_NR + "} = '' THEN true ELSE "
+	    + "AND (CASE WHEN #{" + QUERY_PARAM_SECTION + "} = '' THEN true ELSE  "
+            + "(COALESCE(app.name_firstpart||app.name_lastpart, '') in ( select co.name_firstpart||co.name_lastpart "
+            + "  from cadastre.cadastre_object co, cadastre.spatial_unit_group sg "
+            + "  where ST_Intersects(ST_PointOnSurface(co.geom_polygon), sg.geom) "
+            + "  and sg.name = #{" + QUERY_PARAM_SECTION + "}) ) END) "
+            
+            
+            
+            
+            + "AND (CASE WHEN #{" + QUERY_PARAM_APP_NR + "} = '' THEN true ELSE "
             + "compare_strings(#{" + QUERY_PARAM_APP_NR + "}, a.nr) END) "
             + "AND (CASE WHEN #{" + QUERY_PARAM_CONTACT_NAME + "} = '' THEN true ELSE "
             + "compare_strings(#{" + QUERY_PARAM_CONTACT_NAME + "}, COALESCE(p.name, '') || ' ' || COALESCE(p.last_name, '')) END) "
@@ -141,6 +150,15 @@ public class ApplicationSearchResult extends AbstractReadOnlyEntity {
     @Column(name = "parcel")
     private String parcel;
     
+    @AccessFunctions(onSelect = "(SELECT string_agg(tmp.display_value, ',') FROM "
+    + "  (SELECT (app.name_lastpart||'/'||app.name_firstpart) as display_value  "
+    + "  FROM application.application_property app INNER JOIN application.application aa ON app.application_id = aa.id  "
+    + "  WHERE app.application_id = a.id "
+//    + "  AND compare_strings(#{" + QUERY_PARAM_SECTION + "}, app.name_lastpart||'/'||app.name_firstpart)"
+    + "  ORDER BY display_value) tmp)  ")
+    @Column(name = "section")
+    private String section;
+    
     @Column(name = "fee_paid")
     private Boolean feePaid;
     @Column(name = "rowversion")
@@ -164,8 +182,14 @@ public class ApplicationSearchResult extends AbstractReadOnlyEntity {
     public void setParcel(String parcel) {
         this.parcel = parcel;
     }
-    
-    
+
+    public String getSection() {
+        return section;
+    }
+
+    public void setSection(String section) {
+        this.section = section;
+    }
     
     public String getId() {
         return id;

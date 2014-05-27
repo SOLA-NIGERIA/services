@@ -270,6 +270,8 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
         
         queryParams.put(ApplicationSearchResult.QUERY_PARAM_PARCEL,
                 params.getParcel() == null ? "" : params.getParcel().trim());
+        queryParams.put(ApplicationSearchResult.QUERY_PARAM_SECTION,
+                params.getSection() == null ? "" : params.getSection().trim());
         
 
         queryParams.put(CommonSqlProvider.PARAM_WHERE_PART, ApplicationSearchResult.QUERY_WHERE_SEARCH_APPLICATIONS);

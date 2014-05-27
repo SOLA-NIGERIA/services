@@ -39,6 +39,7 @@ public class ApplicationSearchParams extends AbstractReadOnlyEntity {
     private String documentNumber;
     private String documentReference;
     private String parcel;
+    private String section;
 
     public ApplicationSearchParams() {
     }
@@ -49,6 +50,14 @@ public class ApplicationSearchParams extends AbstractReadOnlyEntity {
 
     public void setParcel(String parcel) {
         this.parcel = parcel;
+    }
+
+    public String getSection() {
+        return section;
+    }
+
+    public void setSection(String section) {
+        this.section = section;
     }
     
     public String getContactPerson() {
