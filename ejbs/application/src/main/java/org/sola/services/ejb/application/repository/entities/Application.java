@@ -64,6 +64,9 @@ public class Application extends AbstractVersionedEntity {
     private String id;
     @Column(name = "nr")
     private String nr;
+    @Column(insertable=false, updatable=false, name = "section")
+    @AccessFunctions(onSelect = "application.getSection(nr)")
+    private String section;
     @Column(name = "lodging_datetime")
     private Date lodgingDatetime;
     @Column(name = "expected_completion_date")
@@ -120,6 +123,7 @@ public class Application extends AbstractVersionedEntity {
     @ChildEntityList(parentIdField = "applicationId", childIdField = "spatialUnitId",
     manyToManyClass = ApplicationSpatialUnit.class)
     private List<CadastreObject> cadastreObjectList;
+    
     
     public Application() {
         super();
@@ -338,7 +342,17 @@ public class Application extends AbstractVersionedEntity {
     public void setCadastreObjectList(List<CadastreObject> cadastreObjectList) {
         this.cadastreObjectList = cadastreObjectList;
     }
+    
+  
+    public String getSection() {
+        return section;
+    }
 
+    public void setSection(String section) {
+        this.section = section;
+    }
+    
+    
     @Override
     public void preSave() {
 

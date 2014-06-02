@@ -68,7 +68,19 @@ public class SysRegCertificates extends AbstractReadOnlyEntity {
     private String ward;
     @Column(name = "imageryDate")
     private String imageryDate;
+    @Column(name = "CofO")
+    private Integer CofO;
 
+    public Integer getCofO() {
+        return CofO;
+    }
+
+    public void setCofO(Integer CofO) {
+        this.CofO = CofO;
+    }
+    
+    
+    
     public String getImageryDate() {
         return imageryDate;
     }
