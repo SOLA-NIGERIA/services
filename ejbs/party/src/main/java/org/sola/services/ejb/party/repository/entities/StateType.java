@@ -29,72 +29,22 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.sola.services.ejb.search.repository.entities;
+package org.sola.services.ejb.party.repository.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import org.sola.services.common.repository.entities.AbstractReadOnlyEntity;
+import javax.persistence.Table;
+import org.sola.services.common.repository.DefaultSorter;
+import org.sola.services.common.repository.entities.AbstractCodeEntity;
 
 /**
  *
+ * Entity representing the party.gender_type code table. 
  * @author soladev
  */
-public class SpatialResult extends AbstractReadOnlyEntity {
-    
-     public final static String PARAM_CADASTRE_OBJECT_ID = "cadastre_object_id";
-    public final static String QUERY_GET_PLAN_CADASTRE_OBJECTS = 
-       "select adject.id, adject.name_firstpart as label, st_asewkb(adject.geom_polygon) as the_geom, "
-            + "cast(adject.id = #{" + PARAM_CADASTRE_OBJECT_ID + "} as varchar) as filter_category\n" +
-       "from cadastre.cadastre_object main, cadastre.cadastre_object adject\n" +
-       "where main.id= #{" + PARAM_CADASTRE_OBJECT_ID + "} and st_dwithin(main.geom_polygon, adject.geom_polygon, 0.1)"
-       + " order by 4 desc, st_area(adject.geom_polygon) asc";
- 
-    
-    
-    @Id
-    @Column(name = "id")
-    private String id; 
-    @Column(name = "label")
-    private String label;
-    @Column(name = "the_geom")
-    private byte[] theGeom;
-    @Column (name = "filter_category")
-    private String filterCategory;
-    
-    public SpatialResult() {
+@Table(name = "state_type", schema = "party")
+@DefaultSorter(sortString="code")
+public class StateType extends AbstractCodeEntity {
+
+    public StateType() {
         super();
     }
-
-    public String getFilterCategory() {
-        return filterCategory;
-    }
-
-    public void setFilterCategory(String filterCategory) {
-        this.filterCategory = filterCategory;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-    
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public byte[] getTheGeom() {
-        return theGeom;
-    }
-
-    public void setTheGeom(byte[] theGeom) { //NOSONAR
-        this.theGeom = theGeom; //NOSONAR
-    }
-       
 }

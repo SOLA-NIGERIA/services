@@ -71,9 +71,11 @@ public class ApplicationSearchResult extends AbstractReadOnlyEntity {
      */
     public static final String QUERY_WHERE_SEARCH_APPLICATIONS =
             "a.lodging_datetime BETWEEN #{" + QUERY_PARAM_FROM_LODGE_DATE + "} AND #{" + QUERY_PARAM_TO_LODGE_DATE + "} "
+            
             + "AND (CASE WHEN #{" + QUERY_PARAM_PARCEL + "} = '' THEN true ELSE  "
             + "(compare_strings(#{" + QUERY_PARAM_PARCEL + "}, COALESCE(app.name_lastpart||'/'||app.name_firstpart, ''))) END) "
-	    + "AND (CASE WHEN #{" + QUERY_PARAM_SECTION + "} = '' THEN true ELSE  "
+	    
+            + "AND (CASE WHEN #{" + QUERY_PARAM_SECTION + "} = '' THEN true ELSE  "
             + "(COALESCE(app.name_firstpart||app.name_lastpart, '') in ( select co.name_firstpart||co.name_lastpart "
             + "  from cadastre.cadastre_object co, cadastre.spatial_unit_group sg "
             + "  where ST_Intersects(ST_PointOnSurface(co.geom_polygon), sg.geom) "
@@ -84,8 +86,26 @@ public class ApplicationSearchResult extends AbstractReadOnlyEntity {
             
             + "AND (CASE WHEN #{" + QUERY_PARAM_APP_NR + "} = '' THEN true ELSE "
             + "compare_strings(#{" + QUERY_PARAM_APP_NR + "}, a.nr) END) "
+            
             + "AND (CASE WHEN #{" + QUERY_PARAM_CONTACT_NAME + "} = '' THEN true ELSE "
-            + "compare_strings(#{" + QUERY_PARAM_CONTACT_NAME + "}, COALESCE(p.name, '') || ' ' || COALESCE(p.last_name, '')) END) "
+            
+            + "compare_strings(#{" + QUERY_PARAM_CONTACT_NAME + "}, COALESCE(p.name, '') || ' ' || COALESCE(p.last_name, '')) or  "
+            + " ( a.id in (select distinct (aa.id)  "
+            + " from application.application aa, "
+            + " application.application_property ap, "
+            + " party.party pp,"
+            + " administrative.party_for_rrr  pr,"
+            + " administrative.ba_unit bu,"
+            + " administrative.rrr rrr"
+            + " where "
+            + " (compare_strings(#{" + QUERY_PARAM_CONTACT_NAME + "}, COALESCE(pp.name, '') || ' ' || COALESCE(pp.last_name, '')))"
+            + " and pp.id=pr.party_id"
+            + "	and   pr.rrr_id=rrr.id"
+            + " and   rrr.ba_unit_id= bu.id"
+            + " and bu.name_firstpart||bu.name_lastpart=ap.name_firstpart||ap.name_lastpart"
+            + " and aa.id=ap.application_id"
+            + " )) END) "
+            
             + "AND (CASE WHEN #{" + QUERY_PARAM_AGENT_NAME + "} = '' THEN true ELSE "
             + "compare_strings(#{" + QUERY_PARAM_AGENT_NAME + "}, COALESCE(p2.name, '') || ' ' || COALESCE(p2.last_name, '')) END) "
             + "AND (CASE WHEN #{" + QUERY_PARAM_DOCUMENT_NUMBER + "} || #{" + QUERY_PARAM_DOCUMENT_REFERENCE + "} = '' THEN true ELSE EXISTS ( "
