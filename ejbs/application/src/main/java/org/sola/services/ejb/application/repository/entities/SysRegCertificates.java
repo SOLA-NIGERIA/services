@@ -70,7 +70,58 @@ public class SysRegCertificates extends AbstractReadOnlyEntity {
     private String imageryDate;
     @Column(name = "CofO")
     private Integer CofO;
+    
+    @Column(name = "imageryResolution")
+    private String imageryResolution;
+    @Column(name = "imagerySource")
+    private String imagerySource;
+    @Column(name = "sheetNr")
+    private String sheetNr;
+    @Column(name = "surveyor")
+    private String surveyor;
+    @Column(name = "rank")
+    private String rank;
 
+    public String getRank() {
+        return rank;
+    }
+
+    public void setRank(String rank) {
+        this.rank = rank;
+    }
+
+    public String getSurveyor() {
+        return surveyor;
+    }
+
+    public void setSurveyor(String surveyor) {
+        this.surveyor = surveyor;
+    }
+          
+    public String getImageryResolution() {
+        return imageryResolution;
+    }
+
+    public void setImageryResolution(String imageryResolution) {
+        this.imageryResolution = imageryResolution;
+    }
+
+    public String getImagerySource() {
+        return imagerySource;
+    }
+
+    public void setImagerySource(String imagerySource) {
+        this.imagerySource = imagerySource;
+    }
+
+    public String getSheetNr() {
+        return sheetNr;
+    }
+
+    public void setSheetNr(String sheetNr) {
+        this.sheetNr = sheetNr;
+    }
+    
     public Integer getCofO() {
         return CofO;
     }
