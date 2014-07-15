@@ -214,4 +214,8 @@ public interface SearchEJBLocal extends AbstractEJBLocal {
      * See {@linkplain SearchEJB#getPlanCadastreObjects(String)}.
      */
     List<SpatialResult> getPlanCadastreObjects(String cadastreObjectId);
+/**
+     * See {@linkplain SearchEJB#transform(byte[], int)}.
+     */
+    byte[] transform(byte[] geom, int targetSrid);
 }
