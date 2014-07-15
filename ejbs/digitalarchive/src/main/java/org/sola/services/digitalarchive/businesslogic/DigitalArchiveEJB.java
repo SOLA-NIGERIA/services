@@ -223,11 +223,17 @@ public class DigitalArchiveEJB extends AbstractEJB implements DigitalArchiveEJBL
     private String allocateNr() {
         String datePart = "";
         String numPart = null;
+        String prefix = null;
 
         Map params = new HashMap<String, Object>();
         params.put(CommonSqlProvider.PARAM_SELECT_PART, Document.QUERY_ALLOCATENR);
+        
         numPart = getRepository().getScalar(Long.class, params).toString();
 
+        params.put(CommonSqlProvider.PARAM_SELECT_PART, Document.QUERY_PREFIX);
+        prefix = getRepository().getScalar(String.class, params);
+        
+        
         if (numPart != null) {
             // Prefix with 0 to get a 4 digit number.
             while (numPart.length() < 4) {
@@ -241,7 +247,7 @@ public class DigitalArchiveEJB extends AbstractEJB implements DigitalArchiveEJBL
             // Use the current datetime
             numPart = DateUtility.simpleFormat("yyMMddHHmmss");
         }
-        return datePart + numPart;
+        return prefix + datePart + numPart;
     }
 
     /**

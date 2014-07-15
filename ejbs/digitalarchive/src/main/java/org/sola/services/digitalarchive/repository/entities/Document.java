@@ -45,6 +45,7 @@ public class Document extends AbstractVersionedEntity {
 
     public static final String QUERY_WHERE_BYID = "id = #{id}";
     public static final String QUERY_ALLOCATENR = "nextval('document.document_nr_seq')";
+    public static final String QUERY_PREFIX = "document.get_document_nr()";
     @Id
     @Column(name = "id")
     private String id;
