@@ -510,7 +510,30 @@ public class CadastreEJB extends AbstractEJB implements CadastreEJBLocal {
         return getRepository().getEntityList(SpatialUnitGroup.class,
                 SpatialUnitGroup.QUERY_WHERE_SEARCHBYPARTS, params);
     }
-
+    
+     /**
+     * Returns a maximum of 30 spatial unit group that have a name 
+     * that matches the specified search string. This
+     * method supports partial matches and is case insensitive.
+     *
+     * @param searchString The search string to use
+     * @return The list of cadastre objects matching the search string
+     */
+    @Override
+    public List<SpatialUnitGroup> getSpatialUnitGroupByHierarchy(String searchString, Integer hierarchyLevel) {
+        Integer numberOfMaxRecordsReturned = 30;
+        HashMap params = new HashMap();
+        // Replace / and \ with space to improve the search
+        searchString = searchString.replaceAll("\\\\|\\/", " ");
+        params.put("search_string", searchString);
+        params.put("hierarchy_level", hierarchyLevel);
+        params.put(CommonSqlProvider.PARAM_LIMIT_PART, numberOfMaxRecordsReturned);
+        params.put(CommonSqlProvider.PARAM_ORDER_BY_PART, SpatialUnitGroup.QUERY_ORDER_BY_SEARCHBYPARTS); 
+        return getRepository().getEntityList(SpatialUnitGroup.class,
+                SpatialUnitGroup.QUERY_WHERE_SEARCHBYHIERARCHY, params);
+    }
+    
+    
     /**
      * Returns a maximum of 30 SpatialUnitGroup with current and pending status
      * that have a name  that matches the

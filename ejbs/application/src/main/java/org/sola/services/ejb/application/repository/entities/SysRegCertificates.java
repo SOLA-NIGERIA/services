@@ -24,8 +24,8 @@ public class SysRegCertificates extends AbstractReadOnlyEntity {
 
     public static final String QUERY_PARAMETER_NR = "nr";
     // Where clause
-    public static final String QUERY_WHERE_BYNR = "nr = #{" + QUERY_PARAMETER_NR  + "} "
-            + "AND #{search_string}= name";
+    public static final String QUERY_WHERE_BYNR = "nr = #{" + QUERY_PARAMETER_NR  + "} ";
+//            + "AND #{search_string}= name";
 
     /**
      * WHERE clause to return current CO's based on search string compared to
