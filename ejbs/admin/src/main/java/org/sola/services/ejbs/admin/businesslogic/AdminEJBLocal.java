@@ -149,6 +149,13 @@ public interface AdminEJBLocal {
      */
     void consolidationConsolidate(String processName, String languageCode, String fileInServer, String password);
     
+    
+    /**
+     * See {@linkplain AdminEJB#getUserInfo(String)}
+     */
+    User getUserInfo(String userName);
+    
+    
     /**
      * See {@linkplain AdminEJB#startProcessProgressUsingBr(String, int)
      * AdminEJB.startProcessProgressUsingBr}

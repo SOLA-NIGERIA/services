@@ -112,6 +112,18 @@ public class AdminEJB extends AbstractEJB implements AdminEJBLocal {
     @RolesAllowed({RolesConstants.ADMIN_MANAGE_SECURITY, RolesConstants.ADMIN_CHANGE_PASSWORD})
     @Override
     public User getUser(String userName) {
+        return getUserInfo(userName);
+    }
+/**
+     * Returns the details of the user with the specified user name. Should be
+     * used only between EJBs, not exposing this method outside. It has no
+     * security roles.
+     *
+     * @param userName The user name of the user to search for.
+     * @return
+     */
+    @Override
+    public User getUserInfo(String userName) {
         Map params = new HashMap<String, Object>();
         params.put(CommonSqlProvider.PARAM_WHERE_PART, User.QUERY_WHERE_USERNAME);
         params.put(User.PARAM_USERNAME, userName);
