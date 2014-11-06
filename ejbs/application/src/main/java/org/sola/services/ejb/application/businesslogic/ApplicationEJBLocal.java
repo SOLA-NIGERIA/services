@@ -273,5 +273,13 @@ public interface ApplicationEJBLocal extends AbstractEJBLocal {
     List<SysRegCertificates> getSysRegCertificatesByApplication(String searchString, String nr);
     
      List<SysRegProduction> getSysRegProduction(LodgementViewParams params, String languageCode);
+	 
+
+	 /**
+	 * See {@linkplain ApplicationEJB#applicationActionTransfer(java.lang.String, java.lang.String, int)
+	 * ApplicationEJB.applicationActionTransfer}.
+	 */
+	 List<ValidationResult> applicationActionTransfer(
+	 String applicationId, String languageCode, int rowVersion);
    
 }
