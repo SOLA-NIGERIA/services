@@ -598,6 +598,27 @@ public class AdministrativeEJB extends AbstractEJB
         return getRepository().getEntityList(SysRegPubDisStateLand.class,
                 SysRegPubDisParcelName.QUERY_WHERE_SEARCHBYPARTS, params);
     }
+    
+     /**
+     * Returns  objects that have a name first part
+     * and/or name last part that matches the specified search string. This
+     * method supports partial matches and is case insensitive.
+     *
+     * @param searchString The search string to use
+     * @return The list of Parcels matching the search string
+     */
+    @Override
+    @RolesAllowed(RolesConstants.ADMINISTRATIVE_SYSTEMATIC_REGISTRATION)
+    public List<SysRegSigningList> getSysRegSigningList(String searchString, String languageCode) {
+
+        this.validatePublicDisplay(searchString, languageCode);
+        HashMap params = new HashMap();
+        params.put("search_string", searchString);
+
+        return getRepository().getEntityList(SysRegSigningList.class,
+                SysRegSigningList.QUERY_WHERE_SEARCHBYPARTS, params);
+    }
+
 
     /**
      * It validates BRs for the public display. If one of the critical BRs is
