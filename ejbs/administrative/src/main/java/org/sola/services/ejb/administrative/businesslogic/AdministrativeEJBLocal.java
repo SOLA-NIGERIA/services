@@ -189,7 +189,17 @@ public interface AdministrativeEJBLocal extends AbstractSolaTransactionEJBLocal 
     
     List<SysRegProgress> getSysRegProgress(SysRegManagementParams params, String languageCode);
     
-     /**
+    /**
+     * See {@linkplain AdministrativeEJB#SysRegSigningList(java.lang.String)
+     * AdministrativeEJB.SysRegSigningList}.
+     */
+    List<SysRegSigningList> getSysRegSigningList(String searchString, String languageCode);
+
+    
+    
+    
+    
+    /**
      * DISPUTE
      *
      */
