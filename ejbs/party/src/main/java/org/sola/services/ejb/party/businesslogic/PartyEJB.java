@@ -163,13 +163,13 @@ public class PartyEJB extends AbstractEJB implements PartyEJBLocal {
     }
     
      /**
-     * Retrieves all party.state_type code values.
+     * Retrieves all party.nation_type code values.
      *
      * @param languageCode The language code to use for localization of display values.
      */
     @Override
-    public List<StateType> getStateTypes(String languageCode) {
-        return getRepository().getCodeList(StateType.class, languageCode);
+    public List<NationType> getNationTypes(String languageCode) {
+        return getRepository().getCodeList(NationType.class, languageCode);
     }
 
     

@@ -109,9 +109,9 @@ public interface PartyEJBLocal extends AbstractEJBLocal {
     List<Party> getDemOfficers();
     
      /**
-     * See {@linkplain PartyEJB#getStateTypes(java.lang.String)
+     * See {@linkplain PartyEJB#getNationTypes(java.lang.String)
      * PartyEJB.getGenderTypes}.
      */
-    List<StateType> getStateTypes(String languageCode);
+    List<NationType> getNationTypes(String languageCode);
 
 }

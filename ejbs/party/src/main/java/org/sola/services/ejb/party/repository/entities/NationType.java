@@ -40,11 +40,11 @@ import org.sola.services.common.repository.entities.AbstractCodeEntity;
  * Entity representing the party.gender_type code table. 
  * @author soladev
  */
-@Table(name = "state_type", schema = "party")
+@Table(name = "nation_type", schema = "party")
 @DefaultSorter(sortString="code")
-public class StateType extends AbstractCodeEntity {
+public class NationType extends AbstractCodeEntity {
 
-    public StateType() {
+    public NationType() {
         super();
     }
 }
