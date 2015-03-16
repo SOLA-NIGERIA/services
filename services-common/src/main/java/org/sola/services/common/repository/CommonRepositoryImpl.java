@@ -78,7 +78,7 @@ public class CommonRepositoryImpl implements CommonRepository {
             throw new SOLAException(ServiceMessage.GENERAL_UNEXPECTED,
                     // Capture the specific details so they are added to the log
                     new Object[]{"File named " + CONNECT_CONFIG_FILE_NAME + " is not located in "
-                + "the default resource package for " + this.getClass().getSimpleName()});
+                        + "the default resource package for " + this.getClass().getSimpleName()});
         }
         dbConnectionManager = new DatabaseConnectionManager(connectionConfigFileUrl.toString(),
                 CommonMapper.class);
@@ -621,7 +621,7 @@ public class CommonRepositoryImpl implements CommonRepository {
             throw new SOLAException(ServiceMessage.GENERAL_UNEXPECTED,
                     // Capture the specific details so they are added to the log
                     new Object[]{"Failed to create Many to Many entity class "
-                + childInfo.getManyToManyClass().getSimpleName(), ex});
+                        + childInfo.getManyToManyClass().getSimpleName(), ex});
         }
         manyToMany.setEntityFieldValue(manyToMany.getColumnInfo(
                 childInfo.getParentIdField()), entity.getEntityId());
@@ -790,8 +790,8 @@ public class CommonRepositoryImpl implements CommonRepository {
                     // any exception raised when invoking the ejb method will be wrapped in an
                     // InvocationTargetException. The true cause can be masked by this exception. 
                     new Object[]{"Unable to invoke save  method " + childInfo.getSaveMethod()
-                + " on " + childInfo.getEJBLocalClass().getSimpleName(),
-                "Field=" + childInfo.getFieldName(), FaultUtility.getStackTraceAsString(ex)});
+                        + " on " + childInfo.getEJBLocalClass().getSimpleName(),
+                        "Field=" + childInfo.getFieldName(), FaultUtility.getStackTraceAsString(ex)});
         }
         return childEntity;
     }
@@ -871,13 +871,19 @@ public class CommonRepositoryImpl implements CommonRepository {
     public <T extends AbstractEntity> T saveEntity(T entity) {
         if (entity != null) {
             SqlSession session = getSqlSession();
-            try {
+          try {
                 entity = saveEntity(entity, getMapper(session));
-            } finally {
+          }
+          catch (Exception ex) {
+            throw new SOLAException(ServiceMessage.MSG_PREFIX,
+                    // Capture the specific details so they are added to the log
+                    new Object[]{"Failed to map entity to result " + entity.toString(), ex});
+          }
+        finally {
                 session.close();
-            }
-        }
-        return entity;
+    }
+}
+return entity;
     }
 
     /**
@@ -892,7 +898,7 @@ public class CommonRepositoryImpl implements CommonRepository {
      * returned.
      */
     @Override
-    public <T> T getScalar(Class<T> scalarClass, Map params) {
+        public <T> T getScalar(Class<T> scalarClass, Map params) {
 
         T result = null;
         SqlSession session = getSqlSession();
@@ -925,7 +931,7 @@ public class CommonRepositoryImpl implements CommonRepository {
     }
 
     @Override
-    public List<String> getChildIdList(ChildEntityInfo childInfo, String parentId) {
+        public List<String> getChildIdList(ChildEntityInfo childInfo, String parentId) {
 
         List<String> result = null;
         SqlSession session = getSqlSession();
@@ -972,11 +978,15 @@ public class CommonRepositoryImpl implements CommonRepository {
         // Set the parent id parameter
         params.put("parentId", parentId);
 
-        return getScalarList(String.class, params, mapper);
+        
+
+return getScalarList(String.class  
+
+, params, mapper);
     }
 
     @Override
-    public <T> List<T> getScalarList(Class<T> scalarClass, Map params) {
+        public <T> List<T> getScalarList(Class<T> scalarClass, Map params) {
 
         List<T> result = null;
         SqlSession session = getSqlSession();
@@ -994,7 +1004,7 @@ public class CommonRepositoryImpl implements CommonRepository {
     }
 
     @Override
-    public <T extends AbstractReadOnlyEntity> T refreshEntity(T entity) {
+        public <T extends AbstractReadOnlyEntity> T refreshEntity(T entity) {
 
         SqlSession session = getSqlSession();
         try {
@@ -1006,7 +1016,7 @@ public class CommonRepositoryImpl implements CommonRepository {
     }
 
     @Override
-    public <T extends AbstractReadOnlyEntity> T getEntity(Class<T> entityClass, String id) {
+        public <T extends AbstractReadOnlyEntity> T getEntity(Class<T> entityClass, String id) {
 
         ArrayList<ColumnInfo> ids = (ArrayList<ColumnInfo>) RepositoryUtility.getIdColumns(entityClass, RepositoryUtility.getColumns(entityClass));
 
@@ -1018,7 +1028,7 @@ public class CommonRepositoryImpl implements CommonRepository {
     }
 
     @Override
-    public <T extends AbstractReadOnlyEntity> T getEntity(Class<T> entityClass, String id, String lang) {
+        public <T extends AbstractReadOnlyEntity> T getEntity(Class<T> entityClass, String id, String lang) {
 
         ArrayList<ColumnInfo> ids = (ArrayList<ColumnInfo>) RepositoryUtility.getIdColumns(entityClass, RepositoryUtility.getColumns(entityClass));
 
@@ -1031,7 +1041,7 @@ public class CommonRepositoryImpl implements CommonRepository {
     }
 
     @Override
-    public <T extends AbstractReadOnlyEntity> T getEntity(Class<T> entityClass,
+        public <T extends AbstractReadOnlyEntity> T getEntity(Class<T> entityClass,
             String whereClause, Map params) {
 
         params = params == null ? new HashMap<String, Object>() : params;
@@ -1041,7 +1051,7 @@ public class CommonRepositoryImpl implements CommonRepository {
     }
 
     @Override
-    public <T extends AbstractReadOnlyEntity> T getEntity(Class<T> entityClass,
+        public <T extends AbstractReadOnlyEntity> T getEntity(Class<T> entityClass,
             Map params) {
 
         params = params == null ? new HashMap<String, Object>() : params;
@@ -1082,7 +1092,7 @@ public class CommonRepositoryImpl implements CommonRepository {
     }
 
     @Override
-    public <T extends AbstractCodeEntity> List<T> getCodeList(Class<T> codeListClass,
+        public <T extends AbstractCodeEntity> List<T> getCodeList(Class<T> codeListClass,
             String languageCode) {
 
         HashMap<String, Object> params = new HashMap<String, Object>();
@@ -1094,7 +1104,7 @@ public class CommonRepositoryImpl implements CommonRepository {
     }
 
     @Override
-    public <T extends AbstractCodeEntity> T getCode(Class<T> codeListClass,
+        public <T extends AbstractCodeEntity> T getCode(Class<T> codeListClass,
             String entityCode, String languageCode) {
 
         HashMap<String, Object> params = new HashMap<String, Object>();
@@ -1108,12 +1118,12 @@ public class CommonRepositoryImpl implements CommonRepository {
     }
 
     @Override
-    public <T extends AbstractReadOnlyEntity> List<T> getEntityList(Class<T> entityClass) {
+        public <T extends AbstractReadOnlyEntity> List<T> getEntityList(Class<T> entityClass) {
         return getEntityList(entityClass, new HashMap<String, Object>());
     }
 
     @Override
-    public <T extends AbstractReadOnlyEntity> List<T> getEntityList(Class<T> entityClass,
+        public <T extends AbstractReadOnlyEntity> List<T> getEntityList(Class<T> entityClass,
             String whereClause, Map params) {
 
         params = params == null ? new HashMap<String, Object>() : params;
@@ -1123,7 +1133,7 @@ public class CommonRepositoryImpl implements CommonRepository {
     }
 
     @Override
-    public <T extends AbstractReadOnlyEntity> List<T> getEntityList(Class<T> entityClass,
+        public <T extends AbstractReadOnlyEntity> List<T> getEntityList(Class<T> entityClass,
             Map params) {
 
         params = params == null ? new HashMap<String, Object>() : params;
@@ -1177,7 +1187,7 @@ public class CommonRepositoryImpl implements CommonRepository {
      * @return THe list of entities returned from the SQL query.
      */
     @Override
-    public <T extends AbstractReadOnlyEntity> List<T> getEntityListByIds(Class<T> entityClass,
+        public <T extends AbstractReadOnlyEntity> List<T> getEntityListByIds(Class<T> entityClass,
             List<String> ids) {
         return getEntityListByIds(entityClass, ids, new HashMap<String, Object>());
     }
@@ -1198,7 +1208,7 @@ public class CommonRepositoryImpl implements CommonRepository {
      * @return THe list of entities returned from the SQL query.
      */
     @Override
-    public <T extends AbstractReadOnlyEntity> List<T> getEntityListByIds(Class<T> entityClass,
+        public <T extends AbstractReadOnlyEntity> List<T> getEntityListByIds(Class<T> entityClass,
             List<String> ids, Map params) {
 
         if (ids == null || ids.isEmpty()) {
@@ -1251,7 +1261,7 @@ public class CommonRepositoryImpl implements CommonRepository {
      * @return The list of child entities or null if there are none to load.
      */
     @Override
-    public <T extends AbstractReadOnlyEntity, V extends AbstractReadOnlyEntity> List<V> getChildEntityList(
+        public <T extends AbstractReadOnlyEntity, V extends AbstractReadOnlyEntity> List<V> getChildEntityList(
             T parentEntity, Class<V> childEntityClass, ChildEntityInfo childInfo) {
 
         SqlSession session = getSqlSession();
@@ -1345,32 +1355,41 @@ public class CommonRepositoryImpl implements CommonRepository {
      * entity list to load
      * @param mapper The Mybatis mapper class used for this loading process.
      */
-    public <T extends AbstractReadOnlyEntity, U extends CommonMapper> void loadChildren(T entity, U mapper) {
+    public 
+
+<T extends AbstractReadOnlyEntity, U extends CommonMapper> void loadChildren(T entity, U mapper) {
         for (ChildEntityInfo childInfo : entity.getChildEntityInfo()) {
-            if (AbstractReadOnlyEntity.class.isAssignableFrom(childInfo.getEntityClass())) {
+            if (AbstractReadOnlyEntity.class  
+
+    .isAssignableFrom(childInfo.getEntityClass())) {
                 Class<? extends AbstractReadOnlyEntity> childEntityClass =
-                        (Class<? extends AbstractReadOnlyEntity>) childInfo.getEntityClass();
-                // Check to determine if loading of this child class should be skipped or not
-                if (!isInhibitLoad(childEntityClass)) {
+            (Class<? extends AbstractReadOnlyEntity>) childInfo.getEntityClass();
+    // Check to determine if loading of this child class should be skipped or not
+
+    if (!isInhibitLoad(childEntityClass) 
+        ) {
                     Object child = null;
-                    if (childInfo.isExternalEntity()) {
-                        // External Entity
-                        child = getExternalEntity(entity, childInfo, mapper);
-                    } else if (childInfo.isListField()) {
-                        // Load the child list for the one to many or many to many list. 
-                        child = getChildEntityList(entity, childEntityClass, childInfo, mapper);
-                    } else {
-                        // One to One relationship, so load the child
-                        child = getChildEntity(entity, childEntityClass, childInfo, mapper);
-                    }
-                    entity.setEntityFieldValue(childInfo, child);
-                } else {
+        if (childInfo.isExternalEntity()) {
+            // External Entity
+            child = getExternalEntity(entity, childInfo, mapper);
+        } else if (childInfo.isListField()) {
+            // Load the child list for the one to many or many to many list. 
+            child = getChildEntityList(entity, childEntityClass, childInfo, mapper);
+        } else {
+            // One to One relationship, so load the child
+            child = getChildEntity(entity, childEntityClass, childInfo, mapper);
+        }
+        entity.setEntityFieldValue(childInfo, child);
+    }
+
+    
+        else {
                     // The child entity does not inherit from the SOLA Abstract Entity classes. 
                     // Allow the loading of the external need to be managed by the parent repository. 
                     loadOtherEntity(entity, childInfo, mapper);
-                }
-            }
-        }
+    }
+}
+}
     }
 
     /**
@@ -1400,8 +1419,11 @@ public class CommonRepositoryImpl implements CommonRepository {
             //Many to Many, so get the list of child ids from the many to many table in this
             //EJB using the parent id and pass the list of child ids to the external EJB.  
             argValue = getChildIdList(childInfo, entity.getEntityId(), mapper);
-            argType = List.class;
-        } else {
+            argType 
+
+= List.class  
+;
+} else {
             // A One to One or One to Many list. If One to One, it may be necessray to pass th
             // child id on the parent. If One to Many, pass the parent id to return the list 
             // of children as the child must reference the parent. 
@@ -1411,9 +1433,12 @@ public class CommonRepositoryImpl implements CommonRepository {
                         entity.getColumnInfo(childInfo.getChildIdField()));
             } else {
                 argValue = entity.getEntityId();
-            }
-            argType = String.class;
-        }
+            
+
+}
+            argType = String.class  
+;
+}
         try {
             Method loadMethod = ejb.getClass().getMethod(childInfo.getLoadMethod(), argType);
             child = loadMethod.invoke(ejb, argValue);
@@ -1456,7 +1481,7 @@ public class CommonRepositoryImpl implements CommonRepository {
      * statement to run function.
      */
     @Override
-    public ArrayList<HashMap> executeFunction(Map params) {
+        public ArrayList<HashMap> executeFunction(Map params) {
         return executeSql(params);
     }
 
@@ -1469,7 +1494,7 @@ public class CommonRepositoryImpl implements CommonRepository {
      * @param entityClass The class of the entity to cast results to.
      */
     @Override
-    public <T extends AbstractReadOnlyEntity> List<T> executeFunction(Map params, Class<T> entityClass) {
+        public <T extends AbstractReadOnlyEntity> List<T> executeFunction(Map params, Class<T> entityClass) {
         return mapToEntityList(entityClass, executeSql(params));
     }
 
@@ -1481,7 +1506,7 @@ public class CommonRepositoryImpl implements CommonRepository {
      * statement to run the SQL.
      */
     @Override
-    public ArrayList<HashMap> executeSql(Map params) {
+        public ArrayList<HashMap> executeSql(Map params) {
 
         if (params == null || !params.containsKey(CommonSqlProvider.PARAM_QUERY)) {
             throw new SOLAException(ServiceMessage.GENERAL_UNEXPECTED, new Object[]{
@@ -1509,7 +1534,7 @@ public class CommonRepositoryImpl implements CommonRepository {
      * @return the number of rows updated.
      */
     @Override
-    public int bulkUpdate(Map params) {
+        public int bulkUpdate(Map params) {
         if (params == null || !params.containsKey(CommonSqlProvider.PARAM_QUERY)) {
             throw new SOLAException(ServiceMessage.GENERAL_UNEXPECTED, new Object[]{
                 "No dynamic SQL to execute!", "params=" + params
