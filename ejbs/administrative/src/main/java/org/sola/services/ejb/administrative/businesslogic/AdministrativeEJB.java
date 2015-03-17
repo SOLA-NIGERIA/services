@@ -56,7 +56,7 @@ import org.sola.services.ejb.transaction.repository.entities.TransactionBasic;
  * from the administrative schema.
  */
 @Stateless
-@EJB(name = "java:global/SOLA/AdministrativeEJBLocal", beanInterface = AdministrativeEJBLocal.class)
+@EJB(name = "java:global/SOLA_SR/AdministrativeEJBLocal", beanInterface = AdministrativeEJBLocal.class)
 public class AdministrativeEJB extends AbstractEJB
         implements AdministrativeEJBLocal {
 
