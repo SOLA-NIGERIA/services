@@ -874,11 +874,6 @@ public class CommonRepositoryImpl implements CommonRepository {
           try {
                 entity = saveEntity(entity, getMapper(session));
           }
-          catch (Exception ex) {
-            throw new SOLAException(ServiceMessage.MSG_PREFIX,
-                    // Capture the specific details so they are added to the log
-                    new Object[]{"Failed to map entity to result " + entity.toString(), ex});
-          }
         finally {
                 session.close();
     }
