@@ -108,7 +108,7 @@ public class Party extends AbstractVersionedEntity {
     private List<PartyRole> roleList;
     @Column(name = "party.is_rightholder(id) AS is_rightholder", insertable=false, updatable=false)
     private boolean rightHolder;
-    @Column(name = "dob")
+    @Column(name = "birth_date")
     private Date dob;
     @Column(name = "state")
     private String state;
