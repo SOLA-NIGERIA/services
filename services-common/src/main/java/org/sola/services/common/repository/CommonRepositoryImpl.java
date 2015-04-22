@@ -48,6 +48,7 @@ import org.sola.services.common.repository.entities.AbstractReadOnlyEntity;
 import org.sola.services.common.repository.entities.AbstractVersionedEntity;
 import org.sola.services.common.repository.entities.ChildEntityInfo;
 import org.sola.services.common.repository.entities.ColumnInfo;
+import org.sola.services.ejb.cache.businesslogic.CacheEJBLocal;
 
 /**
  * Implementation of the {@linkplain CommonRepository} interface that uses the
@@ -63,7 +64,7 @@ public class CommonRepositoryImpl implements CommonRepository {
      */
     private static final String LOAD_INHIBITORS = "Repository.loadInhibitors";
     private DatabaseConnectionManager dbConnectionManager = null;
-
+    CacheEJBLocal cache;
     /**
      * Loads the myBatis configuration file and initializes a connection to the
      * database.
@@ -88,6 +89,18 @@ public class CommonRepositoryImpl implements CommonRepository {
      */
     public DatabaseConnectionManager getDbConnectionManager() {
         return dbConnectionManager;
+    }
+    
+     /**
+     * Retrieves the EJB cache used by the repository.
+     *
+     * @return
+     */
+    public CacheEJBLocal getCache() {
+        if (cache == null) {
+            cache = RepositoryUtility.getEJB(CacheEJBLocal.class);
+        }
+        return cache;
     }
 
     /**

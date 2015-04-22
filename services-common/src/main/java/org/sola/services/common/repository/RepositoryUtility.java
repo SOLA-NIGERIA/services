@@ -256,10 +256,37 @@ public class RepositoryUtility {
         return children;
     }
 
-    public static <T extends AbstractEJBLocal> T getEJB(Class<T> ejbLocalClass) {
+//    public static <T extends AbstractEJBLocal> T getEJB(Class<T> ejbLocalClass) {
+//        T ejb = null;
+//
+//        String ejbLookupName = "java:app/" + ejbLocalClass.getSimpleName();
+//        try {
+//            InitialContext ic = new InitialContext();
+//            ejb = (T) ic.lookup(ejbLookupName);
+//        } catch (NamingException ex) {
+//            throw new SOLAException(ServiceMessage.GENERAL_UNEXPECTED,
+//                    // Capture the specific details so they are added to the log
+//                    new Object[]{"Unable to locate EJB " + ejbLookupName, ex});
+//        }
+//        return ejb;
+//    }
+//
+//    public static <T extends AbstractEJBLocal> T tryGetEJB(Class<T> ejbLocalClass) {
+//        T ejb = null;
+//
+//        String ejbLookupName = "java:app/" + ejbLocalClass.getSimpleName();
+//        try {
+//            InitialContext ic = new InitialContext();
+//            ejb = (T) ic.lookup(ejbLookupName);
+//        } catch (NamingException ex) {
+//            // Ignore the naming exception and return null; 
+//        }
+//        return ejb;
+//    }
+       public static <T> T getEJB(Class<T> ejbLocalClass) {
         T ejb = null;
 
-        String ejbLookupName = "java:app/" + ejbLocalClass.getSimpleName();
+        String ejbLookupName =  "java:app/" + ejbLocalClass.getSimpleName();
         try {
             InitialContext ic = new InitialContext();
             ejb = (T) ic.lookup(ejbLookupName);
@@ -271,10 +298,10 @@ public class RepositoryUtility {
         return ejb;
     }
 
-    public static <T extends AbstractEJBLocal> T tryGetEJB(Class<T> ejbLocalClass) {
+    public static <T> T tryGetEJB(Class<T> ejbLocalClass) {
         T ejb = null;
 
-        String ejbLookupName = "java:app/" + ejbLocalClass.getSimpleName();
+        String ejbLookupName =  "java:app/" + ejbLocalClass.getSimpleName();
         try {
             InitialContext ic = new InitialContext();
             ejb = (T) ic.lookup(ejbLookupName);
@@ -283,7 +310,6 @@ public class RepositoryUtility {
         }
         return ejb;
     }
-
     /**
      * Issue #192 Compare two arrays to determine if they are equal or not.
      * Performs a deep comparison of all array members using the Arrays.equal
