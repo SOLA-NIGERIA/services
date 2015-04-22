@@ -34,6 +34,7 @@ import javax.persistence.Table;
 import org.sola.services.common.repository.ChildEntityList;
 import org.sola.services.common.repository.DefaultSorter;
 import org.sola.services.common.repository.entities.AbstractVersionedEntity;
+import org.sola.services.common.repository.AccessFunctions;
 
 @Table(name = "appuser", schema = "system")
 @DefaultSorter(sortString="username, last_name")
@@ -42,9 +43,11 @@ public class User extends AbstractVersionedEntity {
     public static final String PARAM_USERNAME = "username";
     public static final String PARAM_PASSWORD = "passwd";
     public static final String QUERY_WHERE_USERNAME = "username = #{" + PARAM_USERNAME + "}";
-    public static final String QUERY_SET_PASSWORD = "select system.setPassword(#{" + 
-            PARAM_USERNAME + "}, #{" + PARAM_PASSWORD + "})";
-    
+//    public static final String QUERY_SET_PASSWORD = "select system.setPassword(#{" + 
+//            PARAM_USERNAME + "}, #{" + PARAM_PASSWORD + "})";
+    public static final String PARAM_CHANGE_USER = "changeUser";
+    public static final String QUERY_SET_PASSWORD = "select system.setPassword(#{"
+            + PARAM_USERNAME + "}, #{" + PARAM_PASSWORD + "}, #{" + PARAM_CHANGE_USER + "})";
     @Id
     @Column(name = "id")
     private String id;
@@ -58,9 +61,20 @@ public class User extends AbstractVersionedEntity {
     private boolean active;
     @Column(name = "description")
     private String description;
-    @Column(name = "passwd")
+    @Column(name = "passwd", insertable = false, updatable = false)
     private String password;
-
+    @AccessFunctions(onSelect = "(SELECT pword_change_user"
+            + " FROM system.user_pword_expiry"
+            + " WHERE uname = username)")
+    @Column(name = "pword_change_user", insertable = false, updatable = false)
+    private String lastPwordChangeUser;
+    @AccessFunctions(onSelect = "(SELECT pword_expiry_days"
+            + " FROM system.user_pword_expiry"
+            + " WHERE uname = username)")
+    @Column(name = "pword_expiry_days", insertable = false, updatable = false)
+    private Integer pwordExpiryDays;
+ 
+ 
     public String getPassword() {
         return password;
     }
@@ -133,5 +147,21 @@ public class User extends AbstractVersionedEntity {
 
     public void setUserGroups(List<UserGroup> userGroups) {
         this.userGroups = userGroups;
+    }
+    
+     public String getLastPwordChangeUser() {
+        return lastPwordChangeUser;
+    }
+
+    public void setLastPwordChangeUser(String lastPwordChangeUser) {
+        this.lastPwordChangeUser = lastPwordChangeUser;
+    }
+
+    public Integer getPwordExpiryDays() {
+        return pwordExpiryDays;
+    }
+
+    public void setPwordExpiryDays(Integer pwordExpiryDays) {
+        this.pwordExpiryDays = pwordExpiryDays;
     }
 }
