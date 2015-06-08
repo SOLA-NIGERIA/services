@@ -1,6 +1,6 @@
 /**
  * ******************************************************************************************
- * Copyright (C) 2014 - Food and Agriculture Organization of the United Nations (FAO).
+ * Copyright (C) 2015 - Food and Agriculture Organization of the United Nations (FAO).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -25,48 +25,31 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package org.sola.services.common.contracts;
+package org.sola.services.common.faults;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import java.util.List;
+import org.sola.common.SOLAException;
 
 /**
- *
- * @author soladev
+ * OpenTenure exception of missing attachments on the claim
  */
-public abstract class AbstractVersionedTO extends AbstractReadWriteTO {
+public class OTMissingAttachmentsException extends SOLAException {
+    List<String> attachments;
 
-    private int rowVersion;
-    private String rowId;
-    
-    public AbstractVersionedTO() {
-        super();
+    public List<String> getAttachments() {
+        return attachments;
     }
 
-    /**
-     * This value is used to match TO's to entities during translation. 
-     * @see org.sola.services.common.repository.entities.AbstractVersionedEntity#equals
-     * @return 
-     */
-    @JsonIgnore
-    public int getRowVersion() {
-        return rowVersion;
-    }
-
-    public void setRowVersion(int rowversion) {
-        this.rowVersion = rowversion;
-    }
-
-    @JsonIgnore
-    public String getRowId() {
-        return rowId;
-    }
-
-    public void setRowId(String rowId) {
-        this.rowId = rowId;
+    public void setAttachments(List<String> attachments) {
+        this.attachments = attachments;
     }
     
+    public OTMissingAttachmentsException(String messageCode, List<String> attachments) {
+        super(messageCode);
+        this.attachments = attachments;
+    }
+    
+    public OTMissingAttachmentsException(String messageCode, Throwable cause) {
+        super(messageCode, cause);
+    }
 }

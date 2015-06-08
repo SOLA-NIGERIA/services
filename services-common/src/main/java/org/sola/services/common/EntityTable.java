@@ -27,50 +27,32 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package org.sola.services.common.contracts;
+package org.sola.services.common;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.sola.services.common.EntityAction;
+import javax.xml.bind.annotation.XmlType;
 
 /**
- *
- * @author soladev
+ * Enumeration identifying the database schema and table name for key entities
+ * in the SOLA schema soladev
  */
-public abstract class AbstractReadWriteTO extends AbstractTO {
+@XmlType(namespace = ServiceConstants.BASE_TO_NAMESPACE)
+public enum EntityTable {
 
-    private EntityAction entityAction = null;
-    private String classificationCode;
-    private String redactCode;
+    BAUNIT("administrative.ba_unit"),
+    RRR("administrative.rrr"),
+    NOTATION("administrative.notation"),
+    APPLICATION("application.application"),
+    PARTY("party.party"),
+    SOURCE("source.source"),
+    PARCEL("cadastre.cadastre_object");
 
-    @JsonIgnore
-    public EntityAction getEntityAction() {
-        return entityAction;
+    private final String table;
+
+    EntityTable(String table) {
+        this.table = table;
     }
 
-    public void setEntityAction(EntityAction entityAction) {
-        this.entityAction = entityAction;
+    public String getTable() {
+        return table;
     }
-
-    @JsonIgnore
-    public String getClassificationCode() {
-        return classificationCode;
-    }
-
-    public void setClassificationCode(String classificationCode) {
-        this.classificationCode = classificationCode;
-    }
-
-    @JsonIgnore
-    public String getRedactCode() {
-        return redactCode;
-    }
-
-    public void setRedactCode(String redactCode) {
-        this.redactCode = redactCode;
-    }
-
 }

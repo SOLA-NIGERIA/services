@@ -1,6 +1,6 @@
 /**
  * ******************************************************************************************
- * Copyright (C) 2015 - Food and Agriculture Organization of the United Nations (FAO).
+ * Copyright (C) 2014 - Food and Agriculture Organization of the United Nations (FAO).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -40,6 +40,7 @@ import org.sola.services.common.repository.entities.AbstractEntity;
 import org.sola.services.common.repository.entities.AbstractReadOnlyEntity;
 import org.sola.services.common.repository.entities.ChildEntityInfo;
 import org.sola.services.ejb.cache.businesslogic.CacheEJBLocal;
+
 /**
  *
  * @author soladev
@@ -51,6 +52,8 @@ public interface CommonRepository {
      */
     public static final String CONNECT_CONFIG_FILE_NAME = "mybatisConnectionConfig.xml";
 
+    DatabaseConnectionManager getDbConnectionManager();
+    
     void setDbConnectionManager(DatabaseConnectionManager dbConnectionManager);
 
     <T extends AbstractEntity> T saveEntity(T entity);
@@ -104,8 +107,8 @@ public interface CommonRepository {
     <T extends AbstractReadOnlyEntity> List<T> executeFunction(Map params, Class<T> entityClass);
 
     ArrayList<HashMap> executeSql(Map params);
-    
-    int bulkUpdate(Map params); 
-    
+
+    int bulkUpdate(Map params);
+
     CacheEJBLocal getCache();
 }

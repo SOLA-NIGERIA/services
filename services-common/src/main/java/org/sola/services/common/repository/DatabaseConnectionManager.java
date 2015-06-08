@@ -1,6 +1,6 @@
 /**
  * ******************************************************************************************
- * Copyright (C) 2015 - Food and Agriculture Organization of the United Nations (FAO).
+ * Copyright (C) 2014 - Food and Agriculture Organization of the United Nations (FAO).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -31,6 +31,7 @@
  */
 package org.sola.services.common.repository;
 
+import java.io.InputStream;
 import java.io.Reader;
 import java.util.ResourceBundle;
 import org.apache.ibatis.io.Resources;
@@ -111,13 +112,32 @@ public class DatabaseConnectionManager {
                 environment = SHARED_ENV;
             }
             // Load the Mybatis configuration file and the mapper classes into the SqlSessionFactory. 
-            Reader reader = Resources.getUrlAsReader(configFileUrl);
             if (sqlSessionFactory == null) {
-                sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader, environment);
+                if(environment.equalsIgnoreCase(SHARED_ENV)){
+                    // Try to get settings from the root META-INF folder
+                    System.out.println("Trying to load connection settings from the WEB-INF root folder");
+                    InputStream connConf = this.getClass().getClassLoader().getResourceAsStream("../" + CommonRepository.CONNECT_CONFIG_FILE_NAME);
+                    
+                    if(connConf != null){
+                        sqlSessionFactory = new SqlSessionFactoryBuilder().build(connConf, environment);
+                    } else {
+                        System.out.println("Trying to load connection settings from the META-INF of EAR root folder");
+                        connConf = this.getClass().getClassLoader().getResourceAsStream("../META-INF/" + CommonRepository.CONNECT_CONFIG_FILE_NAME);
+
+                        if(connConf != null){
+                            sqlSessionFactory = new SqlSessionFactoryBuilder().build(connConf, environment);
+                        } 
+                    }
+                }
+                
+                if (sqlSessionFactory == null){
+                    System.out.println("Loading connection settings from local EJB");
+                    Reader reader = Resources.getUrlAsReader(configFileUrl);
+                    sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader, environment);
+                }
 
                 sqlSessionFactory.getConfiguration().addMapper(mapperClass);
                 this.mapperClass = mapperClass;
-
             }
         } catch (Exception ex) {
             throw new SOLAException(ServiceMessage.GENERAL_UNEXPECTED,
@@ -139,7 +159,7 @@ public class DatabaseConnectionManager {
     public SqlSession getSqlSession() {
         return getSqlSessionFactory().openSession();
     }
-
+    
     public Class<? extends CommonMapper> getMapperClass() {
         return mapperClass;
     }

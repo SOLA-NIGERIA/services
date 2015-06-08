@@ -1,28 +1,30 @@
 /**
  * ******************************************************************************************
- * Copyright (C) 2015 - Food and Agriculture Organization of the United Nations (FAO).
- * All rights reserved.
+ * Copyright (C) 2014 - Food and Agriculture Organization of the United Nations
+ * (FAO). All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    1. Redistributions of source code must retain the above copyright notice,this list
- *       of conditions and the following disclaimer.
- *    2. Redistributions in binary form must reproduce the above copyright notice,this list
- *       of conditions and the following disclaimer in the documentation and/or other
- *       materials provided with the distribution.
- *    3. Neither the name of FAO nor the names of its contributors may be used to endorse or
- *       promote products derived from this software without specific prior written permission.
+ * 1. Redistributions of source code must retain the above copyright notice,this
+ * list of conditions and the following disclaimer. 2. Redistributions in binary
+ * form must reproduce the above copyright notice,this list of conditions and
+ * the following disclaimer in the documentation and/or other materials provided
+ * with the distribution. 3. Neither the name of FAO nor the names of its
+ * contributors may be used to endorse or promote products derived from this
+ * software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
- * SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,PROCUREMENT
- * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,STRICT LIABILITY,OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT,STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
 package org.sola.services.common.repository;
@@ -37,6 +39,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
 import org.sola.common.SOLAException;
+import org.sola.common.StringUtility;
 import org.sola.common.messaging.ServiceMessage;
 import org.sola.services.common.EntityAction;
 import org.sola.services.common.LocalInfo;
@@ -44,6 +47,7 @@ import org.sola.services.common.ejbs.AbstractEJBLocal;
 import org.sola.services.common.faults.FaultUtility;
 import org.sola.services.common.repository.entities.AbstractCodeEntity;
 import org.sola.services.common.repository.entities.AbstractEntity;
+import org.sola.services.common.repository.entities.AbstractEntityInfo;
 import org.sola.services.common.repository.entities.AbstractReadOnlyEntity;
 import org.sola.services.common.repository.entities.AbstractVersionedEntity;
 import org.sola.services.common.repository.entities.ChildEntityInfo;
@@ -65,6 +69,7 @@ public class CommonRepositoryImpl implements CommonRepository {
     private static final String LOAD_INHIBITORS = "Repository.loadInhibitors";
     private DatabaseConnectionManager dbConnectionManager = null;
     CacheEJBLocal cache;
+
     /**
      * Loads the myBatis configuration file and initializes a connection to the
      * database.
@@ -87,11 +92,12 @@ public class CommonRepositoryImpl implements CommonRepository {
      * Returns the {@linkplain DatabaseConnectionManager} used for this instance
      * of the repository.
      */
+    @Override
     public DatabaseConnectionManager getDbConnectionManager() {
         return dbConnectionManager;
     }
-    
-     /**
+
+    /**
      * Retrieves the EJB cache used by the repository.
      *
      * @return
@@ -177,13 +183,16 @@ public class CommonRepositoryImpl implements CommonRepository {
 
     /**
      * Allows an array of entity classes to be set as inhibitors for a given SQL
-     * Query. <p> The Common Repository will attempt to eagerly load all child
-     * entities of an entity when that entity is loaded via a getEntity or
-     * getEntityList method. In some cases, the child entities are not required
-     * and the additional load is an unnecessary performance overhead. The Load
+     * Query.
+     * <p>
+     * The Common Repository will attempt to eagerly load all child entities of
+     * an entity when that entity is loaded via a getEntity or getEntityList
+     * method. In some cases, the child entities are not required and the
+     * additional load is an unnecessary performance overhead. The Load
      * Inhibitors allows the developer to indicate which child entities should
-     * not be loaded based on the child entity class. </p> <p> Once set, the
-     * load inhibitors remain set until the developer calls the {@linkplain
+     * not be loaded based on the child entity class. </p>
+     * <p>
+     * Once set, the load inhibitors remain set until the developer calls the {@linkplain
      * #clearLoadInhibitors()} method. This is to ensure any level of the child
      * hierarchy can be inhibited, but also means that the clear method should
      * be called once the necessary loading is complete </p>
@@ -213,8 +222,10 @@ public class CommonRepositoryImpl implements CommonRepository {
 
     /**
      * Retrieves a child entity that is in a one to one relationship with its
-     * parent entity. <p> To customize the default join criteria used to load
-     * the child entity, override the parent entity
+     * parent entity.
+     * <p>
+     * To customize the default join criteria used to load the child entity,
+     * override the parent entity
      * {@linkplain AbstractReadOnlyEntity#getChildJoinSqlParams} to return the
      * appropriately configured SQL Parameters. </p>
      *
@@ -286,16 +297,56 @@ public class CommonRepositoryImpl implements CommonRepository {
      */
     private <T extends AbstractReadOnlyEntity> T mapToEntity(T entity, Map<String, Object> row) {
         if (row != null && !row.isEmpty()) {
-            for (ColumnInfo columnInfo : entity.getColumns()) {
-                if (row.containsKey(columnInfo.getColumnName().toLowerCase())) {
-                    entity.setEntityFieldValue(columnInfo,
-                            row.get(columnInfo.getColumnName().toLowerCase()));
+            // Ticket #453. Check if the user has the appropraite security clearance
+            // to view this record. If not, do not load the entity.
+            String classificationCode = (String) row.get(AbstractReadOnlyEntity.CLASSIFICATION_CODE_COLUMN_NAME);
+            if (entity.hasSecurityClearance(classificationCode)) {
+                // Ticket #453. Obtain the redact code for this entity
+                String redactCode = (String) row.get(AbstractReadOnlyEntity.REDACT_CODE_COLUMN_NAME);
+                entity.setRedacted(false);
+                for (ColumnInfo columnInfo : entity.getColumns()) {
+                    // Note that the row map only contains columns with non-null values
+                    if (row.containsKey(columnInfo.getColumnName().toLowerCase())) {
+                        Object value = row.get(columnInfo.getColumnName().toLowerCase());
+                        if (entity.isRedactRequired(columnInfo, redactCode)) {
+                            // The field must have its value redacted
+                            value = entity.getRedactedValue(columnInfo);
+                            entity.setRedacted(true);
+                        }
+                        setEntityRedactCode(entity, columnInfo, redactCode);
+                        entity.setEntityFieldValue(columnInfo, value);
+                    }
                 }
+                markAsLoaded(entity);
             }
-            markAsLoaded(entity);
-
         }
         return entity;
+    }
+
+    /**
+     * Updates the redactCode for the entity to represent the
+     * minRedactClassification for a column if no override redact code has been
+     * set on the entity.
+     *
+     * @param <T>
+     * @param entity The entity being processed
+     * @param columnInfo The column to validate
+     * @param overrideRedactCode The override redact code set on the entity
+     */
+    private <T extends AbstractReadOnlyEntity> void setEntityRedactCode(T entity,
+            AbstractEntityInfo columnInfo, String overrideRedactCode) {
+        if (StringUtility.isEmpty(overrideRedactCode)
+                && !StringUtility.isEmpty(columnInfo.getMinRedactClassification())) {
+            // The column has a minRedactClassification. Set the classification on 
+            // this column as the redact code for the entity. Note that a higher 
+            // minRedactClassification may have already been assigned to the entity, 
+            // so check for that case as well.
+            if (StringUtility.isEmpty(entity.getRedactCode())
+                    || columnInfo.getMinRedactClassification().compareTo(entity.getRedactCode()) > 0) {;
+                entity.setEntityFieldValue(entity.getColumnInfo(AbstractReadOnlyEntity.REDACT_CODE_COLUMN_NAME),
+                        columnInfo.getMinRedactClassification());
+            }
+        }
     }
 
     /**
@@ -303,7 +354,9 @@ public class CommonRepositoryImpl implements CommonRepository {
      * executing an SQL query. Each column of the result is mapped to the entity
      * field based on the name of the column specified in the
      *
-     * @Column annotation. <p> Overloaded version of
+     * @Column annotation.
+     * <p>
+     * Overloaded version of
      * {@linkplain #mapToEntity(.AbstractReadOnlyEntity, Map)} that creates a
      * new instance of the entity to populate based on the entity class. </p>
      *
@@ -446,6 +499,17 @@ public class CommonRepositoryImpl implements CommonRepository {
             U mapper, boolean beforeSave) {
 
         for (ChildEntityInfo childInfo : entity.getChildEntityInfo()) {
+            if (entity.isRedactRequired(childInfo, entity.getRedactCode())
+                    || (childInfo.isRedact() && entity.isRedacted())) {
+                // Do not allow an update of the child or list as the entity is subject to
+                // redaction. Note that the second part of the check is to prevent cases 
+                // where the redact code has been changed by the user to a lesser value. 
+                // If the entity was redacted on load, do not allow saving of any redacted 
+                // child as this may result in data loss or duplication. It also ensures
+                // a nefarious user cannot change the details of an entity that they do 
+                // not have privileges to view. 
+                continue;
+            }
             if (AbstractEntity.class.isAssignableFrom(childInfo.getEntityClass())) {
                 if (childInfo.isListField() && !childInfo.isManyToMany()) {
                     // One to many child list
@@ -858,13 +922,16 @@ public class CommonRepositoryImpl implements CommonRepository {
             params.put(CommonSqlProvider.PARAM_WHERE_PART, whereClause);
             params.put(CommonSqlProvider.PARAM_ENTITY_CLASS, entity.getClass());
 
-            SqlSession session = getSqlSession();
-            try {
-                Map result = getMapper(session).getEntity(params);
-                mapToEntity(entity, result);
-            } finally {
-                session.close();
-            }
+            Map result = mapper.getEntity(params);
+            mapToEntity(entity, result);
+
+            /*SqlSession session = getSqlSession();
+             try {
+             Map result = getMapper(session).getEntity(params);
+             mapToEntity(entity, result);
+             } finally {
+             session.close();
+             } */
             return entity;
         }
         return entity;
@@ -882,14 +949,18 @@ public class CommonRepositoryImpl implements CommonRepository {
     public <T extends AbstractEntity> T saveEntity(T entity) {
         if (entity != null) {
             SqlSession session = getSqlSession();
-          try {
+            try {
+                if (entity.isCacheable()) {
+                    // Check if the entity is cacheable before saving as the
+                    // entity can be null after the save due to deletion. 
+                    getCache().clearEntityLists(entity.getClass());
+                }
                 entity = saveEntity(entity, getMapper(session));
-          }
-        finally {
+            } finally {
                 session.close();
-    }
-}
-return entity;
+            }
+        }
+        return entity;
     }
 
     /**
@@ -904,7 +975,7 @@ return entity;
      * returned.
      */
     @Override
-        public <T> T getScalar(Class<T> scalarClass, Map params) {
+    public <T> T getScalar(Class<T> scalarClass, Map params) {
 
         T result = null;
         SqlSession session = getSqlSession();
@@ -937,7 +1008,7 @@ return entity;
     }
 
     @Override
-        public List<String> getChildIdList(ChildEntityInfo childInfo, String parentId) {
+    public List<String> getChildIdList(ChildEntityInfo childInfo, String parentId) {
 
         List<String> result = null;
         SqlSession session = getSqlSession();
@@ -955,8 +1026,8 @@ return entity;
         Map<String, Object> params = new HashMap<String, Object>();
 
         String parentIdField = childInfo.getParentIdField();
-        Class<? extends AbstractEntity> entityClass =
-                (Class<? extends AbstractEntity>) childInfo.getEntityClass();
+        Class<? extends AbstractEntity> entityClass
+                = (Class<? extends AbstractEntity>) childInfo.getEntityClass();
 
         if (childInfo.isManyToMany()) {
             // Get the details of the Many to Many class and the select the child id column
@@ -964,7 +1035,7 @@ return entity;
 
             params.put(CommonSqlProvider.PARAM_SELECT_PART,
                     RepositoryUtility.getColumnInfo(entityClass,
-                    childInfo.getChildIdField()).getColumnName());
+                            childInfo.getChildIdField()).getColumnName());
 
         } else {
             // One to many relationship so just select the id column
@@ -984,15 +1055,11 @@ return entity;
         // Set the parent id parameter
         params.put("parentId", parentId);
 
-        
-
-return getScalarList(String.class  
-
-, params, mapper);
+        return getScalarList(String.class, params, mapper);
     }
 
     @Override
-        public <T> List<T> getScalarList(Class<T> scalarClass, Map params) {
+    public <T> List<T> getScalarList(Class<T> scalarClass, Map params) {
 
         List<T> result = null;
         SqlSession session = getSqlSession();
@@ -1010,7 +1077,7 @@ return getScalarList(String.class
     }
 
     @Override
-        public <T extends AbstractReadOnlyEntity> T refreshEntity(T entity) {
+    public <T extends AbstractReadOnlyEntity> T refreshEntity(T entity) {
 
         SqlSession session = getSqlSession();
         try {
@@ -1022,7 +1089,7 @@ return getScalarList(String.class
     }
 
     @Override
-        public <T extends AbstractReadOnlyEntity> T getEntity(Class<T> entityClass, String id) {
+    public <T extends AbstractReadOnlyEntity> T getEntity(Class<T> entityClass, String id) {
 
         ArrayList<ColumnInfo> ids = (ArrayList<ColumnInfo>) RepositoryUtility.getIdColumns(entityClass, RepositoryUtility.getColumns(entityClass));
 
@@ -1034,7 +1101,7 @@ return getScalarList(String.class
     }
 
     @Override
-        public <T extends AbstractReadOnlyEntity> T getEntity(Class<T> entityClass, String id, String lang) {
+    public <T extends AbstractReadOnlyEntity> T getEntity(Class<T> entityClass, String id, String lang) {
 
         ArrayList<ColumnInfo> ids = (ArrayList<ColumnInfo>) RepositoryUtility.getIdColumns(entityClass, RepositoryUtility.getColumns(entityClass));
 
@@ -1047,7 +1114,7 @@ return getScalarList(String.class
     }
 
     @Override
-        public <T extends AbstractReadOnlyEntity> T getEntity(Class<T> entityClass,
+    public <T extends AbstractReadOnlyEntity> T getEntity(Class<T> entityClass,
             String whereClause, Map params) {
 
         params = params == null ? new HashMap<String, Object>() : params;
@@ -1057,7 +1124,7 @@ return getScalarList(String.class
     }
 
     @Override
-        public <T extends AbstractReadOnlyEntity> T getEntity(Class<T> entityClass,
+    public <T extends AbstractReadOnlyEntity> T getEntity(Class<T> entityClass,
             Map params) {
 
         params = params == null ? new HashMap<String, Object>() : params;
@@ -1097,39 +1164,49 @@ return getScalarList(String.class
         return entity;
     }
 
+    /**
+     * Generic method to return list of {@link AbstractCodeEntity}
+     *
+     * @param <T> Code entity class type
+     * @param languageCode Language (locale) code, used to localize final
+     * result. If null is provided, full unlocalized string will be returned.
+     * @return
+     */
     @Override
-        public <T extends AbstractCodeEntity> List<T> getCodeList(Class<T> codeListClass,
+    public <T extends AbstractCodeEntity> List<T> getCodeList(Class<T> codeListClass,
             String languageCode) {
 
         HashMap<String, Object> params = new HashMap<String, Object>();
         if (languageCode != null) {
             params.put(CommonSqlProvider.PARAM_LANGUAGE_CODE, languageCode);
         }
-
         return getEntityList(codeListClass, params);
     }
 
     @Override
-        public <T extends AbstractCodeEntity> T getCode(Class<T> codeListClass,
+    public <T extends AbstractCodeEntity> T getCode(Class<T> codeListClass,
             String entityCode, String languageCode) {
 
-        HashMap<String, Object> params = new HashMap<String, Object>();
-        if (languageCode != null) {
-            params.put(CommonSqlProvider.PARAM_LANGUAGE_CODE, languageCode);
+        T result = null;
+        // Obtain the code list from the cache and then locate the specific
+        // entity code. 
+        List<T> list = getCodeList(codeListClass, languageCode);
+        for (T code : list) {
+            if (code.getCode().equals(entityCode)) {
+                result = code;
+                break;
+            }
         }
-        params.put(CommonSqlProvider.PARAM_WHERE_PART, "code = #{entityCode}");
-        params.put("entityCode", entityCode);
-
-        return getEntity(codeListClass, params);
+        return result;
     }
 
     @Override
-        public <T extends AbstractReadOnlyEntity> List<T> getEntityList(Class<T> entityClass) {
+    public <T extends AbstractReadOnlyEntity> List<T> getEntityList(Class<T> entityClass) {
         return getEntityList(entityClass, new HashMap<String, Object>());
     }
 
     @Override
-        public <T extends AbstractReadOnlyEntity> List<T> getEntityList(Class<T> entityClass,
+    public <T extends AbstractReadOnlyEntity> List<T> getEntityList(Class<T> entityClass,
             String whereClause, Map params) {
 
         params = params == null ? new HashMap<String, Object>() : params;
@@ -1139,16 +1216,38 @@ return getScalarList(String.class
     }
 
     @Override
-        public <T extends AbstractReadOnlyEntity> List<T> getEntityList(Class<T> entityClass,
+    public <T extends AbstractReadOnlyEntity> List<T> getEntityList(Class<T> entityClass,
             Map params) {
 
+        // Determine the Language Code for the query if it has been set
         params = params == null ? new HashMap<String, Object>() : params;
-        SqlSession session = getSqlSession();
+        if (LocalInfo.get(CommonSqlProvider.PARAM_LANGUAGE_CODE) != null
+                && !params.containsKey(CommonSqlProvider.PARAM_LANGUAGE_CODE)) {
+            params.put(CommonSqlProvider.PARAM_LANGUAGE_CODE,
+                    LocalInfo.get(CommonSqlProvider.PARAM_LANGUAGE_CODE));
+
+        }
+
+        // Determine the cache key
+        String key = null;
+        if (RepositoryUtility.isCachable(entityClass)) {
+            key = getCache().getKey(entityClass,
+                    (String) params.get(CommonSqlProvider.PARAM_LANGUAGE_CODE));
+        }
+
         List<T> entityList = null;
-        try {
-            entityList = getEntityList(entityClass, params, getMapper(session));
-        } finally {
-            session.close();
+        if (!StringUtility.isEmpty(key) && getCache().isCachedList(key)) {
+            entityList = getCache().getList(entityClass, key);
+        } else {
+            SqlSession session = getSqlSession();
+            try {
+                entityList = getEntityList(entityClass, params, getMapper(session));
+            } finally {
+                session.close();
+            }
+            if (RepositoryUtility.isCachable(entityClass)) {
+                getCache().putList(key, entityList);
+            }
         }
         return entityList;
     }
@@ -1183,7 +1282,10 @@ return getScalarList(String.class
     /**
      * Retrieves a list of entities by generating a where clause based on the
      * list of entity ids.
-     * <p> Uses and IN clause for the SQL query. </p> <p> Overloaded version of {@linkplain #getEntityListByIds(java.lang.Class, java.util.List,
+     * <p>
+     * Uses and IN clause for the SQL query. </p>
+     * <p>
+     * Overloaded version of {@linkplain #getEntityListByIds(java.lang.Class, java.util.List,
      * java.util.Map) } that defaults the parameter map to null. </p>
      *
      * @param <T> The generic type of the entity being loaded. Must be a
@@ -1193,7 +1295,7 @@ return getScalarList(String.class
      * @return THe list of entities returned from the SQL query.
      */
     @Override
-        public <T extends AbstractReadOnlyEntity> List<T> getEntityListByIds(Class<T> entityClass,
+    public <T extends AbstractReadOnlyEntity> List<T> getEntityListByIds(Class<T> entityClass,
             List<String> ids) {
         return getEntityListByIds(entityClass, ids, new HashMap<String, Object>());
     }
@@ -1201,8 +1303,9 @@ return getScalarList(String.class
     /**
      * Retrieves a list of entities by generating a where clause based on the
      * list of entity ids.
-     * <p> Uses and IN clause for the SQL query. If a PARAM_WHERE_PART is
-     * provided in the params map, the IN clause is ANDed to the existing
+     * <p>
+     * Uses and IN clause for the SQL query. If a PARAM_WHERE_PART is provided
+     * in the params map, the IN clause is ANDed to the existing
      * PARAM_WHERE_PART.</p>
      *
      * @param <T> The generic type of the entity being loaded. Must be a
@@ -1214,7 +1317,7 @@ return getScalarList(String.class
      * @return THe list of entities returned from the SQL query.
      */
     @Override
-        public <T extends AbstractReadOnlyEntity> List<T> getEntityListByIds(Class<T> entityClass,
+    public <T extends AbstractReadOnlyEntity> List<T> getEntityListByIds(Class<T> entityClass,
             List<String> ids, Map params) {
 
         if (ids == null || ids.isEmpty()) {
@@ -1249,10 +1352,11 @@ return getScalarList(String.class
 
     /**
      * Loads the child entity lists for both One to Many and Many to Many
-     * associations. <p> To customize the default join criteria used to load the
-     * child entity list, override
-     * {@linkplain AbstractReadOnlyEntity#getChildJoinSqlParams} to return the
-     * appropriately configured SQL Parameters. </p>
+     * associations.
+     * <p>
+     * To customize the default join criteria used to load the child entity
+     * list, override {@linkplain AbstractReadOnlyEntity#getChildJoinSqlParams}
+     * to return the appropriately configured SQL Parameters. </p>
      *
      * @param <T> The generic type of the parent entity. Must be a descendent of
      * {@linkplain AbstractReadOnlyEntity}
@@ -1267,7 +1371,7 @@ return getScalarList(String.class
      * @return The list of child entities or null if there are none to load.
      */
     @Override
-        public <T extends AbstractReadOnlyEntity, V extends AbstractReadOnlyEntity> List<V> getChildEntityList(
+    public <T extends AbstractReadOnlyEntity, V extends AbstractReadOnlyEntity> List<V> getChildEntityList(
             T parentEntity, Class<V> childEntityClass, ChildEntityInfo childInfo) {
 
         SqlSession session = getSqlSession();
@@ -1283,10 +1387,11 @@ return getScalarList(String.class
 
     /**
      * Loads the child entity lists for both One to Many and Many to Many
-     * associations. <p> To customize the default join criteria used to load the
-     * child entity list, override
-     * {@linkplain AbstractReadOnlyEntity#getChildJoinSqlParams} to return the
-     * appropriately configured SQL Parameters. </p>
+     * associations.
+     * <p>
+     * To customize the default join criteria used to load the child entity
+     * list, override {@linkplain AbstractReadOnlyEntity#getChildJoinSqlParams}
+     * to return the appropriately configured SQL Parameters. </p>
      *
      * @param <T> The generic type of the parent entity. Must be a descendent of
      * {@linkplain AbstractReadOnlyEntity}
@@ -1315,8 +1420,8 @@ return getScalarList(String.class
 
             if (childInfo.isManyToMany()) {
                 // Get the details of the Many to Many class
-                Class<? extends AbstractEntity> manyToManyClass =
-                        (Class<? extends AbstractEntity>) childInfo.getManyToManyClass();
+                Class<? extends AbstractEntity> manyToManyClass
+                        = (Class<? extends AbstractEntity>) childInfo.getManyToManyClass();
 
                 // Get the parent and child column names on the Many to Many class
                 String parentIdColumn = RepositoryUtility.getColumnInfo(manyToManyClass,
@@ -1327,7 +1432,7 @@ return getScalarList(String.class
                 // Create a WHERE clause that will use a nested select on the Many to Many entity
                 // to restrict the selection of records from the target child entity table. 
                 // #307 Determine the correct name of the primary key column on the child entity. 
-                String childPKColumnName = RepositoryUtility.getIdColumns(childEntityClass).get(0).getColumnName(); 
+                String childPKColumnName = RepositoryUtility.getIdColumns(childEntityClass).get(0).getColumnName();
                 String whereClause = childPKColumnName + " IN ( SELECT a." + childIdColumn
                         + " FROM " + RepositoryUtility.getTableName(manyToManyClass) + " a "
                         + " WHERE a." + parentIdColumn + " = #{parentId})";
@@ -1361,41 +1466,39 @@ return getScalarList(String.class
      * entity list to load
      * @param mapper The Mybatis mapper class used for this loading process.
      */
-    public 
-
-<T extends AbstractReadOnlyEntity, U extends CommonMapper> void loadChildren(T entity, U mapper) {
+    public <T extends AbstractReadOnlyEntity, U extends CommonMapper> void loadChildren(T entity, U mapper) {
+        String redactCode = entity.getRedactCode();
         for (ChildEntityInfo childInfo : entity.getChildEntityInfo()) {
-            if (AbstractReadOnlyEntity.class  
+            if (AbstractReadOnlyEntity.class.isAssignableFrom(childInfo.getEntityClass())) {
+                Class<? extends AbstractReadOnlyEntity> childEntityClass
+                        = (Class<? extends AbstractReadOnlyEntity>) childInfo.getEntityClass();
 
-    .isAssignableFrom(childInfo.getEntityClass())) {
-                Class<? extends AbstractReadOnlyEntity> childEntityClass =
-            (Class<? extends AbstractReadOnlyEntity>) childInfo.getEntityClass();
-    // Check to determine if loading of this child class should be skipped or not
+                // Determine if this child entity is being redacted. If so, do not load it. 
+                boolean redactRequired = entity.isRedactRequired(childInfo, redactCode);
+                // Check to determine if loading of this child class should be skipped or not
+                if (!isInhibitLoad(childEntityClass) && !redactRequired) {
+                    Object child;
+                    if (childInfo.isExternalEntity()) {
+                        // External Entity
+                        child = getExternalEntity(entity, childInfo, mapper);
+                    } else if (childInfo.isListField()) {
+                        // Load the child list for the one to many or many to many list. 
+                        child = getChildEntityList(entity, childEntityClass, childInfo, mapper);
+                    } else {
+                        // One to One relationship, so load the child
+                        child = getChildEntity(entity, childEntityClass, childInfo, mapper);
+                    }
+                    entity.setEntityFieldValue(childInfo, child);
+                }
+                entity.setRedacted(redactRequired || entity.isRedacted());
+                setEntityRedactCode(entity, childInfo, redactCode);
 
-    if (!isInhibitLoad(childEntityClass) 
-        ) {
-                    Object child = null;
-        if (childInfo.isExternalEntity()) {
-            // External Entity
-            child = getExternalEntity(entity, childInfo, mapper);
-        } else if (childInfo.isListField()) {
-            // Load the child list for the one to many or many to many list. 
-            child = getChildEntityList(entity, childEntityClass, childInfo, mapper);
-        } else {
-            // One to One relationship, so load the child
-            child = getChildEntity(entity, childEntityClass, childInfo, mapper);
+            } else {
+                // The child entity does not inherit from the SOLA Abstract Entity classes. 
+                // Allow the loading of the external need to be managed by the parent repository. 
+                loadOtherEntity(entity, childInfo, mapper);
+            }
         }
-        entity.setEntityFieldValue(childInfo, child);
-    }
-
-    
-        else {
-                    // The child entity does not inherit from the SOLA Abstract Entity classes. 
-                    // Allow the loading of the external need to be managed by the parent repository. 
-                    loadOtherEntity(entity, childInfo, mapper);
-    }
-}
-}
     }
 
     /**
@@ -1425,11 +1528,8 @@ return getScalarList(String.class
             //Many to Many, so get the list of child ids from the many to many table in this
             //EJB using the parent id and pass the list of child ids to the external EJB.  
             argValue = getChildIdList(childInfo, entity.getEntityId(), mapper);
-            argType 
-
-= List.class  
-;
-} else {
+            argType = List.class;
+        } else {
             // A One to One or One to Many list. If One to One, it may be necessray to pass th
             // child id on the parent. If One to Many, pass the parent id to return the list 
             // of children as the child must reference the parent. 
@@ -1439,12 +1539,9 @@ return getScalarList(String.class
                         entity.getColumnInfo(childInfo.getChildIdField()));
             } else {
                 argValue = entity.getEntityId();
-            
-
-}
-            argType = String.class  
-;
-}
+            }
+            argType = String.class;
+        }
         try {
             Method loadMethod = ejb.getClass().getMethod(childInfo.getLoadMethod(), argType);
             child = loadMethod.invoke(ejb, argValue);
@@ -1454,7 +1551,7 @@ return getScalarList(String.class
                     // any exception raised when invoking the ejb method will be wrapped in an
                     // InvocationTargetException. The true cause can be masked by this exception.
                     new Object[]{"Unable to invoke method " + childInfo.getLoadMethod(),
-                FaultUtility.getStackTraceAsString(ex)});
+                        FaultUtility.getStackTraceAsString(ex)});
         }
         return child;
     }
@@ -1487,7 +1584,7 @@ return getScalarList(String.class
      * statement to run function.
      */
     @Override
-        public ArrayList<HashMap> executeFunction(Map params) {
+    public ArrayList<HashMap> executeFunction(Map params) {
         return executeSql(params);
     }
 
@@ -1500,7 +1597,7 @@ return getScalarList(String.class
      * @param entityClass The class of the entity to cast results to.
      */
     @Override
-        public <T extends AbstractReadOnlyEntity> List<T> executeFunction(Map params, Class<T> entityClass) {
+    public <T extends AbstractReadOnlyEntity> List<T> executeFunction(Map params, Class<T> entityClass) {
         return mapToEntityList(entityClass, executeSql(params));
     }
 
@@ -1512,7 +1609,7 @@ return getScalarList(String.class
      * statement to run the SQL.
      */
     @Override
-        public ArrayList<HashMap> executeSql(Map params) {
+    public ArrayList<HashMap> executeSql(Map params) {
 
         if (params == null || !params.containsKey(CommonSqlProvider.PARAM_QUERY)) {
             throw new SOLAException(ServiceMessage.GENERAL_UNEXPECTED, new Object[]{
@@ -1531,8 +1628,8 @@ return getScalarList(String.class
     }
 
     /**
-     * Issue #248 Add Bulk Update capability to the repository. 
-     * Executes a dynamic bulk update command using the specified parameters.
+     * Issue #248 Add Bulk Update capability to the repository. Executes a
+     * dynamic bulk update command using the specified parameters.
      *
      * @param params {@link CommonSqlProvider#PARAM_QUERY} must be supplied with
      * the template for the bulk update statement. Values for the update can be
@@ -1540,7 +1637,7 @@ return getScalarList(String.class
      * @return the number of rows updated.
      */
     @Override
-        public int bulkUpdate(Map params) {
+    public int bulkUpdate(Map params) {
         if (params == null || !params.containsKey(CommonSqlProvider.PARAM_QUERY)) {
             throw new SOLAException(ServiceMessage.GENERAL_UNEXPECTED, new Object[]{
                 "No dynamic SQL to execute!", "params=" + params
