@@ -1,6 +1,6 @@
 /**
  * ******************************************************************************************
- * Copyright (C) 2012 - Food and Agriculture Organization of the United Nations (FAO).
+ * Copyright (C) 2015 - Food and Agriculture Organization of the United Nations (FAO).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -25,26 +25,30 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package org.sola.services.ejb.party.repository.entities;
+package org.sola.services.ejb.cache.businesslogic;
 
-import javax.persistence.Table;
-import org.sola.services.common.repository.DefaultSorter;
-import org.sola.services.common.repository.entities.AbstractCodeEntity;
+import java.util.List;
+import javax.ejb.Local;
 
 /**
  *
- * Entity representing the party.gender_type code table. 
  * @author soladev
  */
-@Table(name = "state_type", schema = "party")
-@DefaultSorter(sortString="code")
-public class StateType extends AbstractCodeEntity {
+@Local
+public interface CacheEJBLocal {
 
-    public StateType() {
-        super();
-    }
+    <T> String getKey(Class<T> entityClass, String languageCode);
+
+    boolean isCachedList(String key);
+
+    <T> List<T> getList(Class<T> entityClass, String key);
+
+    <T> void putList(String key, List<T> list);
+
+    void clearEntityLists(Class entityClass);
+
+    void clear(String key);
+
+    void clearAll();
+
 }

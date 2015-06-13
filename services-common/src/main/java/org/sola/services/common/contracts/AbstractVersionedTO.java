@@ -1,6 +1,6 @@
 /**
  * ******************************************************************************************
- * Copyright (C) 2012 - Food and Agriculture Organization of the United Nations (FAO).
+ * Copyright (C) 2014 - Food and Agriculture Organization of the United Nations (FAO).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -31,6 +31,8 @@
  */
 package org.sola.services.common.contracts;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 /**
  *
  * @author soladev
@@ -49,6 +51,7 @@ public abstract class AbstractVersionedTO extends AbstractReadWriteTO {
      * @see org.sola.services.common.repository.entities.AbstractVersionedEntity#equals
      * @return 
      */
+    @JsonIgnore
     public int getRowVersion() {
         return rowVersion;
     }
@@ -57,6 +60,7 @@ public abstract class AbstractVersionedTO extends AbstractReadWriteTO {
         this.rowVersion = rowversion;
     }
 
+    @JsonIgnore
     public String getRowId() {
         return rowId;
     }

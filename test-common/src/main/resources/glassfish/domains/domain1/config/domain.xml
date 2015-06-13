@@ -40,19 +40,19 @@ option applies only if the new code is made subject to such option by the copyri
             <property name="serverName" value="${glassfish.jdbc-connection-pool.server}"></property>
             <property name="user" value="${glassfish.jdbc-connection-pool.username}"></property>
             <property name="password" value="${glassfish.jdbc-connection-pool.password}"></property>-->
-            <property name="databaseName" value="sola"></property>
+            <property name="databaseName" value="sola_sr"></property>
             <property name="portNumber" value="5432"></property>
             <property name="serverName" value="ubtserver"></property>
             <property name="user" value="postgres"></property>
             <property name="password" value="PRGS143"></property>
         </jdbc-connection-pool>
-        <jdbc-resource pool-name="sola" description="" jndi-name="jdbc/sola"></jdbc-resource>
+        <jdbc-resource pool-name="sola_sr" description="" jndi-name="jdbc/sola_sr"></jdbc-resource>
     </resources>
     <servers>
         <server name="server" config-ref="server-config">
             <resource-ref ref="jdbc/__TimerPool"/>
             <resource-ref ref="jdbc/__default"/>
-            <resource-ref ref="jdbc/sola"/>
+            <resource-ref ref="jdbc/sola_sr"/>
         </server>
     </servers>
     <configs>
@@ -106,7 +106,7 @@ option applies only if the new code is made subject to such option by the copyri
                   <property name="group-name-column" value="rolename"></property>
                   <property name="group-table" value="system.user_roles"></property>
                   <property name="user-table" value="system.appuser"></property>
-                  <property name="datasource-jndi" value="jdbc/sola"></property>
+                  <property name="datasource-jndi" value="jdbc/sola_sr"></property>
                   <property name="jaas-context" value="jdbcRealm"></property>
                 </auth-realm>
                 <jacc-provider policy-configuration-factory-provider="com.sun.enterprise.security.provider.PolicyConfigurationFactoryImpl" policy-provider="com.sun.enterprise.security.provider.PolicyWrapper" name="default">

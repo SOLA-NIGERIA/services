@@ -1,6 +1,6 @@
 /**
  * ******************************************************************************************
- * Copyright (C) 2012 - Food and Agriculture Organization of the United Nations (FAO).
+ * Copyright (C) 2015 - Food and Agriculture Organization of the United Nations (FAO).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -50,4 +50,7 @@ public interface AbstractEJBLocal {
     <T extends AbstractCodeEntity> List<T> getCodeEntityList(Class<T> codeEntityClass, String lang);
     <T extends AbstractCodeEntity> List<T> getCodeEntityList(Class<T> codeEntityClass);
     <T extends AbstractEntity> T saveEntity(T entityObject);
+    <T extends AbstractEntity> T getEntityById(Class<T> entityClass, String id);
+    String getUserName();
+    boolean isInRole(String... roles);
 }

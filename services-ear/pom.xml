@@ -4,15 +4,15 @@
     <parent>
         <artifactId>sola-services</artifactId>
         <groupId>org.sola</groupId>
-        <version>1501a</version>
+        <version>sr_1503a</version>
     </parent>
     <groupId>org.sola.services</groupId>
     <artifactId>sola-services-ear</artifactId>
     <packaging>ear</packaging>
-    <version>1501a</version>
+    <version>sr_1503a</version>
     <name>Services EAR</name>
     <build>
-        <finalName>${project.artifactId}</finalName>
+        <finalName>sola-sr-services-ear</finalName>
         <plugins>
             <plugin>
                 <!-- Use this plugin to provide extra control for packing into the EAR file -->
@@ -66,10 +66,14 @@
                             <groupId>${project.groupId}.ejbs</groupId>
                             <artifactId>sola-transaction</artifactId>
                         </ejbModule>
+                        <ejbModule>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>sola-cache</artifactId>
+                        </ejbModule>
                         <webModule>
                             <groupId>${project.groupId}.boundary</groupId>
                             <artifactId>sola-web-services</artifactId>
-                            <contextRoot>sola/webservices</contextRoot>
+                            <contextRoot>sola_sr/webservices</contextRoot>
                         </webModule>
                     </modules>
                 </configuration>
@@ -202,6 +206,12 @@
         <dependency>
             <groupId>${project.groupId}.ejbs</groupId>
             <artifactId>sola-transaction</artifactId>
+            <version>${project.version}</version>
+            <type>ejb</type>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sola-cache</artifactId>
             <version>${project.version}</version>
             <type>ejb</type>
         </dependency>

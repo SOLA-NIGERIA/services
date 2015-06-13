@@ -1,6 +1,6 @@
 /**
  * ******************************************************************************************
- * Copyright (C) 2012 - Food and Agriculture Organization of the United Nations (FAO).
+ * Copyright (C) 2015 - Food and Agriculture Organization of the United Nations (FAO).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -158,7 +158,7 @@ public final class FaultUtility {
         return fault;
     }
 
-    private static boolean isOptimisticLocking(Throwable t, String traceInfo) {
+    public static boolean isOptimisticLocking(Throwable t, String traceInfo) {
         return traceInfo.contains("row_has_different_change_time")
                 || hasCause(t, OptimisticLockException.class);
     }

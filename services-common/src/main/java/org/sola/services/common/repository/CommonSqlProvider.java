@@ -1,6 +1,6 @@
 /**
  * ******************************************************************************************
- * Copyright (C) 2012 - Food and Agriculture Organization of the United Nations (FAO).
+ * Copyright (C) 2014 - Food and Agriculture Organization of the United Nations (FAO).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -40,6 +40,7 @@ import java.util.Map;
 import org.sola.services.common.repository.entities.ColumnInfo;
 import org.sola.services.common.repository.entities.AbstractEntity;
 import static org.apache.ibatis.jdbc.SqlBuilder.*;
+import org.sola.services.common.LocalInfo;
 
 /**
  * Provides methods for generating common SQL statements that can be used in Mybatis mapper classes
@@ -59,18 +60,24 @@ public class CommonSqlProvider {
     public static final String PARAM_QUERY = "sql_param_query";
 
     /**
-     * Uses the column information from the entityClass to generate the appropriate SELECT clause
-     * for the entity. This includes aliasing columns that do not match the entity field name with 
-     * the entity field name to ensure Mybatis is able to use its default column to field mapping logic.
-     * <p> This method also ensures any fields marked with the {@linkplain Localized} annotation call
-     * the get_translation function and also allows specified fields to be excluded from the SELECT
-     * clause</p>
-     * @param <T> Generic type for the entity. It must extent {@linkplain AbstractReadOnlyEntity}.
-     * @param entityClass The entity class to build the select for. 
-     * @param localized If true, the call to the get_translation function will be included for
-     * any columns annotated with the {@linkplain Localized} annotation. Note that this assumes
-     * the Mapper function includes a parameter called {@code language}.  
-     * @param excludeList A list of field names to exclude from the SELECT clause. 
+     * Uses the column information from the entityClass to generate the
+     * appropriate SELECT clause for the entity. This includes aliasing columns
+     * that do not match the entity field name with the entity field name to
+     * ensure Mybatis is able to use its default column to field mapping logic.
+     * <p>
+     * This method also ensures any fields marked with the
+     * {@linkplain Localized} annotation call the get_translation function and
+     * also allows specified fields to be excluded from the SELECT clause</p>
+     *
+     * @param <T> Generic type for the entity. It must extent
+     * {@linkplain AbstractReadOnlyEntity}.
+     * @param entityClass The entity class to build the select for.
+     * @param localized If true, the call to the get_translation function will
+     * be included for any columns annotated with the {@linkplain Localized}
+     * annotation. Note that this assumes the Mapper function includes a
+     * parameter called {@code language}.
+     * @param excludeList A list of field names to exclude from the SELECT
+     * clause.
      */
     public static <T extends AbstractReadOnlyEntity> void buildSelectClauseSql(Class<T> entityClass,
             Boolean localized, List<String> excludeList) {
@@ -94,14 +101,19 @@ public class CommonSqlProvider {
     }
 
     /**
-     * Creates the UPDATE command based on the column information of the entity. Fields 
-     * that are marked with {@code updatable = false} in the {@linkplain javax.persistence.Column} 
-     * annotation are excluded from the UPDATE statement. 
-     * <p>The where clause in the UPDATE statement in constrained using all id columns (i.e. 
-     * columns marked with the {@linkplain javax.persistence.Id} annotation). 
-     * @param <T> The generic type for the entity. Must extend {@linkplain AbstractEntity}
-     * @param entity The entity to build the update statement for. 
-     * @return The UPDATE statement to execute for the entity. 
+     * Creates the UPDATE command based on the column information of the entity.
+     * Fields that are marked with {@code updatable = false} in the
+     * {@linkplain javax.persistence.Column} annotation are excluded from the
+     * UPDATE statement.
+     * <p>
+     * The where clause in the UPDATE statement in constrained using all id
+     * columns (i.e. columns marked with the {@linkplain javax.persistence.Id}
+     * annotation).
+     *
+     * @param <T> The generic type for the entity. Must extend
+     * {@linkplain AbstractEntity}
+     * @param entity The entity to build the update statement for.
+     * @return The UPDATE statement to execute for the entity.
      */
     public static <T extends AbstractEntity> String buildUpdateSql(T entity) {
 
@@ -125,16 +137,22 @@ public class CommonSqlProvider {
     }
 
     /**
-     * Creates the INSERT command based on the column information of the entity. Fields with null values
-     * and fields marked with {@code insertable = false} in the {@linkplain javax.persistence.Column} 
-     * annotation are excluded from the INSERT statement.  
-     * <p>Excluding fields with null values ensures any default values set by the database will be
-     * correctly assigned. Where a field is omitted from the insert either because it is null or 
-     * because it is marked {@code insertable = false}, the entity will be flagged to force refresh
-     * after the insert to pick up any default values that may have been set by the database. 
-     * @param <T> The generic type for the entity. Must extend {@linkplain AbstractEntity}
-     * @param entity The entity to build the insert statement for. 
-     * @return The INSERT statement to execute for the entity. 
+     * Creates the INSERT command based on the column information of the entity.
+     * Fields with null values and fields marked with {@code insertable = false}
+     * in the {@linkplain javax.persistence.Column} annotation are excluded from
+     * the INSERT statement.
+     * <p>
+     * Excluding fields with null values ensures any default values set by the
+     * database will be correctly assigned. Where a field is omitted from the
+     * insert either because it is null or because it is marked
+     * {@code insertable = false}, the entity will be flagged to force refresh
+     * after the insert to pick up any default values that may have been set by
+     * the database.
+     *
+     * @param <T> The generic type for the entity. Must extend
+     * {@linkplain AbstractEntity}
+     * @param entity The entity to build the insert statement for.
+     * @return The INSERT statement to execute for the entity.
      */
     public static <T extends AbstractEntity> String buildInsertSql(T entity) {
 
@@ -293,4 +311,28 @@ public class CommonSqlProvider {
         String sql = (String) params.get(PARAM_QUERY);
         return sql;
     }
+  /**
+     * Generates a sequence of Mybatis parameters based on a list of data
+     * values. Can the string returned can be appended to an SQL query as part
+     * of an IN clause. e.g. " id IN (" + prepareListParams(values, params) +
+     * ")";
+     *
+     * @param values The list of data values that will be the subject of the IN
+     * clause
+     * @param params The parameter Map for the SQL query
+     * @return A string that contains the Mybatis parameters representing the
+     * list data values
+     */
+    public static String prepareListParams(List values, Map params) {
+        String result = "";
+        int i = 0;
+        for (Object val : values) {
+            String paramName = "listVal" + i;
+            result += ",#{" + paramName + "}";
+            params.put(paramName, val);
+            i++;
+        }
+        return result.substring(1);
+    }
 }
+
