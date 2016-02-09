@@ -1,6 +1,6 @@
 /**
  * ******************************************************************************************
- * Copyright (C) 2012 - Food and Agriculture Organization of the United Nations (FAO).
+ * Copyright (C) 2014 - Food and Agriculture Organization of the United Nations (FAO).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -29,27 +29,26 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.sola.services.common.ejbs;
+package org.sola.services.ejb.refdata.entities;
 
-import java.util.List;
-import org.sola.services.common.repository.DatabaseConnectionManager;
+import javax.persistence.Table;
+import org.sola.services.common.repository.DefaultSorter;
 import org.sola.services.common.repository.entities.AbstractCodeEntity;
-import org.sola.services.common.repository.entities.AbstractEntity;
 
 /**
- *
+ * Entity representing the transaction.transaction_status_type code table
  * @author soladev
  */
-public interface AbstractEJBLocal {
-    
-    // Supports mocking of the DatabaseConnectionManager used by the EJB repository
-    void setDbConnectionManager(DatabaseConnectionManager dbConnection); 
-    <T extends AbstractCodeEntity> T getCodeEntity(Class<T> codeEntityClass, String code);
-    <T extends AbstractCodeEntity> T getCodeEntity(Class<T> codeEntityClass, String code, String lang);
-    <T extends AbstractCodeEntity> T saveCodeEntity(T codeEntity);
-    <T extends AbstractCodeEntity> List<T> getCodeEntityList(Class<T> codeEntityClass, String lang);
-    <T extends AbstractCodeEntity> List<T> getCodeEntityList(Class<T> codeEntityClass);
-    <T extends AbstractEntity> T saveEntity(T entityObject);
-    String getUserName();
-    boolean isInRole(String... roles);
+@Table(name = "transaction_status_type", schema="transaction")
+@DefaultSorter(sortString="display_value")
+public class TransactionStatusType extends AbstractCodeEntity {
+
+    public static final String PENDING = "pending";
+    public static final String APPROVED = "approved";
+    public static final String CANCELLED = "cancelled";
+    public static final String COMPLETED = "completed";
+
+    public TransactionStatusType() {
+        super();
+    }
 }

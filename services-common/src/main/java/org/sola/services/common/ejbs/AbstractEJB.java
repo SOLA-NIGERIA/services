@@ -153,7 +153,7 @@ public abstract class AbstractEJB implements AbstractEJBLocal {
      *
      * @return The user name.
      */
-    protected String getUserName() {
+    public String getUserName() {
         return sessionContext.getCallerPrincipal().getName();
     }
 

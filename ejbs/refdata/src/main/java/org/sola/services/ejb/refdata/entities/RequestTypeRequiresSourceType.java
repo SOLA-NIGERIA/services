@@ -1,6 +1,6 @@
 /**
  * ******************************************************************************************
- * Copyright (C) 2012 - Food and Agriculture Organization of the United Nations (FAO).
+ * Copyright (C) 2014 - Food and Agriculture Organization of the United Nations (FAO).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -25,31 +25,46 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package org.sola.services.common.ejbs;
+package org.sola.services.ejb.refdata.entities;
 
-import java.util.List;
-import org.sola.services.common.repository.DatabaseConnectionManager;
-import org.sola.services.common.repository.entities.AbstractCodeEntity;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import org.sola.services.common.repository.entities.AbstractEntity;
 
 /**
- *
+ * Entity representing the application.request_type_requires_source_type association table 
+ * (i.e many to many table). 
  * @author soladev
  */
-public interface AbstractEJBLocal {
-    
-    // Supports mocking of the DatabaseConnectionManager used by the EJB repository
-    void setDbConnectionManager(DatabaseConnectionManager dbConnection); 
-    <T extends AbstractCodeEntity> T getCodeEntity(Class<T> codeEntityClass, String code);
-    <T extends AbstractCodeEntity> T getCodeEntity(Class<T> codeEntityClass, String code, String lang);
-    <T extends AbstractCodeEntity> T saveCodeEntity(T codeEntity);
-    <T extends AbstractCodeEntity> List<T> getCodeEntityList(Class<T> codeEntityClass, String lang);
-    <T extends AbstractCodeEntity> List<T> getCodeEntityList(Class<T> codeEntityClass);
-    <T extends AbstractEntity> T saveEntity(T entityObject);
-    String getUserName();
-    boolean isInRole(String... roles);
+@Table(name = "request_type_requires_source_type", schema = "application")
+public class RequestTypeRequiresSourceType extends AbstractEntity {
+
+    @Id
+    @Column(name = "request_type_code")
+    private String requestTypeCode;
+    @Id
+    @Column(name = "source_type_code")
+    private String sourceTypeCode;
+
+    public RequestTypeRequiresSourceType() {
+        super();
+    }
+
+    public String getRequestTypeCode() {
+        return requestTypeCode;
+    }
+
+    public void setRequestTypeCode(String requestTypeCode) {
+        this.requestTypeCode = requestTypeCode;
+    }
+
+    public String getSourceTypeCode() {
+        return sourceTypeCode;
+    }
+
+    public void setSourceTypeCode(String sourceTypeCode) {
+        this.sourceTypeCode = sourceTypeCode;
+    }
+
 }

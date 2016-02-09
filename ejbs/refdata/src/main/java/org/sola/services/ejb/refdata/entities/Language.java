@@ -1,6 +1,6 @@
 /**
  * ******************************************************************************************
- * Copyright (C) 2012 - Food and Agriculture Organization of the United Nations (FAO).
+ * Copyright (C) 2014 - Food and Agriculture Organization of the United Nations (FAO).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -25,31 +25,86 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package org.sola.services.common.ejbs;
+package org.sola.services.ejb.refdata.entities;
 
-import java.util.List;
-import org.sola.services.common.repository.DatabaseConnectionManager;
-import org.sola.services.common.repository.entities.AbstractCodeEntity;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import org.sola.services.common.repository.Localized;
 import org.sola.services.common.repository.entities.AbstractEntity;
 
-/**
- *
- * @author soladev
- */
-public interface AbstractEJBLocal {
+@Table(name = "language", schema = "system")
+public class Language extends AbstractEntity {
     
-    // Supports mocking of the DatabaseConnectionManager used by the EJB repository
-    void setDbConnectionManager(DatabaseConnectionManager dbConnection); 
-    <T extends AbstractCodeEntity> T getCodeEntity(Class<T> codeEntityClass, String code);
-    <T extends AbstractCodeEntity> T getCodeEntity(Class<T> codeEntityClass, String code, String lang);
-    <T extends AbstractCodeEntity> T saveCodeEntity(T codeEntity);
-    <T extends AbstractCodeEntity> List<T> getCodeEntityList(Class<T> codeEntityClass, String lang);
-    <T extends AbstractCodeEntity> List<T> getCodeEntityList(Class<T> codeEntityClass);
-    <T extends AbstractEntity> T saveEntity(T entityObject);
-    String getUserName();
-    boolean isInRole(String... roles);
+    @Id
+    @Column
+    String code;
+
+    @Column(name="display_value")
+    @Localized
+    String displayValue;
+    
+    @Column
+    boolean active;
+    
+    @Column(name="is_default")
+    boolean isDefault;
+    
+    @Column(name="item_order")
+    int itemOrder;
+    
+    @Column(name="ltr")
+    boolean ltr;
+    
+    public Language(){
+        super();
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getDisplayValue() {
+        return displayValue;
+    }
+
+    public void setDisplayValue(String displayValue) {
+        this.displayValue = displayValue;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public boolean isIsDefault() {
+        return isDefault;
+    }
+    
+    public void setIsDefault(boolean isDefault) {
+        this.isDefault = isDefault;
+    }
+
+    public int getItemOrder() {
+        return itemOrder;
+    }
+
+    public void setItemOrder(int itemOrder) {
+        this.itemOrder = itemOrder;
+    }
+
+    public boolean isLtr() {
+        return ltr;
+    }
+
+    public void setLtr(boolean ltr) {
+        this.ltr = ltr;
+    }
 }

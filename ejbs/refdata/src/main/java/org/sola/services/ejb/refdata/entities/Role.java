@@ -1,6 +1,6 @@
 /**
  * ******************************************************************************************
- * Copyright (C) 2012 - Food and Agriculture Organization of the United Nations (FAO).
+ * Copyright (C) 2014 - Food and Agriculture Organization of the United Nations (FAO).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -25,31 +25,24 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package org.sola.services.common.ejbs;
+package org.sola.services.ejb.refdata.entities;
 
-import java.util.List;
-import org.sola.services.common.repository.DatabaseConnectionManager;
+import javax.persistence.Table;
+import org.sola.services.common.repository.DefaultSorter;
 import org.sola.services.common.repository.entities.AbstractCodeEntity;
-import org.sola.services.common.repository.entities.AbstractEntity;
 
-/**
- *
- * @author soladev
- */
-public interface AbstractEJBLocal {
-    
-    // Supports mocking of the DatabaseConnectionManager used by the EJB repository
-    void setDbConnectionManager(DatabaseConnectionManager dbConnection); 
-    <T extends AbstractCodeEntity> T getCodeEntity(Class<T> codeEntityClass, String code);
-    <T extends AbstractCodeEntity> T getCodeEntity(Class<T> codeEntityClass, String code, String lang);
-    <T extends AbstractCodeEntity> T saveCodeEntity(T codeEntity);
-    <T extends AbstractCodeEntity> List<T> getCodeEntityList(Class<T> codeEntityClass, String lang);
-    <T extends AbstractCodeEntity> List<T> getCodeEntityList(Class<T> codeEntityClass);
-    <T extends AbstractEntity> T saveEntity(T entityObject);
-    String getUserName();
-    boolean isInRole(String... roles);
+@Table(name = "approle", schema = "system")
+@DefaultSorter(sortString="display_value")
+public class Role extends AbstractCodeEntity {
+
+    public static final String QUERY_GET_ROLES_BY_USER_NAME =
+            "SELECT DISTINCT r.code, r.display_value, r.status, r.description "
+            + "FROM system.approle r INNER JOIN system.approle_appgroup rg ON r.code = rg.approle_code "
+            + "INNER JOIN system.appuser_appgroup ug ON rg.appgroup_id = ug.appgroup_id "
+            + "INNER JOIN system.appuser u ON ug.appuser_id = u.id "
+            + "WHERE u.username = #{username}";
+
+    public Role() {
+        super();
+    }
 }

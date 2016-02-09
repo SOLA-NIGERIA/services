@@ -10,7 +10,8 @@
     <artifactId>sola-services-ear</artifactId>
     <packaging>ear</packaging>
     <version>1601</version>
-    <name>Services EAR</name>
+    <name>Services EAR With Admin</name>
+
     <build>
         <finalName>${project.artifactId}</finalName>
         <plugins>
@@ -67,6 +68,10 @@
                             <artifactId>sola-transaction</artifactId>
                         </ejbModule>
                         <ejbModule>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>sola-cache</artifactId>
+                        </ejbModule>
+                        <ejbModule>
                             <groupId>${project.groupId}.ejbs</groupId>
                             <artifactId>sola-refdata</artifactId>
                         </ejbModule>
@@ -74,6 +79,11 @@
                             <groupId>${project.groupId}.boundary</groupId>
                             <artifactId>sola-web-services</artifactId>
                             <contextRoot>sola/webservices</contextRoot>
+                        </webModule>
+                        <webModule>
+                            <groupId>org.nga.sola.admin.clients.web</groupId>
+                            <artifactId>sola-admin-clients-web</artifactId>
+                            <contextRoot>sola/admin</contextRoot>
                         </webModule>
                     </modules>
                 </configuration>
@@ -132,6 +142,11 @@
     </pluginRepositories>
     <dependencies>
         <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-web-api</artifactId>
+            <version>7.0</version>
+        </dependency>
+        <dependency>
             <groupId>${project.groupId}.ejbs</groupId>
             <artifactId>sola-application</artifactId>
             <version>${project.version}</version>
@@ -180,6 +195,12 @@
             <type>war</type>
         </dependency>
         <dependency>
+            <groupId>org.nga.sola.admin.clients.web</groupId>
+            <artifactId>sola-admin-clients-web</artifactId>
+            <version>1510a</version>
+            <type>war</type>
+        </dependency>
+        <dependency>
             <groupId>${project.groupId}.ejbs</groupId>
             <artifactId>sola-digital-archive</artifactId>
             <version>${project.version}</version>
@@ -215,15 +236,16 @@
             <version>${project.version}</version>
             <type>ejb</type>
         </dependency>
+<!--        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sola-cache</artifactId>
+            <version>${project.version}</version>
+            <type>ejb</type>
+        </dependency>-->
         <dependency>
             <groupId>${project.groupId}.boundary</groupId>
             <artifactId>sola-transfer-objects</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-web-api</artifactId>
-            <version>6.0</version>
         </dependency>
     </dependencies>
 </project>
