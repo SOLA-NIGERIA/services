@@ -1,35 +1,38 @@
 /**
  * ******************************************************************************************
- * Copyright (C) 2014 - Food and Agriculture Organization of the United Nations (FAO).
- * All rights reserved.
+ * Copyright (C) 2014 - Food and Agriculture Organization of the United Nations
+ * (FAO). All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    1. Redistributions of source code must retain the above copyright notice,this list
- *       of conditions and the following disclaimer.
- *    2. Redistributions in binary form must reproduce the above copyright notice,this list
- *       of conditions and the following disclaimer in the documentation and/or other
- *       materials provided with the distribution.
- *    3. Neither the name of FAO nor the names of its contributors may be used to endorse or
- *       promote products derived from this software without specific prior written permission.
+ * 1. Redistributions of source code must retain the above copyright notice,this
+ * list of conditions and the following disclaimer. 2. Redistributions in binary
+ * form must reproduce the above copyright notice,this list of conditions and
+ * the following disclaimer in the documentation and/or other materials provided
+ * with the distribution. 3. Neither the name of FAO nor the names of its
+ * contributors may be used to endorse or promote products derived from this
+ * software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
- * SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,PROCUREMENT
- * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,STRICT LIABILITY,OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT,STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
 package org.sola.services.ejbs.admin.businesslogic;
 
-import java.io.IOException;
-import java.util.Date;
 import java.util.List;
+import org.apache.ibatis.session.Configuration;
+import org.sola.services.common.EntityTable;
+import org.sola.services.common.ejbs.AbstractEJBLocal;
 import org.sola.services.ejbs.admin.businesslogic.repository.entities.Role;
 import org.sola.services.ejbs.admin.businesslogic.repository.entities.User;
 import org.sola.services.ejbs.admin.businesslogic.repository.entities.Group;
@@ -37,9 +40,9 @@ import org.sola.services.ejbs.admin.businesslogic.repository.entities.GroupSumma
 import org.sola.services.ejbs.admin.businesslogic.repository.entities.Language;
 
 /**
- * Local interface for the {@linkplain AdminEJB}. 
+ * Local interface for the {@linkplain AdminEJB}.
  */
-public interface AdminEJBLocal {
+public interface AdminEJBLocal extends AbstractEJBLocal {
 
     /**
      * See {@linkplain AdminEJB#getUsers()
@@ -48,11 +51,77 @@ public interface AdminEJBLocal {
     List<User> getUsers();
 
     /**
+     * See {@linkplain AdminEJB#getDbConfiguration()}
+     */
+    Configuration getDbConfiguration();
+
+    /**
      * See {@linkplain org.sola.services.ejbs.admin.businesslogic.AdminEJB#getUser(java.lang.String)
      * AdminEJB.getUser}
+     *
+     * @param userName
+     * @return
      */
     User getUser(String userName);
-    
+
+    /**
+     * See
+     * {@link org.sola.services.ejbs.admin.businesslogic.AdminEJB#isUserNameExists(java.lang.String)}
+     *
+     * @param userName
+     * @return
+     */
+    boolean isUserNameExists(String userName);
+
+    /**
+     * See
+     * {@link org.sola.services.ejbs.admin.businesslogic.AdminEJB#isUserEmailExists(java.lang.String)}
+     *
+     * @param email
+     * @return
+     */
+    boolean isUserEmailExists(String email);
+
+    /**
+     * See
+     * {@link org.sola.services.ejbs.admin.businesslogic.AdminEJB#isUserEmailExists(java.lang.String, java.lang.String)}
+     *
+     * @param email
+     * @param exludeUserName
+     * @return
+     */
+    boolean isUserEmailExists(String email, String exludeUserName);
+
+    /**
+     * See
+     * {@link org.sola.services.ejbs.admin.businesslogic.AdminEJB#checkCurrentUserPassword(java.lang.String)}
+     *
+     * @param password
+     * @return
+     */
+    boolean checkCurrentUserPassword(String password);
+
+    /**
+     * See
+     * {@link org.sola.services.ejbs.admin.businesslogic.AdminEJB#checkCurrentUserPassword(java.lang.String)}
+     *
+     * @param password
+     * @return
+     */
+    boolean changeCurrentUserPassword(String password);
+
+    /**
+     * See
+     * {@link org.sola.services.ejbs.admin.businesslogic.AdminEJB#isUserActive(java.lang.String)}
+     */
+    boolean isUserActive(String userName);
+
+    /**
+     * See
+     * {@link org.sola.services.ejbs.admin.businesslogic.AdminEJB#isUserActiveByEmail(java.lang.String)}
+     */
+    boolean isUserActiveByEmail(String email);
+
     /**
      * See {@linkplain org.sola.services.ejbs.admin.businesslogic.AdminEJB#getCurrentUser()
      * AdminEJB.getCurrentUser}
@@ -64,12 +133,35 @@ public interface AdminEJBLocal {
      * AdminEJB.saveUser}
      */
     User saveUser(User user);
-    
+
+    /**
+     * See {@linkplain org.sola.services.ejbs.admin.businesslogic.AdminEJB#getUserFullName(java.lang.String)
+     */
+    String getUserFullName(String userName);
+
+    /**
+     * See {@linkplain org.sola.services.ejbs.admin.businesslogic.AdminEJB#saveCurrentUser(org.sola.services.ejbs.admin.businesslogic.repository.entities.User)
+     * AdminEJB.saveUser}
+     */
+    User saveCurrentUser(User user);
+
+    /**
+     * See {@linkplain org.sola.services.ejbs.admin.businesslogic.AdminEJB#createCommunityRecorderUser(org.sola.services.ejbs.admin.businesslogic.repository.entities.User)
+     * AdminEJB.createCommunityUser}
+     */
+    User createCommunityUser(User user);
+
     /**
      * See {@linkplain org.sola.services.ejbs.admin.businesslogic.AdminEJB#changePassword(java.lang.String, java.lang.String)
      * AdminEJB.changePassword}
      */
     boolean changePassword(String userName, String password);
+
+    /**
+     * See {@linkplain org.sola.services.ejbs.admin.businesslogic.AdminEJB#changePasswordByRestoreCode(java.lang.String, java.lang.String)
+     * AdminEJB.changePassword}
+     */
+    boolean changePasswordByRestoreCode(String restoreCode, String password);
 
     /**
      * See {@linkplain org.sola.services.ejbs.admin.businesslogic.AdminEJB#getRoles()
@@ -136,26 +228,29 @@ public interface AdminEJBLocal {
      * AdminEJB.getLanguages}
      */
     List<Language> getLanguages(String lang);
-    
-    /**
-     * See {@linkplain AdminEJB#consolidationExtract(java.lang.String, boolean, java.lang.String)
-     * AdminEJB.consolidationExtract}
-     */
-    String consolidationExtract(String processName, boolean everything, String password);
 
     /**
-     * See {@linkplain AdminEJB#consolidationConsolidate(String, String, String, String)
+     * See {@linkplain AdminEJB#consolidationExtract(boolean, boolean, boolean)
+     * AdminEJB.consolidationExtract}
+     */
+    String consolidationExtract(boolean generateConsolidationSchema, boolean everything, boolean dumpToFile);
+
+    /**
+     * See {@linkplain AdminEJB#consolidationConsolidate(String, boolean)
      * AdminEJB.consolidationConsolidate}
      */
-    void consolidationConsolidate(String processName, String languageCode, String fileInServer, String password);
-    
-    
+    String consolidationConsolidate(String extractedFile, boolean mergeConsolidationSchema);
+
+    /**
+     * See {@linkplain AdminEJB#getUserByActivationCode(String)}
+     */
+    User getUserByActivationCode(String activationCode);
+
     /**
      * See {@linkplain AdminEJB#getUserInfo(String)}
      */
     User getUserInfo(String userName);
-    
-    
+
     /**
      * See {@linkplain AdminEJB#startProcessProgressUsingBr(String, int)
      * AdminEJB.startProcessProgressUsingBr}
@@ -187,14 +282,19 @@ public interface AdminEJBLocal {
     String getProcessLog(String processName);
 
     /**
-     * See {@linkplain AdminEJB#updateProcessLog(String, String)
-     * AdminEJB.updateProcessLog}
+     * See {@linkplain AdminEJB#saveSecurityClassifications(java.util.List, org.sola.services.common.EntityTable,
+     * java.lang.String, java.lang.String) saveSecurityClassifications}
+     *
+     * @param entityIds
+     * @param entityTable
+     * @param classificationCode
+     * @param redactCode
      */
-    void updateProcessLog(String processName, String logInput);
+    void saveSecurityClassifications(List<String> entityIds, EntityTable entityTable,
+            String classificationCode, String redactCode);
 
     /**
-     * See {@linkplain AdminEJB#startProcessLog(String)
-     * AdminEJB.startProcessLog}
+     * See {@linkplain AdminEJB#flushCache()}
      */
-    void startProcessLog(String processName);
+    void flushCache();
 }

@@ -27,26 +27,32 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.sola.services.ejbs.admin.businesslogic.repository.entities;
+package org.sola.services.common;
 
-import javax.persistence.Cacheable;
-import javax.persistence.Table;
-import org.sola.services.common.repository.DefaultSorter;
-import org.sola.services.common.repository.entities.AbstractCodeEntity;
+import javax.xml.bind.annotation.XmlType;
 
-@Table(name = "approle", schema = "system")
-@DefaultSorter(sortString = "display_value")
-@Cacheable(value = false) // Exclude Role from the cache as roles are retrieved per user
-public class Role extends AbstractCodeEntity {
+/**
+ * Enumeration identifying the database schema and table name for key entities
+ * in the SOLA schema soladev
+ */
+@XmlType(namespace = ServiceConstants.BASE_TO_NAMESPACE)
+public enum EntityTable {
 
-    public static final String QUERY_GET_ROLES_BY_USER_NAME
-            = "SELECT DISTINCT r.code, r.display_value, r.status, r.description "
-            + "FROM system.approle r INNER JOIN system.approle_appgroup rg ON r.code = rg.approle_code "
-            + "INNER JOIN system.appuser_appgroup ug ON rg.appgroup_id = ug.appgroup_id "
-            + "INNER JOIN system.appuser u ON ug.appuser_id = u.id "
-            + "WHERE u.username = #{" + User.PARAM_USERNAME + "}";
+    BAUNIT("administrative.ba_unit"),
+    RRR("administrative.rrr"),
+    NOTATION("administrative.notation"),
+    APPLICATION("application.application"),
+    PARTY("party.party"),
+    SOURCE("source.source"),
+    PARCEL("cadastre.cadastre_object");
 
-    public Role() {
-        super();
+    private final String table;
+
+    EntityTable(String table) {
+        this.table = table;
+    }
+
+    public String getTable() {
+        return table;
     }
 }

@@ -1,26 +1,28 @@
 /**
  * ******************************************************************************************
- * Copyright (C) 2012 - Food and Agriculture Organization of the United Nations (FAO). All rights
- * reserved.
+ * Copyright (C) 2014 - Food and Agriculture Organization of the United Nations (FAO).
+ * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, are permitted
- * provided that the following conditions are met:
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
  *
- * 1. Redistributions of source code must retain the above copyright notice,this list of conditions
- * and the following disclaimer. 2. Redistributions in binary form must reproduce the above
- * copyright notice,this list of conditions and the following disclaimer in the documentation and/or
- * other materials provided with the distribution. 3. Neither the name of FAO nor the names of its
- * contributors may be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ *    1. Redistributions of source code must retain the above copyright notice,this list
+ *       of conditions and the following disclaimer.
+ *    2. Redistributions in binary form must reproduce the above copyright notice,this list
+ *       of conditions and the following disclaimer in the documentation and/or other
+ *       materials provided with the distribution.
+ *    3. Neither the name of FAO nor the names of its contributors may be used to endorse or
+ *       promote products derived from this software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
- * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO,PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT,STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
- * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+ * SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,PROCUREMENT
+ * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,STRICT LIABILITY,OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
 package org.sola.services.common.ejbs;
@@ -38,6 +40,7 @@ import javax.interceptor.InvocationContext;
 import org.sola.common.RolesConstants;
 import org.sola.common.SOLAException;
 import org.sola.common.messaging.ServiceMessage;
+import org.sola.services.common.EntityAction;
 import org.sola.services.common.LocalInfo;
 import org.sola.services.common.repository.entities.AbstractCodeEntity;
 import org.sola.services.common.repository.CommonRepository;
@@ -48,7 +51,6 @@ import org.sola.services.common.repository.entities.AbstractEntity;
 @DeclareRoles({
     RolesConstants.DASHBOARD_VIEW_ASSIGNED_APPS,
     RolesConstants.DASHBOARD_VIEW_UNASSIGNED_APPS,
-    RolesConstants.DASHBOARD_VIEW_OWN_APPS,
     RolesConstants.APPLICATION_VIEW_APPS,
     RolesConstants.APPLICATION_CREATE_APPS,
     RolesConstants.APPLICATION_EDIT_APPS,
@@ -70,9 +72,6 @@ import org.sola.services.common.repository.entities.AbstractEntity;
     RolesConstants.APPLICATION_DISPATCH,
     RolesConstants.APPLICATION_ARCHIVE,
     RolesConstants.ADMINISTRATIVE_BA_UNIT_SAVE,
-    RolesConstants.ADMINISTRATIVE_RRR_SAVE,
-    RolesConstants.ADMINISTRATIVE_PARCEL_SAVE,
-    RolesConstants.ADMINISTRATIVE_NOTATION_SAVE,
     RolesConstants.ADMINISTRATIVE_BA_UNIT_PRINT_CERT,
     RolesConstants.ADMINISTRATIVE_BA_UNIT_SEARCH,
     RolesConstants.SOURCE_TRANSACTIONAL,
@@ -85,12 +84,26 @@ import org.sola.services.common.repository.entities.AbstractEntity;
     RolesConstants.PARTY_SAVE,
     RolesConstants.PARTY_RIGHTHOLDERS_SAVE,
     RolesConstants.REPORTS_VIEW,
-    RolesConstants.ARCHIVE_ARCHIVE_APPS,
     RolesConstants.ADMIN_MANAGE_SECURITY,
     RolesConstants.ADMIN_MANAGE_REFDATA,
     RolesConstants.ADMIN_MANAGE_SETTINGS,
     RolesConstants.ADMINISTRATIVE_SYSTEMATIC_REGISTRATION,
-    RolesConstants.ADMIN_CHANGE_PASSWORD    
+    RolesConstants.ADMIN_CHANGE_PASSWORD,
+    RolesConstants.CS_ACCESS_CS,
+    RolesConstants.CS_MODERATE_CLAIM,
+    RolesConstants.CS_RECORD_CLAIM,
+    RolesConstants.CS_REVIEW_CLAIM,
+    RolesConstants.CS_VIEW_REPORTS,
+    RolesConstants.CLASSIFICATION_CHANGE_CLASS,
+    RolesConstants.CLASSIFICATION_UNRESTRICTED,
+    RolesConstants.CLASSIFICATION_RESTRICTED,
+    RolesConstants.CLASSIFICATION_CONFIDENTIAL,
+    RolesConstants.CLASSIFICATION_SECRET,
+    RolesConstants.CLASSIFICATION_TOPSECRET,
+    RolesConstants.CLASSIFICATION_SUPPRESSION_ORDER,
+    RolesConstants.SERVICE_START_NOTIFY
+    
+    
 })
 public abstract class AbstractEJB implements AbstractEJBLocal {
 
@@ -106,6 +119,17 @@ public abstract class AbstractEJB implements AbstractEJBLocal {
         return entityPackage;
     }
 
+    /** Returns entity list size excluding deleted or disassociated */
+    public <T extends AbstractEntity> int getEntityListSize(List<T> entityList) {
+        int cnt = 0;
+        for (AbstractEntity entity : entityList) {
+            if (entity.getEntityAction() == null || (!entity.getEntityAction().equals(EntityAction.DELETE) && !entity.getEntityAction().equals(EntityAction.DISASSOCIATE))) {
+                cnt += 1;
+            }
+        }
+        return cnt;
+    }
+    
     /**
      * Sets name of the entities package.
      */
@@ -134,18 +158,7 @@ public abstract class AbstractEJB implements AbstractEJBLocal {
      * @param roles List of roles to check.
      */
     public boolean isInRole(String... roles) {
-        boolean result = false;
-        if (roles != null) {
-            for (String role : roles) {
-                if (sessionContext.isCallerInRole(role)) {
-                    result = true;
-                    break;
-                }
-            }
-        } else {
-            result = true;
-        }
-        return result;
+        return LocalInfo.isInRole(roles);
     }
 
     /**
@@ -192,6 +205,7 @@ public abstract class AbstractEJB implements AbstractEJBLocal {
             userName = "SOLA_ANONYMOUS";
         }
         LocalInfo.setUserName(userName);
+        LocalInfo.setSessionContext(sessionContext); 
 
         beforeInvoke(ctx);
         Object result = ctx.proceed();
@@ -263,9 +277,9 @@ public abstract class AbstractEJB implements AbstractEJBLocal {
      */
     @Override
     public <T extends AbstractCodeEntity> T getCodeEntity(Class<T> codeEntityClass, String code, String lang) {
-        if (!codeEntityClass.getPackage().getName().equals(getEntityPackage())) {
-            throw new SOLAException(ServiceMessage.EXCEPTION_ENTITY_PACKAGE_VIOLATION);
-        }
+//        if (!codeEntityClass.getPackage().getName().equals(getEntityPackage())) {
+//            throw new SOLAException(ServiceMessage.EXCEPTION_ENTITY_PACKAGE_VIOLATION);
+//        }
         return getRepository().getCode(codeEntityClass, code, lang);
     }
 
@@ -277,9 +291,9 @@ public abstract class AbstractEJB implements AbstractEJBLocal {
      */
     @Override
     public <T extends AbstractCodeEntity> List<T> getCodeEntityList(Class<T> codeEntityClass, String lang) {
-        if (!codeEntityClass.getPackage().getName().equals(getEntityPackage())) {
-            throw new SOLAException(ServiceMessage.EXCEPTION_ENTITY_PACKAGE_VIOLATION);
-        }
+//        if (!codeEntityClass.getPackage().getName().equals(getEntityPackage())) {
+//            throw new SOLAException(ServiceMessage.EXCEPTION_ENTITY_PACKAGE_VIOLATION);
+//        }
         return getRepository().getCodeList(codeEntityClass, lang);
     }
 

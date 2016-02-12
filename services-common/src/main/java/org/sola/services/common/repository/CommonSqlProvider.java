@@ -1,6 +1,6 @@
 /**
  * ******************************************************************************************
- * Copyright (C) 2012 - Food and Agriculture Organization of the United Nations (FAO).
+ * Copyright (C) 2014 - Food and Agriculture Organization of the United Nations (FAO).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -293,4 +293,28 @@ public class CommonSqlProvider {
         String sql = (String) params.get(PARAM_QUERY);
         return sql;
     }
+  /**
+     * Generates a sequence of Mybatis parameters based on a list of data
+     * values. Can the string returned can be appended to an SQL query as part
+     * of an IN clause. e.g. " id IN (" + prepareListParams(values, params) +
+     * ")";
+     *
+     * @param values The list of data values that will be the subject of the IN
+     * clause
+     * @param params The parameter Map for the SQL query
+     * @return A string that contains the Mybatis parameters representing the
+     * list data values
+     */
+    public static String prepareListParams(List values, Map params) {
+        String result = "";
+        int i = 0;
+        for (Object val : values) {
+            String paramName = "listVal" + i;
+            result += ",#{" + paramName + "}";
+            params.put(paramName, val);
+            i++;
+        }
+        return result.substring(1);
+    }
 }
+
