@@ -112,8 +112,8 @@ public class AdministrativeEJB extends AbstractEJB
      * values.
      */
     @Override
-    public List<LeaseCondition> getLeaseConditions(String languageCode) {
-        return getRepository().getCodeList(LeaseCondition.class, languageCode);
+    public List<RrrCondition> getRrrConditions(String languageCode) {
+        return getRepository().getCodeList(RrrCondition.class, languageCode);
     }
 
     /**

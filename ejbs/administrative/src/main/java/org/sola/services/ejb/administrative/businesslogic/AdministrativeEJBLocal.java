@@ -55,10 +55,10 @@ public interface AdministrativeEJBLocal extends AbstractSolaTransactionEJBLocal 
     List<BaUnitType> getBaUnitTypes(String languageCode);
 
     /**
-     * see {@linkplain AdministrativeEJB#getLeaseConditions(java.lang.String)
-     * AdministrativeEJB.getLeaseConditions}
+     * see {@linkplain AdministrativeEJB#getRrrConditions(java.lang.String)
+     * AdministrativeEJB.getRrrConditions}
      */
-    List<LeaseCondition> getLeaseConditions(String languageCode);
+    List<RrrCondition> getRrrConditions(String languageCode);
     
     /**
      * see {@linkplain AdministrativeEJB#getMortgageTypes(java.lang.String)

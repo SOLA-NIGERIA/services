@@ -5,8 +5,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import org.sola.services.common.repository.entities.AbstractVersionedEntity;
 
-@Table(name = "lease_condition_for_rrr", schema = "administrative")
-public class LeaseConditionForRrr extends AbstractVersionedEntity {
+@Table(name = "condition_for_rrr", schema = "administrative")
+public class ConditionForRrr extends AbstractVersionedEntity {
     
     @Id
     @Column
@@ -16,12 +16,12 @@ public class LeaseConditionForRrr extends AbstractVersionedEntity {
     private String rrrId;
     
     @Column(name="lease_condition_code")
-    private String leaseConditionCode;
+    private String RrrConditionCode;
     
     @Column(name="custom_condition_text")
     private String customConditionText;
   
-    public LeaseConditionForRrr(){
+    public ConditionForRrr(){
         super();
     }
 
@@ -41,12 +41,12 @@ public class LeaseConditionForRrr extends AbstractVersionedEntity {
         this.id = id;
     }
 
-    public String getLeaseConditionCode() {
-        return leaseConditionCode;
+    public String getRrrConditionCode() {
+        return RrrConditionCode;
     }
 
-    public void setLeaseConditionCode(String leaseConditionCode) {
-        this.leaseConditionCode = leaseConditionCode;
+    public void setRrrConditionCode(String RrrConditionCode) {
+        this.RrrConditionCode = RrrConditionCode;
     }
 
     public String getRrrId() {

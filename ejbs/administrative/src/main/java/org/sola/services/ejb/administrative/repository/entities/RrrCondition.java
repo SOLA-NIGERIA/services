@@ -4,10 +4,10 @@ import javax.persistence.Table;
 import org.sola.services.common.repository.DefaultSorter;
 import org.sola.services.common.repository.entities.AbstractCodeEntity;
 
-@Table(name = "lease_condition", schema = "administrative")
+@Table(name = "rrr_condition", schema = "administrative")
 @DefaultSorter(sortString="display_value")
-public class LeaseCondition extends AbstractCodeEntity {
-    public LeaseCondition(){
+public class RrrCondition extends AbstractCodeEntity {
+    public RrrCondition(){
         super();
     }
 }
