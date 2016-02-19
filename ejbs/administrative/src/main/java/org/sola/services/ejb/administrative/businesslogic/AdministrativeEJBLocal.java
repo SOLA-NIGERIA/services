@@ -160,7 +160,17 @@ public interface AdministrativeEJBLocal extends AbstractSolaTransactionEJBLocal 
      * AdministrativeEJB.getBaUnitWithCadObject}
      */
     BaUnit getBaUnitWithCadObject(String nameFirstPart, String nameLastPart, String colist);
-
+    
+    
+    List <BaUnit> getBaUnitsByCadObject(String colist);
+    
+     /**
+     * Imports prepared BaUnit as an approved record in the registry
+     * @param baUnit BaUnit object to import
+     * @return 
+     */
+    boolean importBaUnit(BaUnit baUnit);
+  
     /**
      * See {@linkplain AdministrativeEJB#SysRegPubDisParcelName(java.lang.String)
      * CadastreEJB.SysRegPubDisParcelName}.

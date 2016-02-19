@@ -43,12 +43,19 @@ import org.sola.services.common.ejbs.AbstractEJB;
 import org.sola.services.common.faults.SOLAValidationException;
 import org.sola.services.common.repository.CommonSqlProvider;
 import org.sola.services.ejb.administrative.repository.entities.*;
+import org.sola.services.ejb.cadastre.businesslogic.CadastreEJBLocal;
+import org.sola.services.ejb.cadastre.repository.entities.CadastreObject;
+import org.sola.services.ejb.cadastre.repository.entities.CadastreObjectStatusChanger;
+import org.sola.services.ejb.party.repository.entities.Party;
+import org.sola.services.ejb.source.repository.entities.Source;
 import org.sola.services.ejb.system.businesslogic.SystemEJBLocal;
 import org.sola.services.ejb.system.repository.entities.BrValidation;
 import org.sola.services.ejb.transaction.businesslogic.TransactionEJBLocal;
 import org.sola.services.ejb.transaction.repository.entities.RegistrationStatusType;
 import org.sola.services.ejb.transaction.repository.entities.Transaction;
 import org.sola.services.ejb.transaction.repository.entities.TransactionBasic;
+import org.sola.services.ejb.transaction.repository.entities.TransactionStatusChanger;
+import org.sola.services.ejb.transaction.repository.entities.TransactionStatusType;
 
 /**
  * EJB to manage data in the administrative schema. Supports retrieving and
@@ -64,6 +71,8 @@ public class AdministrativeEJB extends AbstractEJB
     private SystemEJBLocal systemEJB;
     @EJB
     private TransactionEJBLocal transactionEJB;
+    @EJB
+    private CadastreEJBLocal cadastreEjb;
 
     /**
      * Sets the entity package for the EJB to
@@ -541,7 +550,15 @@ public class AdministrativeEJB extends AbstractEJB
         params.put(BaUnit.QUERY_PARAMETER_COLIST, colist);
         return getRepository().getEntity(BaUnit.class, params);
     }
-
+    
+    @Override
+    public List <BaUnit> getBaUnitsByCadObject(String colist) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put(CommonSqlProvider.PARAM_WHERE_PART, BaUnit.QUERY_WHERE_BYCO);  
+        params.put(BaUnit.QUERY_PARAMETER_COLIST, colist);
+        return getRepository().getEntityList(BaUnit.class, params);
+    }
+    
     /**
      * Returns a maximum of 10 cadastre objects that have a name first part
      * and/or name last part that matches the specified search string. This
@@ -955,4 +972,122 @@ public class AdministrativeEJB extends AbstractEJB
 
         return getRepository().saveEntity(disputeParty);
     }
+    
+     @Override
+    @RolesAllowed(RolesConstants.ADMIN_MANAGE_SETTINGS)
+    public boolean importBaUnit(BaUnit baUnit) {
+        if (baUnit == null) {
+            return false;
+        }
+
+        // Create transaction
+        Transaction tran = new Transaction();
+        getRepository().saveEntity(tran);
+
+        if (tran == null) {
+            throw new RuntimeException("Transaction not found");
+        }
+
+        // Save BaUnit
+        LocalInfo.setTransactionId(tran.getId());
+        baUnit.setTransactionId(tran.getId());
+        if (baUnit.getRrrList() != null) {
+            for (Rrr rrr : baUnit.getRrrList()) {
+                rrr.setTransactionId(tran.getId());
+                // Save parties first
+                if (rrr.getRrrShareList() != null) {
+                    for (RrrShare share : rrr.getRrrShareList()) {
+                        if (share.getRightHolderList() != null) {
+                            for (Party party : share.getRightHolderList()) {
+                                getRepository().saveEntity(party);
+                            }
+                        }
+                    }
+                }
+                // Save sources
+                if (baUnit.getSourceList() != null) {
+                    for (Source source : baUnit.getSourceList()) {
+                        getRepository().saveEntity(source);
+                    }
+                }
+                
+                if (rrr.getSourceList() != null) {
+                    for (Source source : rrr.getSourceList()) {
+                        getRepository().saveEntity(source);
+                    }
+                }
+                // Assign transaction ID to notation
+                if (rrr.getNotation() != null) {
+                    rrr.getNotation().setTransactionId(tran.getId());
+                }
+            }
+        }
+        
+        if (baUnit.getCadastreObjectList() != null) {
+            for (CadastreObject cadastreObject : baUnit.getCadastreObjectList()) {
+                cadastreObject.setTransactionId(tran.getId());
+            }
+        }
+
+        getRepository().saveEntity(baUnit);
+
+        // Set approved status to cadastre objects
+        List<ValidationResult> validationResult = new ArrayList<ValidationResult>();
+        cadastreEjb.ChangeStatusOfCadastreObjects(
+                tran.getId(),
+                CadastreObjectStatusChanger.QUERY_WHERE_SEARCHBYTRANSACTION_PENDING,
+                RegistrationStatusType.STATUS_CURRENT);
+
+        // Set approved status to BaUnit
+        BaUnitStatusChanger baUnitStatusChanger = getRepository()
+                .getEntity(BaUnitStatusChanger.class, baUnit.getId());
+
+        //validationResult.addAll(this.validateBaUnit(baUnitStatusChanger, "en-US"));
+        //if (systemEJB.validationSucceeded(validationResult)) {
+        baUnitStatusChanger.setStatusCode(RegistrationStatusType.STATUS_CURRENT);
+        baUnitStatusChanger.setTransactionId(tran.getId());
+        getRepository().saveEntity(baUnitStatusChanger);
+        //} 
+        
+        // Set approved status for RRRs
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put(CommonSqlProvider.PARAM_WHERE_PART, Rrr.QUERY_WHERE_BYTRANSACTIONID);
+        params.put(Rrr.QUERY_PARAMETER_TRANSACTIONID, tran.getId());
+        params.put("username", getUserName());
+        List<RrrStatusChanger> rrrStatusChangerList
+                = getRepository().getEntityList(RrrStatusChanger.class, params);
+        for (RrrStatusChanger rrr : rrrStatusChangerList) {
+            //validationResult.addAll(this.validateRrr(rrr, "en-US"));
+            //if (systemEJB.validationSucceeded(validationResult)) {
+            rrr.setStatusCode(RegistrationStatusType.STATUS_CURRENT);
+            getRepository().saveEntity(rrr);
+            //}
+        }
+
+        // Approve noations
+        params = new HashMap<String, Object>();
+        params.put(CommonSqlProvider.PARAM_WHERE_PART, BaUnitNotation.QUERY_WHERE_BYTRANSACTIONID);
+        params.put(BaUnitNotation.QUERY_PARAMETER_TRANSACTIONID, tran.getId());
+        params.put("username", getUserName());
+
+        List<BaUnitNotationStatusChanger> baUnitNotationList
+                = getRepository().getEntityList(BaUnitNotationStatusChanger.class, params);
+        for (BaUnitNotationStatusChanger baUnitNotation : baUnitNotationList) {
+            baUnitNotation.setStatusCode(RegistrationStatusType.STATUS_CURRENT);
+            getRepository().saveEntity(baUnitNotation);
+        }
+
+        // Approve transaction
+        TransactionStatusChanger tranStatusChanger = getRepository().getEntity(TransactionStatusChanger.class, tran.getId());
+        tranStatusChanger.setStatusCode(TransactionStatusType.APPROVED);
+        tranStatusChanger.setApprovalDatetime(DateUtility.now());
+        getRepository().saveEntity(tranStatusChanger);
+
+        if (!systemEJB.validationSucceeded(validationResult)) {
+            throw new SOLAValidationException(validationResult);
+        }
+
+        return true;
+    }
+    
 }

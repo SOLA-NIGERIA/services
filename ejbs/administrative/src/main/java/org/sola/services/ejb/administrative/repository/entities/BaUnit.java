@@ -80,6 +80,10 @@ public class BaUnit extends AbstractVersionedEntity {
     public static final String QUERY_WHERE_BYPROPERTYSTRING =
             " compare_strings (#{" + QUERY_PARAMETER_STRING + "}, name_firstpart )OR "
             + " compare_strings (#{" + QUERY_PARAMETER_STRING + "}, name_lastpart)";
+    public static final String QUERY_WHERE_BYCO
+            = " id in (select ba_unit_id from administrative.ba_unit_contains_spatial_unit\n"
+            + " where spatial_unit_id in ( #{" + QUERY_PARAMETER_COLIST + "}))";
+   
          
     
     @Id
