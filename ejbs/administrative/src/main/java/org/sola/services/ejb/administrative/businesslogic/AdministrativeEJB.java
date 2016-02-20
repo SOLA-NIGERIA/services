@@ -1036,7 +1036,8 @@ public class AdministrativeEJB extends AbstractEJB
         cadastreEjb.ChangeStatusOfCadastreObjects(
                 tran.getId(),
                 CadastreObjectStatusChanger.QUERY_WHERE_SEARCHBYTRANSACTION_PENDING,
-                RegistrationStatusType.STATUS_CURRENT);
+                 RegistrationStatusType.STATUS_PENDING);
+//                RegistrationStatusType.STATUS_CURRENT);
 
         // Set approved status to BaUnit
         BaUnitStatusChanger baUnitStatusChanger = getRepository()
@@ -1044,7 +1045,7 @@ public class AdministrativeEJB extends AbstractEJB
 
         //validationResult.addAll(this.validateBaUnit(baUnitStatusChanger, "en-US"));
         //if (systemEJB.validationSucceeded(validationResult)) {
-        baUnitStatusChanger.setStatusCode(RegistrationStatusType.STATUS_CURRENT);
+        baUnitStatusChanger.setStatusCode(RegistrationStatusType.STATUS_PENDING);
         baUnitStatusChanger.setTransactionId(tran.getId());
         getRepository().saveEntity(baUnitStatusChanger);
         //} 
@@ -1059,7 +1060,7 @@ public class AdministrativeEJB extends AbstractEJB
         for (RrrStatusChanger rrr : rrrStatusChangerList) {
             //validationResult.addAll(this.validateRrr(rrr, "en-US"));
             //if (systemEJB.validationSucceeded(validationResult)) {
-            rrr.setStatusCode(RegistrationStatusType.STATUS_CURRENT);
+            rrr.setStatusCode(RegistrationStatusType.STATUS_PENDING);
             getRepository().saveEntity(rrr);
             //}
         }
@@ -1073,13 +1074,14 @@ public class AdministrativeEJB extends AbstractEJB
         List<BaUnitNotationStatusChanger> baUnitNotationList
                 = getRepository().getEntityList(BaUnitNotationStatusChanger.class, params);
         for (BaUnitNotationStatusChanger baUnitNotation : baUnitNotationList) {
-            baUnitNotation.setStatusCode(RegistrationStatusType.STATUS_CURRENT);
+            baUnitNotation.setStatusCode(RegistrationStatusType.STATUS_PENDING);
             getRepository().saveEntity(baUnitNotation);
         }
 
         // Approve transaction
         TransactionStatusChanger tranStatusChanger = getRepository().getEntity(TransactionStatusChanger.class, tran.getId());
-        tranStatusChanger.setStatusCode(TransactionStatusType.APPROVED);
+//        tranStatusChanger.setStatusCode(TransactionStatusType.APPROVED);
+        tranStatusChanger.setStatusCode(TransactionStatusType.PENDING);
         tranStatusChanger.setApprovalDatetime(DateUtility.now());
         getRepository().saveEntity(tranStatusChanger);
 
