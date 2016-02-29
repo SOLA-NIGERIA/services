@@ -57,6 +57,11 @@ public class Document extends AbstractVersionedEntity {
     private String description;
     @Column(name = "body")
     private byte[] body;
+    @Column (name = "mime_type")
+    private String mimeType;
+    
+    
+    
 
     public Document() {
         super();
@@ -101,5 +106,12 @@ public class Document extends AbstractVersionedEntity {
 
     public void setNr(String nr) {
         this.nr = nr;
+    }
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
     }
 }
