@@ -37,6 +37,7 @@ import org.sola.services.common.repository.ChildEntityList;
 import org.sola.services.common.repository.ExternalEJB;
 import org.sola.services.ejb.cadastre.businesslogic.CadastreEJBLocal;
 import org.sola.services.ejb.cadastre.repository.entities.CadastreObject;
+import org.sola.services.ejb.cadastre.repository.entities.CadastreObjectOT;
 import org.sola.services.ejb.cadastre.repository.entities.CadastreObjectTarget;
 import org.sola.services.ejb.cadastre.repository.entities.SurveyPoint;
 
@@ -53,6 +54,14 @@ public class TransactionCadastreChange extends Transaction {
             loadMethod = "getCadastreObjectsByTransaction", 
             saveMethod="saveCadastreObject")
     List<CadastreObject> CadastreObjectList;
+    
+    
+    @ChildEntityList(parentIdField = "transactionId")
+    @ExternalEJB(
+            ejbLocalClass = CadastreEJBLocal.class, 
+            loadMethod = "getCadastreObjectsByTransaction", 
+            saveMethod="saveCadastreObjectOT")
+    List<CadastreObjectOT> CadastreObjectListOT;
 
     @ChildEntityList(parentIdField = "transactionId")
     @ExternalEJB(
@@ -77,6 +86,15 @@ public class TransactionCadastreChange extends Transaction {
 
     public void setCadastreObjectList(List<CadastreObject> CadastreObjectList) {
         this.CadastreObjectList = CadastreObjectList;
+    }
+    
+    
+    public List<CadastreObjectOT> getCadastreObjectListOT() {
+        return CadastreObjectListOT;
+    }
+
+    public void setCadastreObjectListOT(List<CadastreObjectOT> CadastreObjectListOT) {
+        this.CadastreObjectListOT = CadastreObjectListOT;
     }
 
     public List<SurveyPoint> getSurveyPointList() {
@@ -105,11 +123,18 @@ public class TransactionCadastreChange extends Transaction {
 
     @Override
     public void preSave() {
-        if (this.isNew() && this.getCadastreObjectList() != null){
-            for(CadastreObject cadastreObject:this.getCadastreObjectList()){
-                cadastreObject.setId(null);
+        if (this.isNew() && this.getCadastreObjectListOT() != null){
+            for(CadastreObjectOT cadastreObjectOT:this.getCadastreObjectListOT()){
+                cadastreObjectOT.setId(null);
             }
         }
+        else {
+            if (this.isNew() && this.getCadastreObjectList() != null){
+                for(CadastreObject cadastreObject:this.getCadastreObjectList()){
+                    cadastreObject.setId(null);
+                }
+            }
+        }    
         super.preSave();
     }
 }

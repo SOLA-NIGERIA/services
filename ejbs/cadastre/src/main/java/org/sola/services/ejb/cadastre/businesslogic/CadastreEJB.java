@@ -91,6 +91,16 @@ public class CadastreEJB extends AbstractEJB implements CadastreEJBLocal {
     public CadastreObject getCadastreObject(String id) {
         return getRepository().getEntity(CadastreObject.class, id);
     }
+    
+      /**
+     * Retrieves a cadastre object using the specified identifier.
+     *
+     * @param id The identifier of the cadastre object to retrieve.
+     */
+    @Override
+    public CadastreObjectOT getCadastreObjectOT(String id) {
+        return getRepository().getEntity(CadastreObjectOT.class, id);
+    }
 
     /**
      * Retrieves a list of cadastre object matching the list of ids provided.
@@ -142,6 +152,27 @@ public class CadastreEJB extends AbstractEJB implements CadastreEJBLocal {
         return getRepository().getEntityList(CadastreObject.class,
                 CadastreObject.QUERY_WHERE_SEARCHBYALLPARTS, params);
     }
+    
+    
+      /**
+     * Returns a maximum of 30 cadastre objects with current and pending status
+     * that have a name first part and/or name last part that matches the
+     * specified search string. This method supports partial matches and is case
+     * insensitive.
+     *
+     * @param searchString The search string to use
+     * @return The list of cadastre objects matching the search string
+     */
+    @Override
+    public List<CadastreObjectOT> getCadastreObjectOTByAllParts(String searchString) {
+        Integer numberOfMaxRecordsReturned = 30;
+        HashMap params = new HashMap();
+        params.put("search_string", searchString);
+        params.put(CommonSqlProvider.PARAM_LIMIT_PART, numberOfMaxRecordsReturned);
+        params.put(CommonSqlProvider.PARAM_ORDER_BY_PART, CadastreObjectOT.QUERY_ORDER_BY_SEARCHBYPARTS);
+        return getRepository().getEntityList(CadastreObjectOT.class,
+                CadastreObjectOT.QUERY_WHERE_SEARCHBYALLPARTS, params);
+    }
 
     /**
      * Returns the cadastre object that is located at the point specified or
@@ -176,7 +207,22 @@ public class CadastreEJB extends AbstractEJB implements CadastreEJBLocal {
     public CadastreObject saveCadastreObject(CadastreObject cadastreObject) {
         return getRepository().saveEntity(cadastreObject);
     }
+    
+    
+     /**
+     * Can be used to create a new cadastre object or save any updates to the
+     * details of an existing cadastre object.
+     *
+     * @param cadastreObject The cadastre object to create/save.
+     * @return The cadastre object after the save is completed.
+     */
+    @Override
+    public CadastreObjectOT saveCadastreObjectOT(CadastreObjectOT cadastreObject) {
+        return getRepository().saveEntity(cadastreObject);
+    }
 
+    
+    
     /**
      * Retrieves all cadastre objects linked to the specified BA Unit.
      *

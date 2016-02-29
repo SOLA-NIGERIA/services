@@ -45,6 +45,7 @@ import org.sola.services.common.repository.CommonSqlProvider;
 import org.sola.services.ejb.administrative.repository.entities.*;
 import org.sola.services.ejb.cadastre.businesslogic.CadastreEJBLocal;
 import org.sola.services.ejb.cadastre.repository.entities.CadastreObject;
+import org.sola.services.ejb.cadastre.repository.entities.CadastreObjectOT;
 import org.sola.services.ejb.cadastre.repository.entities.CadastreObjectStatusChanger;
 import org.sola.services.ejb.party.repository.entities.Party;
 import org.sola.services.ejb.source.repository.entities.Source;
@@ -973,9 +974,9 @@ public class AdministrativeEJB extends AbstractEJB
         return getRepository().saveEntity(disputeParty);
     }
     
-     @Override
+    @Override
     @RolesAllowed(RolesConstants.ADMIN_MANAGE_SETTINGS)
-    public boolean importBaUnit(BaUnit baUnit) {
+    public boolean importBaUnit(BaUnitOT baUnit) {
         if (baUnit == null) {
             return false;
         }
@@ -1024,7 +1025,7 @@ public class AdministrativeEJB extends AbstractEJB
         }
         
         if (baUnit.getCadastreObjectList() != null) {
-            for (CadastreObject cadastreObject : baUnit.getCadastreObjectList()) {
+            for (CadastreObjectOT cadastreObject : baUnit.getCadastreObjectList()) {
                 cadastreObject.setTransactionId(tran.getId());
             }
         }
