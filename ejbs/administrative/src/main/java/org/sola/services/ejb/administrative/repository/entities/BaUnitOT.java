@@ -46,6 +46,7 @@ import org.sola.services.ejb.system.br.Result;
 import org.sola.services.ejb.system.businesslogic.SystemEJBLocal;
 import org.sola.services.ejb.transaction.businesslogic.TransactionEJBLocal;
 import org.sola.services.ejb.transaction.repository.entities.Transaction;
+import org.sola.services.ejb.transaction.repository.entities.TransactionCadastreChangeOT;
 import org.sola.services.ejb.transaction.repository.entities.TransactionStatusType;
 
 /**
@@ -237,7 +238,7 @@ public class BaUnitOT extends AbstractVersionedEntity {
         Transaction result = null;
         TransactionEJBLocal transactionEJB = RepositoryUtility.tryGetEJB(TransactionEJBLocal.class);
         if (transactionEJB != null) {
-            result = transactionEJB.getTransactionById(getTransactionId(), Transaction.class);
+            result = transactionEJB.getTransactionById(getTransactionId(), TransactionCadastreChangeOT.class);
         }
         return result;
     }

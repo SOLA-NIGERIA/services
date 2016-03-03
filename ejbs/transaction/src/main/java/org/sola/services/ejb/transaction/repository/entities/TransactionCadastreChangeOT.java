@@ -46,7 +46,7 @@ import org.sola.services.ejb.cadastre.repository.entities.SurveyPoint;
  * @author Elton Manoku
  */
 @Table(name = "transaction", schema = "transaction")
-public class TransactionCadastreChange extends Transaction {
+public class TransactionCadastreChangeOT extends Transaction {
 
     @ChildEntityList(parentIdField = "transactionId")
     @ExternalEJB(
@@ -55,7 +55,14 @@ public class TransactionCadastreChange extends Transaction {
             saveMethod="saveCadastreObject")
     List<CadastreObject> CadastreObjectList;
     
-   
+    
+    @ChildEntityList(parentIdField = "transactionId")
+    @ExternalEJB(
+            ejbLocalClass = CadastreEJBLocal.class, 
+            loadMethod = "getCadastreObjectsByTransaction", 
+            saveMethod="saveCadastreObjectOT")
+    List<CadastreObjectOT> CadastreObjectListOT;
+
     @ChildEntityList(parentIdField = "transactionId")
     @ExternalEJB(
             ejbLocalClass = CadastreEJBLocal.class, 
@@ -82,7 +89,14 @@ public class TransactionCadastreChange extends Transaction {
     }
     
     
-  
+    public List<CadastreObjectOT> getCadastreObjectListOT() {
+        return CadastreObjectListOT;
+    }
+
+    public void setCadastreObjectListOT(List<CadastreObjectOT> CadastreObjectListOT) {
+        this.CadastreObjectListOT = CadastreObjectListOT;
+    }
+
     public List<SurveyPoint> getSurveyPointList() {
         return surveyPointList;
     }
@@ -109,13 +123,18 @@ public class TransactionCadastreChange extends Transaction {
 
     @Override
     public void preSave() {
-       
+        if (this.isNew() && this.getCadastreObjectListOT() != null){
+            for(CadastreObjectOT cadastreObjectOT:this.getCadastreObjectListOT()){
+                cadastreObjectOT.setId(null);
+            }
+        }
+        else {
             if (this.isNew() && this.getCadastreObjectList() != null){
                 for(CadastreObject cadastreObject:this.getCadastreObjectList()){
                     cadastreObject.setId(null);
                 }
             }
-            
+        }    
         super.preSave();
     }
 }
