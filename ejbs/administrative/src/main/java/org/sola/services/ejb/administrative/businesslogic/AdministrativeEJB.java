@@ -976,15 +976,20 @@ public class AdministrativeEJB extends AbstractEJB
     
     @Override
     @RolesAllowed(RolesConstants.ADMIN_MANAGE_SETTINGS)
-    public boolean importBaUnit(BaUnitOT baUnit) {
+    public boolean importBaUnit(BaUnitOT baUnit, String redcadId, String sltrId) {
         if (baUnit == null) {
             return false;
         }
 
         // Create transaction
         Transaction tran = new Transaction();
+        tran.setFromServiceId(sltrId);
         getRepository().saveEntity(tran);
-
+        
+        Transaction tran2 = new Transaction();
+        tran2.setFromServiceId(redcadId);
+        getRepository().saveEntity(tran2);
+        
         if (tran == null) {
             throw new RuntimeException("Transaction not found");
         }
@@ -1037,8 +1042,8 @@ public class AdministrativeEJB extends AbstractEJB
         cadastreEjb.ChangeStatusOfCadastreObjects(
                 tran.getId(),
                 CadastreObjectStatusChanger.QUERY_WHERE_SEARCHBYTRANSACTION_PENDING,
-                 RegistrationStatusType.STATUS_PENDING);
-//                RegistrationStatusType.STATUS_CURRENT);
+//                 RegistrationStatusType.STATUS_PENDING);
+                RegistrationStatusType.STATUS_CURRENT);
 
         // Set approved status to BaUnit
         BaUnitStatusChanger baUnitStatusChanger = getRepository()
@@ -1085,7 +1090,12 @@ public class AdministrativeEJB extends AbstractEJB
         tranStatusChanger.setStatusCode(TransactionStatusType.PENDING);
         tranStatusChanger.setApprovalDatetime(DateUtility.now());
         getRepository().saveEntity(tranStatusChanger);
-
+        
+        TransactionStatusChanger tranStatusChanger2 = getRepository().getEntity(TransactionStatusChanger.class, tran2.getId());
+        tranStatusChanger2.setStatusCode(TransactionStatusType.PENDING);
+        tranStatusChanger2.setApprovalDatetime(DateUtility.now());
+        getRepository().saveEntity(tranStatusChanger2);
+        
         if (!systemEJB.validationSucceeded(validationResult)) {
             throw new SOLAValidationException(validationResult);
         }

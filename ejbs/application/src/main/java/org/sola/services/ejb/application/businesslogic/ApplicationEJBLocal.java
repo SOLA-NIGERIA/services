@@ -259,27 +259,27 @@ public interface ApplicationEJBLocal extends AbstractEJBLocal {
      * serviceNumber, String firstPart, String lastPart);
      */
     RoleVerifier getRoleVerifier(String serviceId);
-    
-     /**
+
+    /**
      * See {@linkplain ApplicationEJB#SysRegCerificates(java.lang.String)
      * CadastreEJB.SysRegPubDisParcelName}.
      */
     List<SysRegCertificates> getSysRegCertificatesByLocation(String searchString);
-    
-     /**
+
+    /**
      * See {@linkplain ApplicationEJB#SysRegCerificates(java.lang.String)
      * CadastreEJB.SysRegPubDisParcelName}.
      */
     List<SysRegCertificates> getSysRegCertificatesByApplication(String searchString, String nr);
-    
-     List<SysRegProduction> getSysRegProduction(LodgementViewParams params, String languageCode);
-	 
-	 	 /**
-	 * See {@linkplain ApplicationEJB#applicationActionTransfer(java.lang.String, java.lang.String, int)
-	 * ApplicationEJB.applicationActionTransfer}.
-	 */
-	 List<ValidationResult> applicationActionTransfer(
-	 String applicationId, String languageCode, int rowVersion);
 
-   
+    List<SysRegProduction> getSysRegProduction(LodgementViewParams params, String languageCode);
+
+    /**
+     * See {@linkplain ApplicationEJB#applicationActionTransfer(java.lang.String, java.lang.String, int)
+     * ApplicationEJB.applicationActionTransfer}.
+     */
+    List<ValidationResult> applicationActionTransfer(
+            String applicationId, String languageCode, int rowVersion);
+
+    boolean importApplication(Application application);
 }

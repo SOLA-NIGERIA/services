@@ -169,7 +169,7 @@ public interface AdministrativeEJBLocal extends AbstractSolaTransactionEJBLocal 
      * @param baUnit BaUnit object to import
      * @return 
      */
-    boolean importBaUnit(BaUnitOT baUnit);
+    boolean importBaUnit(BaUnitOT baUnit, String redcadId, String sltrId);
   
     /**
      * See {@linkplain AdministrativeEJB#SysRegPubDisParcelName(java.lang.String)
