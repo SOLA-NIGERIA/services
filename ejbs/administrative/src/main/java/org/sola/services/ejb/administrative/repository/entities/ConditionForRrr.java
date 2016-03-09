@@ -15,7 +15,7 @@ public class ConditionForRrr extends AbstractVersionedEntity {
     @Column(name="rrr_id")
     private String rrrId;
     
-    @Column(name="lease_condition_code")
+    @Column(name="condition_code")
     private String RrrConditionCode;
     
     @Column(name="custom_condition_text")
