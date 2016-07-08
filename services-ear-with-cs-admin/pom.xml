@@ -4,12 +4,12 @@
     <parent>
         <artifactId>sola-services</artifactId>
         <groupId>org.sola</groupId>
-        <version>1603</version>
+        <version>1607a</version>
     </parent>
     <groupId>org.sola.services</groupId>
     <artifactId>sola-services-ear-cs-admin</artifactId>
     <packaging>ear</packaging>
-    <version>1603</version>
+    <version>1607a</version>
     <name>Services EAR With CS and Admin</name>
     <properties>
         <csGroupId>org.sola.cs.services</csGroupId>
