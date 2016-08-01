@@ -328,5 +328,17 @@ public interface AdministrativeEJBLocal extends AbstractSolaTransactionEJBLocal 
      */
     DisputeParty saveDisputeParty(DisputeParty disputeParty);
     
-    
+       /** 
+     * Returns lease conditions template by ID 
+     * @param id Lease conditions template
+     * @return 
+     */
+    LeaseConditionTemplate getLeaseConditionTemplate(String id);
+  
+    /** 
+     * Saves lease condition template and returns it back
+     * @param template Lease conditions template
+     * @return 
+     */
+    LeaseConditionTemplate saveLeaseConditionTemplate(LeaseConditionTemplate template);
 }
