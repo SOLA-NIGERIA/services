@@ -218,4 +218,12 @@ public interface SearchEJBLocal extends AbstractEJBLocal {
      * See {@linkplain SearchEJB#transform(byte[], int)}.
      */
     byte[] transform(byte[] geom, int targetSrid);
+    
+    /** 
+     * Returns list of lease condition templates filtered by RRR type
+     * @param lang Language code
+     * @param rrrType RRR type code for filtering lease condition templates
+     * @return 
+     */
+    List<LeaseConditionTemplateSearchResults> getLeaseConditionTemplates(String lang, String rrrType);
 }

@@ -1112,4 +1112,14 @@ public class AdministrativeEJB extends AbstractEJB
     public LeaseConditionTemplate saveLeaseConditionTemplate(LeaseConditionTemplate template) {
         return getRepository().saveEntity(template);
     }   
+
+    @Override
+    public List<CofoType> getCofoTypes(String languageCode) {
+        return getRepository().getCodeList(CofoType.class, languageCode);
+    }
+    
+    @Override
+    public List<RotType> getRotTypes(String languageCode) {
+        return getRepository().getCodeList(RotType.class, languageCode);
+    }
 }

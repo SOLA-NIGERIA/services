@@ -341,4 +341,8 @@ public interface AdministrativeEJBLocal extends AbstractSolaTransactionEJBLocal 
      * @return 
      */
     LeaseConditionTemplate saveLeaseConditionTemplate(LeaseConditionTemplate template);
+    
+    List<CofoType> getCofoTypes(String languageCode);
+    
+    List<RotType> getRotTypes(String languageCode);
 }

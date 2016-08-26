@@ -57,10 +57,12 @@ import org.sola.services.ejb.search.spatial.ResultForSelectionInfo;
  * inefficient compared to using SQL, so the SearchEJB has been created to allow
  * efficient searching for data across multiple schemas.
  *
- * <p>The SearchEJB supports execution of dynamic SQL queries obtained from the
+ * <p>
+ * The SearchEJB supports execution of dynamic SQL queries obtained from the
  * system.query table.</p>
  *
- * <p>Note that this EJB has access to all SOLA database tables and it must be
+ * <p>
+ * Note that this EJB has access to all SOLA database tables and it must be
  * treated as read only. It must not be used to persist data changes.</p>
  */
 @Stateless
@@ -71,9 +73,9 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
      * Retrieves the SQL for the dynamic query from the system.query table
      *
      * @param queryName The name of the dynamic query to retrieve
-     * @param params The parameters to use for the dynamic query. If the {@linkplain CommonSqlProvider#PARAM_LANGUAGE_CODE}
-     * param is supplied, this value is used to localize the display values for
-     * the dynamic query.
+     * @param params The parameters to use for the dynamic query. If the
+     * {@linkplain CommonSqlProvider#PARAM_LANGUAGE_CODE} param is supplied,
+     * this value is used to localize the display values for the dynamic query.
      * @throws SOLAException If the dynamic query name does not match any query
      * in the database
      */
@@ -237,8 +239,8 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
      * person name, agent name, application number, document number and the
      * document reference number criteria.
      *
-     * <p>Requires the {@linkplain RolesConstants#APPLICATION_VIEW_APPS}
-     * role.</p>
+     * <p>
+     * Requires the {@linkplain RolesConstants#APPLICATION_VIEW_APPS} role.</p>
      *
      * @param params The criteria to use for the search.
      * @return A maximum of 100 applications that match the search criteria,
@@ -267,12 +269,11 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
                 params.getDocumentNumber() == null ? "" : params.getDocumentNumber().trim());
         queryParams.put(ApplicationSearchResult.QUERY_PARAM_DOCUMENT_REFERENCE,
                 params.getDocumentReference() == null ? "" : params.getDocumentReference().trim());
-        
+
         queryParams.put(ApplicationSearchResult.QUERY_PARAM_PARCEL,
                 params.getParcel() == null ? "" : params.getParcel().trim());
         queryParams.put(ApplicationSearchResult.QUERY_PARAM_SECTION,
                 params.getSection() == null ? "" : params.getSection().trim());
-        
 
         queryParams.put(CommonSqlProvider.PARAM_WHERE_PART, ApplicationSearchResult.QUERY_WHERE_SEARCH_APPLICATIONS);
         queryParams.put(CommonSqlProvider.PARAM_ORDER_BY_PART, ApplicationSearchResult.QUERY_ORDER_BY);
@@ -286,7 +287,8 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
      * Partial matches are supported for the document number and the document
      * reference number criteria.
      *
-     * <p>Requires the {@linkplain RolesConstants#SOURCE_SEARCH} role.</p>
+     * <p>
+     * Requires the {@linkplain RolesConstants#SOURCE_SEARCH} role.</p>
      *
      * @param searchParams The criteria to use for the search.
      * @return A maximum of 101 sources that match the search criteria.
@@ -303,20 +305,20 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
         Map params = new HashMap<String, Object>();
         params.put(SourceSearchResult.QUERY_PARAM_FROM_RECORDATION_DATE,
                 searchParams.getFromRecordationDate() == null
-                ? new GregorianCalendar(1, 1, 1).getTime()
-                : searchParams.getFromRecordationDate());
+                        ? new GregorianCalendar(1, 1, 1).getTime()
+                        : searchParams.getFromRecordationDate());
         params.put(SourceSearchResult.QUERY_PARAM_TO_RECORDATION_DATE,
                 searchParams.getToRecordationDate() == null
-                ? new GregorianCalendar(2500, 1, 1).getTime()
-                : searchParams.getToRecordationDate());
+                        ? new GregorianCalendar(2500, 1, 1).getTime()
+                        : searchParams.getToRecordationDate());
         params.put(SourceSearchResult.QUERY_PARAM_FROM_SUBMISSION_DATE,
                 searchParams.getFromSubmissionDate() == null
-                ? new GregorianCalendar(1, 1, 1).getTime()
-                : searchParams.getFromSubmissionDate());
+                        ? new GregorianCalendar(1, 1, 1).getTime()
+                        : searchParams.getFromSubmissionDate());
         params.put(SourceSearchResult.QUERY_PARAM_TO_SUBMISSION_DATE,
                 searchParams.getToSubmissionDate() == null
-                ? new GregorianCalendar(2500, 1, 1).getTime()
-                : searchParams.getToSubmissionDate());
+                        ? new GregorianCalendar(2500, 1, 1).getTime()
+                        : searchParams.getToSubmissionDate());
         params.put(SourceSearchResult.QUERY_PARAM_TYPE_CODE,
                 searchParams.getTypeCode() == null ? "" : searchParams.getTypeCode());
         params.put(SourceSearchResult.QUERY_PARAM_REF_NUMBER,
@@ -339,7 +341,8 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
      * provided. Partial matches are supported for the document number and the
      * document reference number criteria.
      *
-     * <p>Requires the {@linkplain RolesConstants#SOURCE_SEARCH} role.</p>
+     * <p>
+     * Requires the {@linkplain RolesConstants#SOURCE_SEARCH} role.</p>
      *
      * @param searchParams The criteria to use for the search.
      * @return A maximum of 101 sources that match the search criteria.
@@ -361,8 +364,8 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
      * Partial matches are supported for the username, first name and last name
      * criteria.
      *
-     * <p>Requires the {@linkplain RolesConstants#ADMIN_MANAGE_SECURITY}
-     * role.</p>
+     * <p>
+     * Requires the {@linkplain RolesConstants#ADMIN_MANAGE_SECURITY} role.</p>
      *
      * @param searchParams The criteria to use for the search.
      * @return The users that match the search criteria.
@@ -399,8 +402,8 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
      * Returns applications that have a lodged or approve status and are not
      * assigned to any user.
      *
-     * <p>Requires the {@linkplain RolesConstants#APPLICATION_VIEW_APPS}
-     * role.</p>
+     * <p>
+     * Requires the {@linkplain RolesConstants#APPLICATION_VIEW_APPS} role.</p>
      *
      * @param locale The language code to use for localization of display
      * values.
@@ -409,7 +412,7 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
      */
     @Override
     @RolesAllowed(RolesConstants.DASHBOARD_VIEW_UNASSIGNED_APPS)
-     public List<ApplicationSearchResult> getUnassignedApplications(String locale) {
+    public List<ApplicationSearchResult> getUnassignedApplications(String locale) {
 
         Map params = new HashMap<String, Object>();
         params.put(CommonSqlProvider.PARAM_FROM_PART, ApplicationSearchResult.QUERY_FROM);
@@ -425,12 +428,13 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
      * Returns applications that have a lodged or approved status and are
      * assigned to the currently logged in user.
      *
-     * <p>If the currently logged in user has the {@linkplain RolesConstants#APPLICATION_UNASSIGN_FROM_OTHERS}
-     * then all lodged or approved applications assigned to any user are
-     * returned. </p>
+     * <p>
+     * If the currently logged in user has the
+     * {@linkplain RolesConstants#APPLICATION_UNASSIGN_FROM_OTHERS} then all
+     * lodged or approved applications assigned to any user are returned. </p>
      *
-     * <p>Requires the {@linkplain RolesConstants#APPLICATION_VIEW_APPS}
-     * role.</p>
+     * <p>
+     * Requires the {@linkplain RolesConstants#APPLICATION_VIEW_APPS} role.</p>
      *
      * @param locale The language code to use for localization of display
      * values.
@@ -439,7 +443,7 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
      */
     @Override
     @RolesAllowed(RolesConstants.DASHBOARD_VIEW_ASSIGNED_APPS)
-     public List<ApplicationSearchResult> getAssignedApplications(String locale) {
+    public List<ApplicationSearchResult> getAssignedApplications(String locale) {
         Map params = new HashMap<String, Object>();
         params.put(CommonSqlProvider.PARAM_FROM_PART, ApplicationSearchResult.QUERY_FROM);
         params.put(CommonSqlProvider.PARAM_LANGUAGE_CODE, locale);
@@ -528,7 +532,7 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
         params.put("name_lastpart", spatialQuery.getNameLastPart());
         return getSpatialResultForNavigation(spatialQuery.getQueryName(), params);
     }
-    
+
     private Map getSpatialNavigationQueryParams(QueryForNavigation spatialQuery) {
         Map params = new HashMap<String, Object>();
         params.put("minx", spatialQuery.getWest());
@@ -539,9 +543,9 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
         params.put("pixel_res", spatialQuery.getPixelResolution());
         return params;
     }
-    
+
     private ResultForNavigationInfo getSpatialResultForNavigation(
-            String queryName, Map params){
+            String queryName, Map params) {
         ResultForNavigationInfo spatialResultInfo = new ResultForNavigationInfo();
         getRepository().setLoadInhibitors(new Class[]{DynamicQueryField.class});
         List<SpatialResult> result = executeDynamicQuery(SpatialResult.class,
@@ -549,7 +553,7 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
         getRepository().clearLoadInhibitors();
         spatialResultInfo.setToAdd(result);
         return spatialResultInfo;
-        
+
     }
 
     /**
@@ -569,14 +573,16 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
 
     /**
      * Returns the list of Crs
-     * @return 
+     *
+     * @return
      */
     @Override
-    public List<Crs> getCrsList(){
+    public List<Crs> getCrsList() {
         Map params = new HashMap<String, Object>();
         params.put(CommonSqlProvider.PARAM_ORDER_BY_PART, Crs.ORDER_COLUMN);
         return getRepository().getEntityList(Crs.class, params);
     }
+
     /**
      * Executes a group of dynamic spatial queries using a filtering geometry.
      * Primarily used to obtain results for the Object Information Tool. Each
@@ -643,8 +649,9 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
 
     /**
      * Retrieves the history of changes and actions that have been applied to
-     * the application. <p>Requires the {@linkplain RolesConstants#APPLICATION_VIEW_APPS}
-     * role.</p>
+     * the application.
+     * <p>
+     * Requires the {@linkplain RolesConstants#APPLICATION_VIEW_APPS} role.</p>
      *
      * @param applicationId The application to retrieve the log for
      */
@@ -660,8 +667,9 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
 
     /**
      * Executes a search across all Business Rules. Partial matches of the br
-     * display name are supported. <p>Requires the {@linkplain RolesConstants#ADMIN_MANAGE_BR}
-     * role.</p>
+     * display name are supported.
+     * <p>
+     * Requires the {@linkplain RolesConstants#ADMIN_MANAGE_BR} role.</p>
      *
      * @param searchParams The parameters to use for the search.
      * @param lang The language code to use for localization of display values
@@ -703,7 +711,8 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
      * Executes a search across all BA Units. Partial, case insensitive matches
      * of the name first part, name last part and owner name are supported.
      *
-     * <p>Requires the {@linkplain RolesConstants#ADMINISTRATIVE_BA_UNIT_SEARCH}
+     * <p>
+     * Requires the {@linkplain RolesConstants#ADMINISTRATIVE_BA_UNIT_SEARCH}
      * role.</p>
      *
      * @param searchParams The search criteria to use.
@@ -711,8 +720,8 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
      */
     @Override
     @RolesAllowed({RolesConstants.ADMINISTRATIVE_BA_UNIT_SEARCH, RolesConstants.APPLICATION_EDIT_APPS,
-    RolesConstants.APPLICATION_CREATE_APPS})
-     public List<BaUnitSearchResult> searchBaUnits(BaUnitSearchParams searchParams) {
+        RolesConstants.APPLICATION_CREATE_APPS})
+    public List<BaUnitSearchResult> searchBaUnits(BaUnitSearchParams searchParams) {
         Map params = new HashMap<String, Object>();
 
         if (searchParams.getNameFirstPart() != null
@@ -732,7 +741,7 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
 
         params.put(CommonSqlProvider.PARAM_QUERY,
                 SearchSqlProvider.buildSearchBaUnitSql(searchParams.getNameFirstPart(),
-                searchParams.getNameLastPart(), searchParams.getOwnerName(), searchParams.getName()));
+                        searchParams.getNameLastPart(), searchParams.getOwnerName(), searchParams.getName()));
         params.put(BaUnitSearchResult.QUERY_PARAM_OWNER_NAME, searchParams.getOwnerName());
         params.put(BaUnitSearchResult.QUERY_PARAM_NAME_FIRSTPART, searchParams.getNameFirstPart());
         params.put(BaUnitSearchResult.QUERY_PARAM_NAME_LASTPART, searchParams.getNameLastPart());
@@ -778,7 +787,7 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
     public List<RightsExportResult> searchRightsForExport(RightsExportParams searchParams) {
         Map params = new HashMap<String, Object>();
         Calendar cal = Calendar.getInstance();
-        
+
         if (searchParams.getDateFrom() == null) {
             searchParams.setDateFrom(new GregorianCalendar(1, 1, 1, 0, 0).getTime());
         } else {
@@ -796,7 +805,7 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
             cal.set(Calendar.MINUTE, 59);
             searchParams.setDateTo(cal.getTime());
         }
-        
+
         if (searchParams.getRightTypeCode() == null) {
             searchParams.setRightTypeCode("");
         }
@@ -809,39 +818,38 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
 
     /**
      * Get the extent of the public display map.
-     * 
+     *
      * @param nameLastPart
-     * @return 
+     * @return
      */
     @Override
     public byte[] getExtentOfPublicDisplayMap(String nameLastPart) {
 //        String sqlToGetExtent = "select st_asewkb(st_extent(co.geom_polygon)) as extent "
 //                + " from cadastre.cadastre_object co where type_code= 'parcel' "
 //                + " and status_code= 'current' and name_lastpart =#{name_lastpart}";
-      
-        String sqlToGetExtent = "select st_asewkb(st_extent(co.geom_polygon)) as extent  " 
-                  + " from  cadastre.cadastre_object co,   "
-                  + " cadastre.spatial_unit_group sg    "
-                  + " where compare_strings(#{name_lastpart}, sg.name)   "
-                  + " and co.type_code= 'parcel'   "
-                  + " and co.status_code= 'current'   "
-                  + " and sg.hierarchy_level=4   "
-                  + " and ST_Intersects(ST_PointOnSurface(co.geom_polygon), sg.geom)  ";
-       
-       
+
+        String sqlToGetExtent = "select st_asewkb(st_extent(co.geom_polygon)) as extent  "
+                + " from  cadastre.cadastre_object co,   "
+                + " cadastre.spatial_unit_group sg    "
+                + " where compare_strings(#{name_lastpart}, sg.name)   "
+                + " and co.type_code= 'parcel'   "
+                + " and co.status_code= 'current'   "
+                + " and sg.hierarchy_level=4   "
+                + " and ST_Intersects(ST_PointOnSurface(co.geom_polygon), sg.geom)  ";
+
         String paramLastPart = "name_lastpart";
         Map params = new HashMap();
         params.put(CommonSqlProvider.PARAM_QUERY, sqlToGetExtent);
         params.put(paramLastPart, nameLastPart);
         List result = getRepository().executeSql(params);
         byte[] value = null;
-        if (result != null && result.size()>0 && result.get(0) != null){
-            value = (byte[]) ((HashMap)result.get(0)).get("extent");
+        if (result != null && result.size() > 0 && result.get(0) != null) {
+            value = (byte[]) ((HashMap) result.get(0)).get("extent");
         }
         return value;
-    }    
-    
-     /*
+    }
+
+    /*
      * DISPUTE
      *
      */
@@ -850,7 +858,8 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
      * (rrr_id), plot number (cadaster_id), and dates between lodgement date and
      * completion .
      *
-     * <p>Requires the {@linkplain RolesConstants#ADMINISTRATIVE_BA_UNIT_SEARCH}
+     * <p>
+     * Requires the {@linkplain RolesConstants#ADMINISTRATIVE_BA_UNIT_SEARCH}
      * role.</p>
      *
      * @param searchParams The search criteria to use.
@@ -867,7 +876,6 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
     private Map<String, Object> processDisputeSearchParams(DisputeSearchParams searchParams) {
         Map params = new HashMap<String, Object>();
 
-
         params.put(DisputeSearchResult.QUERY_PARAM_DISP_NR,
                 searchParams.getNr() == null ? "" : searchParams.getNr());
 
@@ -876,33 +884,32 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
 
         params.put(DisputeSearchResult.QUERY_PARAM_PLOT_NR,
                 searchParams.getPlotNumber() == null ? "" : searchParams.getPlotNumber());
-        
+
         params.put(DisputeSearchResult.QUERY_PARAM_CASE_TYPE,
                 searchParams.getCaseType() == null ? "" : searchParams.getCaseType());
-        
+
         params.put(DisputeSearchResult.QUERY_PARAM_LODGEMENT_DATE_FROM,
                 searchParams.getLodgementDateFrom() == null
-                ? new GregorianCalendar(1, 1, 1).getTime()
-                : searchParams.getLodgementDateFrom());
+                        ? new GregorianCalendar(1, 1, 1).getTime()
+                        : searchParams.getLodgementDateFrom());
 
         params.put(DisputeSearchResult.QUERY_PARAM_LODGEMENT_DATE_TO,
                 searchParams.getLodgementDateTo() == null
-                ? new GregorianCalendar(2500, 1, 1).getTime()
-                : searchParams.getLodgementDateTo());
+                        ? new GregorianCalendar(2500, 1, 1).getTime()
+                        : searchParams.getLodgementDateTo());
 
         params.put(DisputeSearchResult.QUERY_PARAM_COMPLETION_DATE_FROM,
                 searchParams.getCompletionDateFrom() == null
-                ? new GregorianCalendar(1, 1, 1).getTime()
-                : searchParams.getCompletionDateTo());
+                        ? new GregorianCalendar(1, 1, 1).getTime()
+                        : searchParams.getCompletionDateTo());
 
         params.put(DisputeSearchResult.QUERY_PARAM_COMPLETION_DATE_TO,
                 searchParams.getCompletionDateTo() == null
-                ? new GregorianCalendar(2500, 1, 1).getTime()
-                : searchParams.getLodgementDateTo());
+                        ? new GregorianCalendar(2500, 1, 1).getTime()
+                        : searchParams.getLodgementDateTo());
 
         return params;
     }
-    
 
     @Override
     public List<SpatialResult> getPlanCadastreObjects(String cadastreObjectId) {
@@ -911,8 +918,7 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
         params.put(CommonSqlProvider.PARAM_QUERY, SpatialResult.QUERY_GET_PLAN_CADASTRE_OBJECTS);
         return getRepository().getEntityList(SpatialResult.class, params);
     }
-    
-    
+
     @Override
     public String getMapCenterLabel(byte[] mapCenterPoint) {
         String sql = "select cadastre.get_map_center_label(#{map_center_point}) as vl";
@@ -922,18 +928,18 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
         params.put(paramMapCenterPoint, mapCenterPoint);
         List result = getRepository().executeSql(params);
         String value = "";
-        if (result != null && result.size()>0 && result.get(0) != null){
-            value = ((HashMap)result.get(0)).get("vl").toString();
+        if (result != null && result.size() > 0 && result.get(0) != null) {
+            value = ((HashMap) result.get(0)).get("vl").toString();
         }
         return value;
-    }    
- 
-	
+    }
+
     @Override
     public List<CadastreObjectSearchResult> searchCadastreObjects(CadastreObjectSearchParams searchParams) {
-        if(searchParams==null)
+        if (searchParams == null) {
             return null;
-        
+        }
+
         if (searchParams.getNameFirstPart() == null) {
             searchParams.setNameFirstPart("");
         }
@@ -943,7 +949,7 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
         if (searchParams.getAddress() == null) {
             searchParams.setAddress("");
         }
-        
+
         Map params = new HashMap<String, Object>();
         params.put(CommonSqlProvider.PARAM_QUERY, CadastreObjectSearchResult.QUERY_SEARCH);
         params.put(CadastreObjectSearchResult.PARAM_NAME_FIRST_PART, searchParams.getNameFirstPart());
@@ -951,15 +957,30 @@ public class SearchEJB extends AbstractEJB implements SearchEJBLocal {
         params.put(CadastreObjectSearchResult.PARAM_ADDRESS, searchParams.getAddress());
         return getRepository().getEntityList(CadastreObjectSearchResult.class, params);
     }
-@Override
+
+    @Override
     public byte[] transform(byte[] wkbGeom, int srid) {
         Map params = new HashMap();
         params.put(
-                CommonSqlProvider.PARAM_QUERY, 
+                CommonSqlProvider.PARAM_QUERY,
                 "select st_asewkb(st_transform(#{geom}, #{srid}))");
         params.put("srid", srid);
         params.put("geom", wkbGeom);
         return getRepository().getScalar(byte[].class, params);
     }
- }
 
+    @Override
+    public List<LeaseConditionTemplateSearchResults> getLeaseConditionTemplates(String lang, String rrrType) {
+        if (lang == null) {
+            lang = "en-us";
+        }
+        if (rrrType == null) {
+            rrrType = "";
+        }
+        Map params = new HashMap<String, Object>();
+        params.put(CommonSqlProvider.PARAM_QUERY, LeaseConditionTemplateSearchResults.SELECT_QUERY);
+        params.put(LeaseConditionTemplateSearchResults.PARAM_LANG, lang);
+        params.put(LeaseConditionTemplateSearchResults.PARAM_RRR_TYPE, rrrType);
+        return getRepository().getEntityList(LeaseConditionTemplateSearchResults.class, params);
+    }
+}

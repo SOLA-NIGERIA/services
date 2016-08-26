@@ -98,8 +98,6 @@ public class Rrr extends AbstractVersionedEntity {
     private BaUnitNotation notation;
     @ChildEntityList(parentIdField = "rrrId", cascadeDelete = true)
     private List<RrrShare> rrrShareList;
-    @ChildEntityList(parentIdField = "rrrId", cascadeDelete = true)
-    private List<ConditionForRrr> RrrConditionList;
     @ExternalEJB(ejbLocalClass = SourceEJBLocal.class,
     loadMethod = "getSources", saveMethod = "saveSource")
     @ChildEntityList(parentIdField = "rrrId", childIdField = "sourceId",
@@ -112,6 +110,28 @@ public class Rrr extends AbstractVersionedEntity {
     @Column(insertable=false, updatable=false, name = "concatenated_name")
     @AccessFunctions(onSelect = "administrative.get_concatenated_name(ba_unit_id)")
     private String concatenatedName;
+    @Column(name="lease_conditions")
+    private String leaseConditions;
+    @Column(name = "cofo")
+    private String cOfO;
+    @Column(name = "instrument_registration_no")
+    private String instrRegNum;
+    @Column(name = "date_commenced")
+    private Date dateCommenced;
+    @Column(name = "date_signed")
+    private Date dateSigned;
+    @Column(name = "term")
+    private Integer term;
+    @Column(name = "advance_payment")
+    private BigDecimal advancePayment;
+    @Column(name = "yearly_rent")
+    private BigDecimal yearlyRent;
+    @Column(name = "review_period")
+    private Integer reviewPeriod;
+    @Column(name = "zone_code")
+    private String zoneCode;
+    @Column(name = "rot_code")
+    private String rotCode;
 
     public String getConcatenatedName() {
         return concatenatedName;
@@ -302,14 +322,102 @@ public class Rrr extends AbstractVersionedEntity {
         this.rightHolderList = rightHolderList;
     }
 
-    public List<ConditionForRrr> getRrrConditionList() {
-        return RrrConditionList;
+    public String getLeaseConditions() {
+        return leaseConditions;
     }
 
-    public void setRrrConditionList(List<ConditionForRrr> RrrConditionList) {
-        this.RrrConditionList = RrrConditionList;
+    public void setLeaseConditions(String leaseConditions) {
+        this.leaseConditions = leaseConditions;
     }
 
+    public String getCOfO() {
+        return cOfO;
+    }
+
+    public void setCOfO(String cOfO) {
+        this.cOfO = cOfO;
+    }
+
+    public String getcOfO() {
+        return cOfO;
+    }
+
+    public void setcOfO(String cOfO) {
+        this.cOfO = cOfO;
+    }
+
+    public String getInstrRegNum() {
+        return instrRegNum;
+    }
+
+    public void setInstrRegNum(String instrRegNum) {
+        this.instrRegNum = instrRegNum;
+    }
+
+    public Date getDateCommenced() {
+        return dateCommenced;
+    }
+
+    public void setDateCommenced(Date dateCommenced) {
+        this.dateCommenced = dateCommenced;
+    }
+
+    public Date getDateSigned() {
+        return dateSigned;
+    }
+
+    public void setDateSigned(Date dateSigned) {
+        this.dateSigned = dateSigned;
+    }
+
+    public Integer getTerm() {
+        return term;
+    }
+
+    public void setTerm(Integer term) {
+        this.term = term;
+    }
+
+    public BigDecimal getAdvancePayment() {
+        return advancePayment;
+    }
+
+    public void setAdvancePayment(BigDecimal advancePayment) {
+        this.advancePayment = advancePayment;
+    }
+
+    public BigDecimal getYearlyRent() {
+        return yearlyRent;
+    }
+
+    public void setYearlyRent(BigDecimal yearlyRent) {
+        this.yearlyRent = yearlyRent;
+    }
+
+    public Integer getReviewPeriod() {
+        return reviewPeriod;
+    }
+
+    public void setReviewPeriod(Integer reviewPeriod) {
+        this.reviewPeriod = reviewPeriod;
+    }
+
+    public String getZoneCode() {
+        return zoneCode;
+    }
+
+    public void setZoneCode(String zoneCode) {
+        this.zoneCode = zoneCode;
+    }
+
+    public String getRotCode() {
+        return rotCode;
+    }
+
+    public void setRotCode(String rotCode) {
+        this.rotCode = rotCode;
+    }
+    
     public Boolean isLocked() {
         if (locked == null) {
             locked = false;

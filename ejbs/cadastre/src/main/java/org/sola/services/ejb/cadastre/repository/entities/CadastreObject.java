@@ -131,6 +131,14 @@ public class CadastreObject extends AbstractVersionedEntity {
     @ChildEntityList(parentIdField = "cadastreObjectId", childIdField = "addressId",
     manyToManyClass = AddressForCadastreObject.class)
     private List<Address> addressList;
+    @Column(name = "block")
+    private String block;
+    @Column(name = "plot_num")
+    private String plotNum;
+    @Column(name = "lga_code")
+    private String lgaCode;
+    @Column(name = "intell_map_sheet")
+    private String intellMapSheet;
     
     public String getLandUseCode() {
         return landUseCode;
@@ -243,6 +251,38 @@ public class CadastreObject extends AbstractVersionedEntity {
 
     public void setAddressList(List<Address> addressList) {
         this.addressList = addressList;
+    }
+
+    public String getBlock() {
+        return block;
+    }
+
+    public void setBlock(String block) {
+        this.block = block;
+    }
+
+    public String getPlotNum() {
+        return plotNum;
+    }
+
+    public void setPlotNum(String plotNum) {
+        this.plotNum = plotNum;
+    }
+
+    public String getLgaCode() {
+        return lgaCode;
+    }
+
+    public void setLgaCode(String lgaCode) {
+        this.lgaCode = lgaCode;
+    }
+
+    public String getIntellMapSheet() {
+        return intellMapSheet;
+    }
+
+    public void setIntellMapSheet(String intellMapSheet) {
+        this.intellMapSheet = intellMapSheet;
     }
 
     /**
