@@ -123,6 +123,9 @@ public class Application extends AbstractVersionedEntity {
     @ChildEntityList(parentIdField = "applicationId", childIdField = "spatialUnitId",
     manyToManyClass = ApplicationSpatialUnit.class)
     private List<CadastreObject> cadastreObjectList;
+    @Column(insertable=false, updatable=false, name = "sltr_status")
+    @AccessFunctions(onSelect = "application.getsltrstatus(id)")
+    private String sltrStatus;
     
     
     public Application() {
@@ -350,6 +353,14 @@ public class Application extends AbstractVersionedEntity {
 
     public void setSection(String section) {
         this.section = section;
+    }
+
+    public String getSltrStatus() {
+        return sltrStatus;
+    }
+
+    public void setSltrStatus(String sltrStatus) {
+        this.sltrStatus = sltrStatus;
     }
     
     

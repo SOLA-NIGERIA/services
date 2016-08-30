@@ -1420,4 +1420,25 @@ public class ApplicationEJB extends AbstractEJB implements ApplicationEJBLocal {
         }
         return true;    
     }
+    
+    
+     /**
+     * Returns the sltr status of the sltr application that
+     * matches the specified search string.
+     *
+     * @param searchString The search string to use
+     * @return The list of ba_unit_id for approved systematic registration
+     */
+    @Override
+    @RolesAllowed(RolesConstants.ADMINISTRATIVE_SYSTEMATIC_REGISTRATION)
+    public List<SltrStatus> getSltrStatus(String searchString) {
+        HashMap params = new HashMap();
+        params.put("search_string", searchString);
+
+        return getRepository().getEntityList(SltrStatus.class,
+                SltrStatus.QUERY_WHERE_BYID, params);
+    }
+
+    
+    
 }

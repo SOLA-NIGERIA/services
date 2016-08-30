@@ -282,4 +282,12 @@ public interface ApplicationEJBLocal extends AbstractEJBLocal {
             String applicationId, String languageCode, int rowVersion);
 
     boolean importApplication(Application application);
+    
+    
+     /**
+     * See {@linkplain ApplicationEJB#SltrStatus(java.lang.String)
+     * ApplicationEJB.SltrStatus}.
+     */
+    List<SltrStatus> getSltrStatus(String searchString);
+    
 }

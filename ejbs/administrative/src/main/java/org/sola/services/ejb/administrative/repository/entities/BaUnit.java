@@ -144,7 +144,16 @@ public class BaUnit extends AbstractVersionedEntity {
     private Date expirationDate;
     @Column(name = "creation_date")
     private Date creationDate;
+    @Column(name = "address_for_notice")
+    private String addressNotice;
 
+    public String getAddressNotice() {
+        return addressNotice;
+    }
+
+    public void setAddressNotice(String addressNotice) {
+        this.addressNotice = addressNotice;
+    }
     public Date getCreationDate() {
         return creationDate;
     }
