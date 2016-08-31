@@ -31,8 +31,10 @@
  */
 package org.sola.services.ejb.administrative.repository.entities;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -132,7 +134,17 @@ public class Rrr extends AbstractVersionedEntity {
     private String zoneCode;
     @Column(name = "rot_code")
     private String rotCode;
+    @Column(name = "cofo_type")
+    private String cofoType;
 
+    public String getCofoType() {
+        return cofoType;
+    }
+
+    public void setCofoType(String cofoType) {
+        this.cofoType = cofoType;
+    }
+    
     public String getConcatenatedName() {
         return concatenatedName;
     }
@@ -430,15 +442,41 @@ public class Rrr extends AbstractVersionedEntity {
         return locked;
     }
 
+    private String generateCofONumber() {
+        String result = "";
+        HashMap<String, Serializable> parameters = new HashMap<String, Serializable>();
+
+        SystemEJBLocal systemEJB = RepositoryUtility.tryGetEJB(SystemEJBLocal.class);
+
+        String zone = getZoneCode();
+        String estate = getRotCode();
+        if (zone!= null) {
+        parameters.put("zone", zone+"/");
+        }
+        if (estate!= null) {
+        parameters.put("estate", estate+"/");
+        }
+       
+        if (systemEJB != null) {
+            Result newNumberResult = systemEJB.checkRuleGetResultSingle("generate-cofo-nr", parameters);
+            if (newNumberResult != null && newNumberResult.getValue() != null) {
+                result = newNumberResult.getValue().toString();
+            }
+        }
+        return result;
+    }
+
     @Override
     public void preSave() {
-        if (this.isNew()) {
-            setTransactionId(LocalInfo.getTransactionId());
-        }
 
+        if (isNew()) {
+        setTransactionId(LocalInfo.getTransactionId());
+        }
+        
         if (isNew() && getNr() == null) {
-            // Assign a generated number to the Rrr if it is not currently set. 
+        // Assign a generated number to the CofO if it is not currently set. 
             setNr(generateRrrNumber());
+            setCOfO(generateCofONumber());
         }
         super.preSave();
     }

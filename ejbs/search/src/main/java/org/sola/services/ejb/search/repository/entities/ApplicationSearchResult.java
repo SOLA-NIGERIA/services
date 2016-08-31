@@ -181,6 +181,14 @@ public class ApplicationSearchResult extends AbstractReadOnlyEntity {
     @Column(name = "section")
     private String section;
     
+   @AccessFunctions(onSelect = "(SELECT string_agg(tmp.display_value, ',') FROM "
+           + "( SELECT  ss.sltr_status as display_value "
+           + " FROM  application.sltr_status ss, "
+           + " application.application aa "
+           + " WHERE   ss.appid = aa.id)tmp)  ")
+    @Column(name = "sltr_status")
+    private String sltrStatus;
+			  
     @Column(name = "fee_paid")
     private Boolean feePaid;
     @Column(name = "rowversion")
@@ -197,6 +205,14 @@ public class ApplicationSearchResult extends AbstractReadOnlyEntity {
         super();
     }
 
+    public String getSltrStatus() {
+        return sltrStatus;
+    }
+
+    public void setSltrStatus(String sltrStatus) {
+        this.sltrStatus = sltrStatus;
+    }
+    
     public String getParcel() {
         return parcel;
     }
