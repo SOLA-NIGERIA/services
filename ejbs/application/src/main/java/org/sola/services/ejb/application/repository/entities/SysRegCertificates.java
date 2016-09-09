@@ -82,25 +82,27 @@ public class SysRegCertificates extends AbstractReadOnlyEntity {
     @Column(name = "rank")
     private String rank;
     @Column(name = "term")
-    private String term;
+    private Integer term;
     @Column(name = "rent")
-    private String rent;
+    private BigDecimal rent;
 
-    public String getTerm() {
+    public Integer getTerm() {
         return term;
     }
 
-    public void setTerm(String term) {
+    public void setTerm(Integer term) {
         this.term = term;
     }
 
-    public String getRent() {
+    public BigDecimal getRent() {
         return rent;
     }
 
-    public void setRent(String rent) {
+    public void setRent(BigDecimal rent) {
         this.rent = rent;
     }
+
+    
     
     
     
