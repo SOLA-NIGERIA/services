@@ -185,7 +185,7 @@ public class ApplicationSearchResult extends AbstractReadOnlyEntity {
            + "( SELECT  ss.sltr_status as display_value "
            + " FROM  application.sltr_status ss, "
            + " application.application aa "
-           + " WHERE   ss.appid = aa.id)tmp)  ")
+           + " WHERE   ss.appid = aa.id  and a.id=aa.id ORDER BY display_value)tmp)  ")
     @Column(name = "sltr_status")
     private String sltrStatus;
 			  
