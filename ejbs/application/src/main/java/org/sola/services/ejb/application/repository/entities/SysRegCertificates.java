@@ -85,7 +85,41 @@ public class SysRegCertificates extends AbstractReadOnlyEntity {
     private Integer term;
     @Column(name = "rent")
     private BigDecimal rent;
+//    @AccessFunctions(onSelect = "cadastre.stamp_duty(ba_unit_id)")
+    @Column(name = "stamp_duty")
+    private BigDecimal stampDuty;
+//    @AccessFunctions(onSelect = "cadastre.premium(ba_unit_id)")
+    @Column(name = "premium_state_land")
+    private Integer premiumStateLand;
+    //    @AccessFunctions(onSelect = "cadastre.premium(ba_unit_id)")
+    @Column(name = "premium_non_state")
+    private Integer premiumNonState;
 
+    public BigDecimal getStampDuty() {
+        return stampDuty;
+    }
+
+    public void setStampDuty(BigDecimal stampDuty) {
+        this.stampDuty = stampDuty;
+    }
+
+    public Integer getPremiumStateLand() {
+        return premiumStateLand;
+    }
+
+    public void setPremiumStateLand(Integer premiumStateLand) {
+        this.premiumStateLand = premiumStateLand;
+    }
+
+    public Integer getPremiumNonState() {
+        return premiumNonState;
+    }
+
+    public void setPremiumNonState(Integer premiumNonState) {
+        this.premiumNonState = premiumNonState;
+    }
+
+    
     public Integer getTerm() {
         return term;
     }
