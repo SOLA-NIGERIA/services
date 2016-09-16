@@ -136,7 +136,18 @@ public class Rrr extends AbstractVersionedEntity {
     private String rotCode;
     @Column(name = "cofo_type")
     private String cofoType;
+    @Column(insertable=false, updatable=false, name = "improvement_premium")
+    @AccessFunctions(onSelect = "administrative.get_improvementPremium(ba_unit_id)")
+    private String improvementPremium;
 
+    public String getImprovementPremium() {
+        return improvementPremium;
+    }
+
+    public void setImprovementPremium(String improvementPremium) {
+        this.improvementPremium = improvementPremium;
+    }
+    
     public String getCofoType() {
         return cofoType;
     }
