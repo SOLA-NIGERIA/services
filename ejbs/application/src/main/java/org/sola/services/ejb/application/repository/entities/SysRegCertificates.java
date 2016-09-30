@@ -1,7 +1,34 @@
-/*
+/**
+ * ******************************************************************************************
+ * Copyright (C) 2012 - Food and Agriculture Organization of the United Nations (FAO).
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *
+ *    1. Redistributions of source code must retain the above copyright notice,this list
+ *       of conditions and the following disclaimer.
+ *    2. Redistributions in binary form must reproduce the above copyright notice,this list
+ *       of conditions and the following disclaimer in the documentation and/or other
+ *       materials provided with the distribution.
+ *    3. Neither the name of FAO nor the names of its contributors may be used to endorse or
+ *       promote products derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+ * SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,PROCUREMENT
+ * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,STRICT LIABILITY,OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * *********************************************************************************************
+ *//*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package org.sola.services.ejb.application.repository.entities;
 
 import java.math.BigDecimal;
@@ -70,7 +97,6 @@ public class SysRegCertificates extends AbstractReadOnlyEntity {
     private String imageryDate;
     @Column(name = "CofO")
     private Integer CofO;
-    
     @Column(name = "imageryResolution")
     private String imageryResolution;
     @Column(name = "imagerySource")
@@ -84,16 +110,40 @@ public class SysRegCertificates extends AbstractReadOnlyEntity {
     @Column(name = "term")
     private Integer term;
     @Column(name = "rent")
+    @AccessFunctions(onSelect = "administrative.get_yearly_rent(ba_unit_id)")
     private BigDecimal rent;
-//    @AccessFunctions(onSelect = "cadastre.stamp_duty(ba_unit_id)")
+    @AccessFunctions(onSelect = "administrative.get_stamp_duty(ba_unit_id)")
     @Column(name = "stamp_duty")
     private BigDecimal stampDuty;
-//    @AccessFunctions(onSelect = "cadastre.premium(ba_unit_id)")
-    @Column(name = "premium_state_land")
-    private Integer premiumStateLand;
+    @AccessFunctions(onSelect = "administrative.get_improvement_premium(ba_unit_id)")
+    @Column(name = "premium")
+    private BigDecimal premium;
+    @Column(name = "estate")
+    private String estate;
+    @Column(name = "tarrif_type")
+    private String tarrifType;
+    
+//    @Column(name = "premium_state_land")
+//    private Integer premiumStateLand;
     //    @AccessFunctions(onSelect = "cadastre.premium(ba_unit_id)")
-    @Column(name = "premium_non_state")
-    private Integer premiumNonState;
+//    @Column(name = "premium_non_state")
+//    private Integer premiumNonState;
+//    public Integer getPremiumStateLand() {
+//        return premiumStateLand;
+//    }
+//
+//    public void setPremiumStateLand(Integer premiumStateLand) {
+//        this.premiumStateLand = premiumStateLand;
+//    }
+//
+//    public Integer getPremiumNonState() {
+//        return premiumNonState;
+//    }
+//
+//    public void setPremiumNonState(Integer premiumNonState) {
+//        this.premiumNonState = premiumNonState;
+//    }
+//
 
     public BigDecimal getStampDuty() {
         return stampDuty;
@@ -102,23 +152,6 @@ public class SysRegCertificates extends AbstractReadOnlyEntity {
     public void setStampDuty(BigDecimal stampDuty) {
         this.stampDuty = stampDuty;
     }
-
-    public Integer getPremiumStateLand() {
-        return premiumStateLand;
-    }
-
-    public void setPremiumStateLand(Integer premiumStateLand) {
-        this.premiumStateLand = premiumStateLand;
-    }
-
-    public Integer getPremiumNonState() {
-        return premiumNonState;
-    }
-
-    public void setPremiumNonState(Integer premiumNonState) {
-        this.premiumNonState = premiumNonState;
-    }
-
     
     public Integer getTerm() {
         return term;
@@ -136,11 +169,14 @@ public class SysRegCertificates extends AbstractReadOnlyEntity {
         this.rent = rent;
     }
 
-    
-    
-    
-    
-    
+    public BigDecimal getPremium() {
+        return premium;
+    }
+
+    public void setPremium(BigDecimal premium) {
+        this.premium = premium;
+    }
+
     
     public String getRank() {
         return rank;
@@ -334,5 +370,21 @@ public class SysRegCertificates extends AbstractReadOnlyEntity {
     public void setId(String id) {
         this.id = id;
     }
+
+    public String getEstate() {
+        return estate;
+    }
+
+    public void setEstate(String estate) {
+        this.estate = estate;
+    }
+
+    public String getTarrifType() {
+        return tarrifType;
+    }
+
+    public void setTarrifType(String tarrifType) {
+        this.tarrifType = tarrifType;
+    }     
      
 }

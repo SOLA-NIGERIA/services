@@ -126,8 +126,6 @@ public class Rrr extends AbstractVersionedEntity {
     private Integer term;
     @Column(name = "advance_payment")
     private BigDecimal advancePayment;
-    @Column(name = "yearly_rent")
-    private BigDecimal yearlyRent;
     @Column(name = "review_period")
     private Integer reviewPeriod;
     @Column(name = "zone_code")
@@ -136,18 +134,27 @@ public class Rrr extends AbstractVersionedEntity {
     private String rotCode;
     @Column(name = "cofo_type")
     private String cofoType;
-    @Column(insertable=false, updatable=false, name = "improvement_premium")
-    @AccessFunctions(onSelect = "administrative.get_improvementPremium(ba_unit_id)")
-    private String improvementPremium;
+    @Column (name = "yearly_rent")
+//    @Column(insertable=false, updatable=false, name = "yearly_rent")
+//    @AccessFunctions(onSelect = "administrative.get_yearly_rent(ba_unit_id)")
+    private BigDecimal yearlyRent;
+    @Column (name = "improvement_premium")
+//    @Column(insertable=false, updatable=false, name = "improvement_premium")
+//    @AccessFunctions(onSelect = "administrative.get_improvement_premium(ba_unit_id)")
+    private BigDecimal improvementPremium;
+    @Column (name = "stamp_duty")
+//    @Column(insertable=false, updatable=false, name = "stamp_duty")
+//    @AccessFunctions(onSelect = "administrative.get_stamp_duty(ba_unit_id)")
+    private BigDecimal stampDuty;
 
-    public String getImprovementPremium() {
+    public BigDecimal getImprovementPremium() {
         return improvementPremium;
     }
 
-    public void setImprovementPremium(String improvementPremium) {
+    public void setImprovementPremium(BigDecimal improvementPremium) {
         this.improvementPremium = improvementPremium;
     }
-    
+        
     public String getCofoType() {
         return cofoType;
     }
@@ -415,6 +422,14 @@ public class Rrr extends AbstractVersionedEntity {
 
     public void setYearlyRent(BigDecimal yearlyRent) {
         this.yearlyRent = yearlyRent;
+    }
+
+    public BigDecimal getStampDuty() {
+        return stampDuty;
+    }
+
+    public void setStampDuty(BigDecimal stampDuty) {
+        this.stampDuty = stampDuty;
     }
 
     public Integer getReviewPeriod() {
