@@ -140,7 +140,7 @@ public class Rrr extends AbstractVersionedEntity {
     private String cofoType;
     @Column(insertable=false, updatable=false, name = "improvement_premium")
     @AccessFunctions(onSelect = "administrative.get_improvementPremium(ba_unit_id)")
-    private String improvementPremium;
+    private BigDecimal improvementPremium;
     @Column(insertable=false, updatable=false, name = "stamp_duty")
     @AccessFunctions(onSelect = "administrative.get_stampDuty(ba_unit_id)")
     private BigDecimal stampDuty;
@@ -154,11 +154,11 @@ public class Rrr extends AbstractVersionedEntity {
     }
     
     
-    public String getImprovementPremium() {
+    public BigDecimal getImprovementPremium() {
         return improvementPremium;
     }
 
-    public void setImprovementPremium(String improvementPremium) {
+    public void setImprovementPremium(BigDecimal improvementPremium) {
         this.improvementPremium = improvementPremium;
     }
         
