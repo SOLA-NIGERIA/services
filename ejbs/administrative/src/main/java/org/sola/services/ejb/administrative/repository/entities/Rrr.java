@@ -161,7 +161,7 @@ public class Rrr extends AbstractVersionedEntity {
     public void setImprovementPremium(String improvementPremium) {
         this.improvementPremium = improvementPremium;
     }
-    
+        
     public String getCofoType() {
         return cofoType;
     }
@@ -431,6 +431,7 @@ public class Rrr extends AbstractVersionedEntity {
         this.yearlyRent = yearlyRent;
     }
 
+  
     public Integer getReviewPeriod() {
         return reviewPeriod;
     }
