@@ -126,7 +126,9 @@ public class Rrr extends AbstractVersionedEntity {
     private Integer term;
     @Column(name = "advance_payment")
     private BigDecimal advancePayment;
-    @Column(name = "yearly_rent")
+//    @Column(name = "yearly_rent")
+    @Column(insertable=false, updatable=true, name = "yearly_rent")
+    @AccessFunctions(onSelect = "administrative.get_yearlyRent(ba_unit_id)")
     private BigDecimal yearlyRent;
     @Column(name = "review_period")
     private Integer reviewPeriod;
@@ -139,7 +141,19 @@ public class Rrr extends AbstractVersionedEntity {
     @Column(insertable=false, updatable=false, name = "improvement_premium")
     @AccessFunctions(onSelect = "administrative.get_improvementPremium(ba_unit_id)")
     private String improvementPremium;
+    @Column(insertable=false, updatable=false, name = "stamp_duty")
+    @AccessFunctions(onSelect = "administrative.get_stampDuty(ba_unit_id)")
+    private BigDecimal stampDuty;
 
+    public BigDecimal getStampDuty() {
+        return stampDuty;
+    }
+
+    public void setStampDuty(BigDecimal stampDuty) {
+        this.stampDuty = stampDuty;
+    }
+    
+    
     public String getImprovementPremium() {
         return improvementPremium;
     }

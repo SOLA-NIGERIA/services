@@ -39,6 +39,7 @@ import javax.persistence.Table;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
+import org.sola.services.common.LocalInfo;
 import org.sola.services.common.repository.*;
 import org.sola.services.common.repository.entities.AbstractVersionedEntity;
 import org.sola.services.ejb.cadastre.businesslogic.CadastreEJBLocal;
@@ -48,6 +49,8 @@ import org.sola.services.ejb.source.businesslogic.SourceEJBLocal;
 import org.sola.services.ejb.source.repository.entities.Source;
 import org.sola.services.ejb.system.br.Result;
 import org.sola.services.ejb.system.businesslogic.SystemEJBLocal;
+import org.sola.services.ejb.transaction.businesslogic.TransactionEJBLocal;
+import org.sola.services.ejb.transaction.repository.entities.Transaction;
 
 /**
  * This Entity represents the administrative.dispute table.
@@ -106,12 +109,28 @@ public class Dispute extends AbstractVersionedEntity {
     private List<Source> sourceList;
     @ChildEntityList(parentIdField = "disputeNr")
     private List<DisputeParty> disputePartyList;
-    
+    @Column(name = "transaction_id", updatable = false)
+    private String transactionId;
 
     public Dispute() {
         super();
     }
+    private Transaction getTransaction() {
+        Transaction result = null;
+        TransactionEJBLocal transactionEJB = RepositoryUtility.tryGetEJB(TransactionEJBLocal.class);
+        if (transactionEJB != null) {
+            result = transactionEJB.getTransactionById(getTransactionId(), Transaction.class);
+        }
+        return result;
+    }
+    
+     public String getTransactionId() {
+        return transactionId;
+    }
 
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
     private String generateDisputeNumber() {
         String result = "";
         SystemEJBLocal systemEJB = RepositoryUtility.tryGetEJB(SystemEJBLocal.class);
@@ -272,7 +291,10 @@ public class Dispute extends AbstractVersionedEntity {
     
     @Override
     public void preSave() {
-
+        if (isNew()) {
+        setTransactionId(LocalInfo.getTransactionId());
+        }
+        
         if (isNew() && getNr() == null) {
             setNr(generateDisputeNumber());
         }

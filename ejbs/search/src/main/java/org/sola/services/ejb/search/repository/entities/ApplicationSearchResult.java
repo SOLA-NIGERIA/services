@@ -164,7 +164,7 @@ public class ApplicationSearchResult extends AbstractReadOnlyEntity {
     private String serviceStatusList;
     
     @AccessFunctions(onSelect = "(SELECT string_agg(tmp.display_value, ',') FROM "
-    + "  (SELECT (app.name_lastpart||'/'||app.name_firstpart) as display_value  "
+    + "  (SELECT (app.name_firstpart||'/'||app.name_lastpart) as display_value  "
     + "  FROM application.application_property app INNER JOIN application.application aa ON app.application_id = aa.id  "
     + "  WHERE app.application_id = a.id "
 //    + "  AND compare_strings(#{" + QUERY_PARAM_PARCEL + "}, app.name_lastpart||'/'||app.name_firstpart)"
