@@ -126,10 +126,6 @@ public class Rrr extends AbstractVersionedEntity {
     private Integer term;
     @Column(name = "advance_payment")
     private BigDecimal advancePayment;
-//    @Column(name = "yearly_rent")
-    @Column(insertable=false, updatable=true, name = "yearly_rent")
-    @AccessFunctions(onSelect = "administrative.get_yearlyRent(ba_unit_id)")
-    private BigDecimal yearlyRent;
     @Column(name = "review_period")
     private Integer reviewPeriod;
     @Column(name = "zone_code")
@@ -138,13 +134,52 @@ public class Rrr extends AbstractVersionedEntity {
     private String rotCode;
     @Column(name = "cofo_type")
     private String cofoType;
-    @Column(insertable=false, updatable=false, name = "improvement_premium")
+    @Column(insertable=false, updatable=false, name = "yearly_rent_value")
+//    @Column( name = "yearly_rent")
+    @AccessFunctions(onSelect = "administrative.get_yearlyRent(ba_unit_id)")
+////@AccessFunctions(onSelect = "administrative.get_yearly_rent(ba_unit_id)")
+    private BigDecimal yearlyRentValue;
+//    @Column(name = "improvement_premium")
+    @Column(insertable=false, updatable=false, name = "improvement_premium_value")
     @AccessFunctions(onSelect = "administrative.get_improvementPremium(ba_unit_id)")
-    private BigDecimal improvementPremium;
-    @Column(insertable=false, updatable=false, name = "stamp_duty")
+////    @AccessFunctions(onSelect = "administrative.get_improvement_premium(ba_unit_id)")
+    private BigDecimal improvementPremiumValue;
+//    @Column(name = "stamp_duty")
+    @Column(insertable=false, updatable=false, name = "stamp_duty_value")
     @AccessFunctions(onSelect = "administrative.get_stampDuty(ba_unit_id)")
+////  @AccessFunctions(onSelect = "administrative.get_stamp_duty(ba_unit_id)")
+    private BigDecimal stampDutyValue;
+    @Column(name = "improvement_premium")
+    private BigDecimal improvementPremium;
+    @Column(name = "stamp_duty")
     private BigDecimal stampDuty;
+    @Column( name = "yearly_rent")
+    private BigDecimal yearlyRent;
 
+    public BigDecimal getYearlyRentValue() {
+        return yearlyRentValue;
+    }
+
+    public void setYearlyRentValue(BigDecimal yearlyRentValue) {
+        this.yearlyRentValue = yearlyRentValue;
+    }
+
+    public BigDecimal getImprovementPremiumValue() {
+        return improvementPremiumValue;
+    }
+
+    public void setImprovementPremiumValue(BigDecimal improvementPremiumValue) {
+        this.improvementPremiumValue = improvementPremiumValue;
+    }
+
+    public BigDecimal getStampDutyValue() {
+        return stampDutyValue;
+    }
+
+    public void setStampDutyValue(BigDecimal stampDutyValue) {
+        this.stampDutyValue = stampDutyValue;
+    }
+    
     public BigDecimal getStampDuty() {
         return stampDuty;
     }
@@ -160,6 +195,15 @@ public class Rrr extends AbstractVersionedEntity {
 
     public void setImprovementPremium(BigDecimal improvementPremium) {
         this.improvementPremium = improvementPremium;
+    }
+    
+    
+    public BigDecimal getYearlyRent() {
+        return yearlyRent;
+    }
+
+    public void setYearlyRent(BigDecimal yearlyRent) {
+        this.yearlyRent = yearlyRent;
     }
         
     public String getCofoType() {
@@ -184,7 +228,8 @@ public class Rrr extends AbstractVersionedEntity {
     public Rrr() {
         super();
     }
-
+    
+    
     private String generateRrrNumber() {
         String result = "";
         SystemEJBLocal systemEJB = RepositoryUtility.tryGetEJB(SystemEJBLocal.class);
@@ -196,6 +241,41 @@ public class Rrr extends AbstractVersionedEntity {
         }
         return result;
     }
+
+//    private String generateImprovementPremium() {
+//        String result = "";
+//        SystemEJBLocal systemEJB = RepositoryUtility.tryGetEJB(SystemEJBLocal.class);
+//        if (systemEJB != null) {
+//            Result newNumberResult = systemEJB.checkRuleGetResultSingle("generate-improvement-premium", null);
+//            if (newNumberResult != null && newNumberResult.getValue() != null) {
+//                result = newNumberResult.getValue().toString();
+//            }
+//        }
+//        return result;
+//    }
+//    private String generateYearlyRent() {
+//        String result = "";
+//        SystemEJBLocal systemEJB = RepositoryUtility.tryGetEJB(SystemEJBLocal.class);
+//        if (systemEJB != null) {
+//            Result newNumberResult = systemEJB.checkRuleGetResultSingle("generate-yearly-rent", null);
+//            if (newNumberResult != null && newNumberResult.getValue() != null) {
+//                result = newNumberResult.getValue().toString();
+//            }
+//        }
+//        return result;
+//    }
+//    
+//    private String generateStampDuty() {
+//        String result = "";
+//        SystemEJBLocal systemEJB = RepositoryUtility.tryGetEJB(SystemEJBLocal.class);
+//        if (systemEJB != null) {
+//            Result newNumberResult = systemEJB.checkRuleGetResultSingle("generate-stamp-duty", null);
+//            if (newNumberResult != null && newNumberResult.getValue() != null) {
+//                result = newNumberResult.getValue().toString();
+//            }
+//        }
+//        return result;
+//    }
 
     private Transaction getTransaction() {
         Transaction result = null;
@@ -423,15 +503,7 @@ public class Rrr extends AbstractVersionedEntity {
         this.advancePayment = advancePayment;
     }
 
-    public BigDecimal getYearlyRent() {
-        return yearlyRent;
-    }
-
-    public void setYearlyRent(BigDecimal yearlyRent) {
-        this.yearlyRent = yearlyRent;
-    }
-
-  
+    
     public Integer getReviewPeriod() {
         return reviewPeriod;
     }
