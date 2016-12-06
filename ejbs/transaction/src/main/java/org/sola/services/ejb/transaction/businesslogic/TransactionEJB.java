@@ -25,7 +25,11 @@
  */
 package org.sola.services.ejb.transaction.businesslogic;
 
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKBReader;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,14 +47,17 @@ import org.sola.services.common.ejbs.AbstractEJB;
 import org.sola.services.common.faults.SOLAValidationException;
 import org.sola.services.common.repository.CommonSqlProvider;
 import org.sola.services.ejb.cadastre.businesslogic.CadastreEJBLocal;
+import org.sola.services.ejb.cadastre.repository.entities.CadastreObject;
 import org.sola.services.ejb.cadastre.repository.entities.CadastreObjectStatusChanger;
+import org.sola.services.ejb.cadastre.repository.entities.CadastreObjectTargetRedefinition;
+import org.sola.services.ejb.cadastre.repository.entities.SpatialValueArea;
 import org.sola.services.ejb.system.businesslogic.SystemEJBLocal;
 import org.sola.services.ejb.system.repository.entities.BrValidation;
 import org.sola.services.ejb.transaction.repository.entities.*;
 
 /**
- * EJB to manage data in the transaction schema. Also supports the performing actions against
- * transaction data.
+ * EJB to manage data in the transaction schema. Also supports the performing
+ * actions against transaction data.
  */
 @Stateless
 @EJB(name = "java:app/TransactionEJBLocal", beanInterface = TransactionEJBLocal.class)
@@ -62,11 +69,12 @@ public class TransactionEJB extends AbstractEJB implements TransactionEJBLocal {
     CadastreEJBLocal cadastreEJB;
 
     /**
-     * Sets the entity package for the EJB to TransactionBasic.class.getPackage().getName(). This is
-     * used to restrict the save and retrieval of Code Entities.
+     * Sets the entity package for the EJB to
+     * TransactionBasic.class.getPackage().getName(). This is used to restrict
+     * the save and retrieval of Code Entities.
      *
-     * @see AbstractEJB#getCodeEntity(java.lang.Class, java.lang.String, java.lang.String)
-     * AbstractEJB.getCodeEntity
+     * @see AbstractEJB#getCodeEntity(java.lang.Class, java.lang.String,
+     * java.lang.String) AbstractEJB.getCodeEntity
      * @see AbstractEJB#getCodeEntityList(java.lang.Class, java.lang.String)
      * AbstractEJB.getCodeEntityList
      * @see
@@ -79,13 +87,16 @@ public class TransactionEJB extends AbstractEJB implements TransactionEJBLocal {
     }
 
     /**
-     * Can be used to retrieve or create a transaction of the specified type for a service.
+     * Can be used to retrieve or create a transaction of the specified type for
+     * a service.
      *
-     * @param <T> Generic type of the transaction class. Must extend {@linkplain TransactionBasic}.
+     * @param <T> Generic type of the transaction class. Must extend
+     * {@linkplain TransactionBasic}.
      * @param serviceId The identifier of the service
-     * @param createIfNotFound Flag it indicate whether the transaction should be created if it does
-     * not already exist
-     * @param transactionClass The class indicating the specific transaction required.
+     * @param createIfNotFound Flag it indicate whether the transaction should
+     * be created if it does not already exist
+     * @param transactionClass The class indicating the specific transaction
+     * required.
      */
     @Override
     public <T extends TransactionBasic> T getTransactionByServiceId(
@@ -108,11 +119,15 @@ public class TransactionEJB extends AbstractEJB implements TransactionEJBLocal {
     }
 
     /**
-     * Uses generics to create transaction of the type indicated by the transaction class.
+     * Uses generics to create transaction of the type indicated by the
+     * transaction class.
      *
-     * @param <T> Generic type of the transaction class. Must extend {@linkplain TransactionBasic}.
-     * @param serviceId The identifier of the service the transaction must be associated with.
-     * @param transactionClass The class indicating the specific transaction required.
+     * @param <T> Generic type of the transaction class. Must extend
+     * {@linkplain TransactionBasic}.
+     * @param serviceId The identifier of the service the transaction must be
+     * associated with.
+     * @param transactionClass The class indicating the specific transaction
+     * required.
      * @throws SOLAException If the transaction cannot be created.
      */
     @Override
@@ -133,9 +148,11 @@ public class TransactionEJB extends AbstractEJB implements TransactionEJBLocal {
     /**
      * Retrieves a transaction by id.
      *
-     * @param <T> Generic type of the transaction class. Must extend {@linkplain TransactionBasic}.
+     * @param <T> Generic type of the transaction class. Must extend
+     * {@linkplain TransactionBasic}.
      * @param id The transaction identifier.
-     * @param transactionClass The class indicating the specific transaction required.
+     * @param transactionClass The class indicating the specific transaction
+     * required.
      */
     @Override
     public <T extends TransactionBasic> T getTransactionById(String id, Class<T> transactionClass) {
@@ -145,19 +162,19 @@ public class TransactionEJB extends AbstractEJB implements TransactionEJBLocal {
     /**
      * Sets the status of the transaction to the value specified.
      *
-     * @param serviceId The identifier of the service the transaction is associated with.
+     * @param serviceId The identifier of the service the transaction is
+     * associated with.
      * @param statusCode The status to assign the transaction
-     * @return
-     * <code>true</code> if the status of the transaction is successfully changed,
-     * <code>false</code> otherwise.
-     * @see #getTransactionByServiceId(java.lang.String, boolean, java.lang.Class)
-     * getTransactionByServiceId
+     * @return <code>true</code> if the status of the transaction is
+     * successfully changed, <code>false</code> otherwise.
+     * @see #getTransactionByServiceId(java.lang.String, boolean,
+     * java.lang.Class) getTransactionByServiceId
      */
     @Override
     public boolean changeTransactionStatusFromService(
             String serviceId, String statusCode) {
-        TransactionStatusChanger transaction =
-                this.getTransactionByServiceId(serviceId, false, TransactionStatusChanger.class);
+        TransactionStatusChanger transaction
+                = this.getTransactionByServiceId(serviceId, false, TransactionStatusChanger.class);
         if (transaction == null) {
             return false;
         }
@@ -168,25 +185,28 @@ public class TransactionEJB extends AbstractEJB implements TransactionEJBLocal {
     }
 
     /**
-     * Validates the transaction and updates the status of the transaction to approved if
-     * applicable.
+     * Validates the transaction and updates the status of the transaction to
+     * approved if applicable.
      *
      * @param requestType The type of service associated with the transaction
-     * @param serviceId The identifier of the service associated with the transaction
-     * @param languageCode The language code to use to localize any validation messages
-     * @param validationOnly Flag to indicate if only validations should be executed
+     * @param serviceId The identifier of the service associated with the
+     * transaction
+     * @param languageCode The language code to use to localize any validation
+     * messages
+     * @param validationOnly Flag to indicate if only validations should be
+     * executed
      * @return The validation messages returned from the business rules.
-     * @see #changeStatusOfTransactionObjectsOnApproval(java.lang.String, java.lang.String)
-     * changeStatusOfTransactionObjectsOnApproval
+     * @see #changeStatusOfTransactionObjectsOnApproval(java.lang.String,
+     * java.lang.String) changeStatusOfTransactionObjectsOnApproval
      */
     @Override
-    @RolesAllowed({RolesConstants.APPLICATION_APPROVE, RolesConstants.APPLICATION_SERVICE_COMPLETE, 
-     RolesConstants.APPLICATION_VALIDATE})
-     public List<ValidationResult> approveTransaction(
+    @RolesAllowed({RolesConstants.APPLICATION_APPROVE, RolesConstants.APPLICATION_SERVICE_COMPLETE,
+        RolesConstants.APPLICATION_VALIDATE})
+    public List<ValidationResult> approveTransaction(
             String requestType, String serviceId, String languageCode, boolean validationOnly) {
-         if (!this.isInRole(RolesConstants.APPLICATION_APPROVE)){
+        if (!this.isInRole(RolesConstants.APPLICATION_APPROVE)) {
             // Only allow validation if the user does not have the Approve role. 
-            validationOnly = true; 
+            validationOnly = true;
         }
         TransactionStatusChanger transaction = this.getTransactionByServiceId(
                 serviceId, false, TransactionStatusChanger.class);
@@ -210,13 +230,15 @@ public class TransactionEJB extends AbstractEJB implements TransactionEJBLocal {
     }
 
     /**
-     * Updates the status of any cadastre objects associated with the transaction.
+     * Updates the status of any cadastre objects associated with the
+     * transaction.
      *
      * @param requestType The type of service associated to the transaction
      * @param transactionId The transaction identifier
      * @see
      * org.sola.services.ejb.cadastre.businesslogic.CadastreEJB#ChangeStatusOfCadastreObjects(java.lang.String,
-     * java.lang.String, java.lang.String) CadastreEJB.ChangeStatusOfCadastreObjects
+     * java.lang.String, java.lang.String)
+     * CadastreEJB.ChangeStatusOfCadastreObjects
      * @see
      * org.sola.services.ejb.cadastre.businesslogic.CadastreEJB#approveCadastreRedefinition(java.lang.String)
      * CadastreEJB.approveCadastreRedefinition
@@ -250,14 +272,14 @@ public class TransactionEJB extends AbstractEJB implements TransactionEJBLocal {
      * Deletes the transaction associated with the specified service id.
      *
      * @param serviceId Identifier of the service
-     * @return
-     * <code>true</code> if the transaction is deleted.
+     * @return <code>true</code> if the transaction is deleted.
      */
     @Override
-    @RolesAllowed({RolesConstants.APPLICATION_REJECT, RolesConstants.APPLICATION_LAPSE, 
-    RolesConstants.APPLICATION_WITHDRAW})public boolean rejectTransaction(String serviceId) {
-        TransactionBasic transaction =
-                this.getTransactionByServiceId(serviceId, false, TransactionBasic.class);
+    @RolesAllowed({RolesConstants.APPLICATION_REJECT, RolesConstants.APPLICATION_LAPSE,
+        RolesConstants.APPLICATION_WITHDRAW})
+    public boolean rejectTransaction(String serviceId) {
+        TransactionBasic transaction
+                = this.getTransactionByServiceId(serviceId, false, TransactionBasic.class);
         if (transaction == null) {
             return false;
         }
@@ -272,8 +294,7 @@ public class TransactionEJB extends AbstractEJB implements TransactionEJBLocal {
      *
      * @param id Identifier of the transaction
      * @param rowVersion
-     * @return
-     * <code>true</code> if the transaction is deleted.
+     * @return <code>true</code> if the transaction is deleted.
      */
     @Override
     public boolean rejectTransactionWithId(String id, int rowVersion) {
@@ -291,7 +312,7 @@ public class TransactionEJB extends AbstractEJB implements TransactionEJBLocal {
 
         // Run a clean - up database function after the transaction is rejected.
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put(CommonSqlProvider.PARAM_QUERY, 
+        params.put(CommonSqlProvider.PARAM_QUERY,
                 TransactionBulk.CLEAN_AFTER_ROLLBACK_QUERY);
         getRepository().executeFunction(params);
 
@@ -301,7 +322,8 @@ public class TransactionEJB extends AbstractEJB implements TransactionEJBLocal {
     /**
      * Retrieves all transaction.reg_status_type code values.
      *
-     * @param languageCode The language code to use for localization of display values.
+     * @param languageCode The language code to use for localization of display
+     * values.
      */
     @Override
     public List<RegistrationStatusType> getRegistrationStatusTypes(String languageCode) {
@@ -311,15 +333,19 @@ public class TransactionEJB extends AbstractEJB implements TransactionEJBLocal {
     /**
      * Saves the transaction. Also validates the transaction.
      *
-     * @param <T> Generic type of the transaction class. Must extend {@linkplain TransactionBasic}.
+     * @param <T> Generic type of the transaction class. Must extend
+     * {@linkplain TransactionBasic}.
      * @param transaction The transaction to save
-     * @param requestType The type of the service associated with the transaction.
-     * @param languageCode The language code to use for localization of display values.
+     * @param requestType The type of the service associated with the
+     * transaction.
+     * @param languageCode The language code to use for localization of display
+     * values.
      * @return The list of validation messages.
      * @throws SOLAValidationException If the validations fail
-     * @see #validateTransaction(java.lang.String, java.lang.String, java.lang.String,
-     * java.lang.String) validateTransaction
-     * @see org.sola.services.ejb.system.businesslogic.SystemEJB#validationSucceeded(java.util.List)
+     * @see #validateTransaction(java.lang.String, java.lang.String,
+     * java.lang.String, java.lang.String) validateTransaction
+     * @see
+     * org.sola.services.ejb.system.businesslogic.SystemEJB#validationSucceeded(java.util.List)
      * SystemEJB.validationSucceeded
      */
     @Override
@@ -345,9 +371,9 @@ public class TransactionEJB extends AbstractEJB implements TransactionEJBLocal {
             Map<String, Object> params = new HashMap<String, Object>();
             params.put(CommonSqlProvider.PARAM_QUERY,
                     TransactionBulkOperationSpatial.MOVE_SPATIAL_UNITS_QUERY);
-            params.put(TransactionBulkOperationSpatial.PARAM_TRANSACTIONID, 
+            params.put(TransactionBulkOperationSpatial.PARAM_TRANSACTIONID,
                     transaction.getId());
-            params.put(TransactionBulkOperationSpatial.PARAM_CHANGEUSER, 
+            params.put(TransactionBulkOperationSpatial.PARAM_CHANGEUSER,
                     getUserName());
             getRepository().executeFunction(params);
         }
@@ -356,16 +382,20 @@ public class TransactionEJB extends AbstractEJB implements TransactionEJBLocal {
     }
 
     /**
-     * Validates the transaction if it is a cadastre change or redefine cadastre service.
+     * Validates the transaction if it is a cadastre change or redefine cadastre
+     * service.
      *
      * @param transactionId Identifier of the transaction to validate.
      * @param requestType The type of service associated with the transaction.
-     * @param languageCode The language code to use for localizing the validation messages.
-     * @param momentCode Indicates the subset of validation rules to apply for the transaction.
+     * @param languageCode The language code to use for localizing the
+     * validation messages.
+     * @param momentCode Indicates the subset of validation rules to apply for
+     * the transaction.
      * @return The list of validation messages
      * @see
      * org.sola.services.ejb.system.businesslogic.SystemEJB#getBrForValidatingTransaction(java.lang.String,
-     * java.lang.String, java.lang.String) SystemEJB.getBrForValidatingTransaction
+     * java.lang.String, java.lang.String)
+     * SystemEJB.getBrForValidatingTransaction
      * @see
      * org.sola.services.ejb.system.businesslogic.SystemEJB#checkRulesGetValidation(java.util.List,
      * java.lang.String, java.util.HashMap) SystemEJB.checkRulesGetValidation
@@ -390,12 +420,11 @@ public class TransactionEJB extends AbstractEJB implements TransactionEJBLocal {
         params.put("id", transactionId);
 
         //Run the validation
-        List<ValidationResult> validationResultList =
-                this.systemEJB.checkRulesGetValidation(brValidationList, languageCode, params);
+        List<ValidationResult> validationResultList
+                = this.systemEJB.checkRulesGetValidation(brValidationList, languageCode, params);
 
         //If there has to be extra validation depending in the kind of transaction
         // has to happen here and added to the validationResultList.
-
         return validationResultList;
     }
 }

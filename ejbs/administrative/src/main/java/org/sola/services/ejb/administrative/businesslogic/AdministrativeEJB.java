@@ -512,6 +512,17 @@ public class AdministrativeEJB extends AbstractEJB
 
         return result;
     }
+    
+    /**
+     * Returns list of BaUnit areas by cadastre object id
+     */
+    @Override
+    public List<BaUnitArea> getBaUnitAreasByCadastreObject(String coId){
+        Map params = new HashMap<String, Object>();
+        params.put(CommonSqlProvider.PARAM_WHERE_PART, BaUnitArea.QUERY_WHERE_BY_CADASTRE_OBJECT);
+        params.put(BaUnitArea.QUERY_PARAM_CO_ID, coId);
+        return getRepository().getEntityList(BaUnitArea.class, params);
+    }
 
     /**
      * Creates a new BA Unit Area <p>Requires the {@linkplain RolesConstants#ADMINISTRATIVE_BA_UNIT_SAVE}

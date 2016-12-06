@@ -45,8 +45,12 @@ import org.sola.services.common.repository.entities.AbstractVersionedEntity;
 @Table(name = "ba_unit_area", schema = "administrative")
 public class BaUnitArea extends AbstractVersionedEntity {
     public static final String QUERY_WHERE_BYBAUNITID = "baUnitId";
+    public static final String QUERY_PARAM_CO_ID = "coId";
     public static final String QUERY_WHERE_BYUNITAREAID = "ba_unit_id = #{" + QUERY_WHERE_BYBAUNITID + "}";
     public static final String QUERY_ORDER_BYCHANGETIME = " change_time desc ";
+    public static final String QUERY_WHERE_BY_CADASTRE_OBJECT = 
+            "ba_unit_id in (select ba_unit_id from administrative.ba_unit_contains_spatial_unit "
+            + "where spatial_unit_id =  #{" + QUERY_PARAM_CO_ID + "})";
     
     @Id
     @Column(name = "id")

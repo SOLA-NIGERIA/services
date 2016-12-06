@@ -147,6 +147,12 @@ public interface AdministrativeEJBLocal extends AbstractSolaTransactionEJBLocal 
      * AdministrativeEJB.getBaUnitAreas}
      */
     BaUnitArea getBaUnitAreas(String baUnitId);
+    
+    /**
+     * see {@linkplain AdministrativeEJB#getBaUnitAreasByCadastreObject(java.lang.String)
+     * AdministrativeEJB.getBaUnitAreasByCadastreObject}
+     */
+    List<BaUnitArea> getBaUnitAreasByCadastreObject(String coId);
 
     /**
      * see {@linkplain AdministrativeEJB#createBaUnitArea(java.lang.String,
